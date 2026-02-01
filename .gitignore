@@ -1,0 +1,4 @@
+# .gitignore del proyecto "Sistema de Gestión de Laboratorio"
+
+/node_modules
+db-on-json.json
