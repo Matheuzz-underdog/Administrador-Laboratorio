@@ -1,2 +1,4 @@
-# Administrator
-Primeros pasos para la creación de un administrador de datos implementando node.js 
+# Sistema de Gestión de datos de Laboratorio
+###### administrador-laboratorio
+---
+Primeros pasos para la creación de un administrador de datos implementando Node.Js y ExpressJS. 
