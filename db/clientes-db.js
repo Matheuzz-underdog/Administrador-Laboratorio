@@ -1,5 +1,5 @@
 const laboratorio = {
-  pacientes: [
+  clientes: [
     {
       id: "586c7618-1e7d-4212-a4ab-bea7b3aeadde",
       cedula: "V-12345678",
@@ -35,7 +35,7 @@ const laboratorio = {
     },
     {
       id: "61b33d59-ee05-4029-a650-a01046553d94",
-      cedula: "V-12345678",
+      cedula: "V-45678901",
       nombre: "Fausto",
       apellido: "Herrera",
       fechaNacimiento: "1968-03-27",
@@ -81,25 +81,25 @@ const laboratorio = {
   ordenes: [
     {
       id: 1,
-      pacienteId: 1,
+      clienteId: 1,
       medicoId: 1,
       fechaOrden: "2025-01-20",
       estado: "completada",
-      observaciones: "Paciente diabético, control rutinario",
+      observaciones: "Cliente diabético, control rutinario",
       prioridad: "normal",
     },
     {
       id: 2,
-      pacienteId: 2,
+      clienteId: 2,
       medicoId: 2,
       fechaOrden: "2025-01-22",
       estado: "en_proceso",
-      observaciones: "Paciente con antecedentes cardíacos",
+      observaciones: "Cliente con antecedentes cardíacos",
       prioridad: "normal",
     },
     {
       id: 3,
-      pacienteId: 3,
+      clienteId: 3,
       medicoId: 3,
       fechaOrden: "2025-01-25",
       estado: "pendiente",
@@ -108,7 +108,7 @@ const laboratorio = {
     },
     {
       id: 4,
-      pacienteId: 1,
+      clienteId: 1,
       medicoId: 1,
       fechaOrden: "2025-01-28",
       estado: "en_proceso",
@@ -117,7 +117,7 @@ const laboratorio = {
     },
     {
       id: 5,
-      pacienteId: 2,
+      clienteId: 2,
       medicoId: 1,
       fechaOrden: "2025-01-29",
       estado: "pendiente",
