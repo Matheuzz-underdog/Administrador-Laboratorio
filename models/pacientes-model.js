@@ -7,9 +7,11 @@ class pacientes {
   }
 
   static async buscarCedula(cedulaValor) {
-    return laboratorio.pacientes.find(
-      (paciente) => paciente.cedula === cedulaValor
-    ) || null;
+    return (
+      laboratorio.pacientes.find(
+        (paciente) => paciente.cedula === cedulaValor,
+      ) || null
+    );
   }
 
   static async crearPaciente(pacienteData) {
@@ -31,7 +33,7 @@ class pacientes {
 
   static async actualizar(cedulaActual, pacienteData) {
     const pacienteIndex = laboratorio.pacientes.findIndex(
-      (p) => p.cedula === cedulaActual
+      (p) => p.cedula === cedulaActual,
     );
 
     if (pacienteIndex === -1) return null;
@@ -48,7 +50,7 @@ class pacientes {
 
   static async delete(cedula) {
     const pacienteIndex = laboratorio.pacientes.findIndex(
-      (paciente) => paciente.cedula === cedula
+      (paciente) => paciente.cedula === cedula,
     );
 
     if (pacienteIndex === -1) return null;
@@ -58,9 +60,7 @@ class pacientes {
   }
 
   static async buscarId(idEnv) {
-    return laboratorio.pacientes.find((p) => 
-      p.id.startsWith(idEnv)
-    ) || null;
+    return laboratorio.pacientes.find((p) => p.id.startsWith(idEnv)) || null;
   }
 
   static async ultimosCinco() {
