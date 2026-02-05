@@ -18,6 +18,7 @@ class Pacientes {
       cedula: pacientesData.cedula,
       nombre: pacientesData.nombre,
       apellido: pacientesData.apellido,
+      sexo: pacientesData.sexo,
       fechaNacimiento: pacientesData.fechaNacimiento,
       telefono: pacientesData.telefono || "",
       email: pacientesData.email || "",
@@ -48,7 +49,7 @@ class Pacientes {
 
   static async delete(cedula) {
     const pacientesIndex = pacientes.findIndex(
-      (pacientes) => pacientes.cedula === cedula,
+      (p) => p.cedula === cedula,
     );
 
     if (pacientesIndex === -1) return null;

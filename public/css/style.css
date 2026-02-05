@@ -52,17 +52,3 @@ h1 {
 .index-title p {
   padding: 10px;
 }
-
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100dvw;
-  height: 15px;
-  background-color: #222;
-}
-
-footer p {
-  text-align: center;
-  font-size: 0.6rem;
-  color: #888;
-}

@@ -20,16 +20,6 @@ router.get("/", async (req, res) => {
       total: datos.length,
       data: datos,
     });
-
-    if (process.argv[2] && process.argv[2] === "dev") {
-      console.log(datos);
-      console.log(
-        " - Console Info - ".bgWhite.black,
-        "\nSi se quiere añadir un nuevo pacientes (post), se debe de enviar un archivo JSON con el siguiente formato:\n",
-        '{\n\t"cedula": [cedula-de-identidad],\n\t"nombre": [nombre],\n\t"apellido": [apellido],\n\t"telefono": [nro-de-telefono],\n\t"email": [dirección-email]\n\t"direccion": [dirección-completa]\n}'
-          .yellow.italic,
-      );
-    }
   } catch (err) {
     res.status(500).json({
       error: "Ocurrio un error al obtener la lista de pacientes",

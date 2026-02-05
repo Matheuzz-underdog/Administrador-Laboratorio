@@ -97,7 +97,7 @@ class Controller {
       };
     }
 
-    const obligatorios = ["cedula", "nombre", "apellido", "fechaNacimiento"];
+    const obligatorios = ["cedula", "nombre", "apellido", "fechaNacimiento", "sexo", "telefono", "direccion"];
     const faltantes = obligatorios.filter((campo) => !data[campo]);
 
     if (faltantes.length > 0) {
@@ -112,7 +112,15 @@ class Controller {
       throw {
         status: 400,
         error: "Cédula inválida",
-        detalle: "Formato: V-12345678 (6-8 dígitos)",
+        detalle: "Formato: V-XXXXXXXX (6-8 dígitos)",
+      };
+    }
+    
+    if (!valid.telefono(data.telefono)) {
+      throw {
+        status: 400,
+        error: "Teléfono inválido",
+        detalle: "Formato: XXXX-XXXXXXX",
       };
     }
 
@@ -160,6 +168,15 @@ class Controller {
         status: 404,
         error: "Paciente no encontrado",
         detalle: `No existe paciente con cédula ${cedula}`,
+      };
+    }
+    const sexosValidos = ["M", "F"];
+
+    if (!sexosValidos.includes(nuevosDatos.sexo)) {
+      throw {
+        status: 400,
+        error: "Valor de sexo inválido",
+        detalle:  "Use 'M' para Masculino o 'F' para Femenino.",
       };
     }
 

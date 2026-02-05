@@ -6,11 +6,8 @@ class Empleados {
     return empleados;
   }
 
-  static async buscarEmpleado(doc, busc) {
-    if (busc === "cedula") {
-      return empleados.find((empleado) => empleado.cedula === doc) || null;
-    }
-    return empleados.find((empleado) => empleado.rif === doc) || null;
+  static async buscarEmpleado(doc) {
+    return empleados.find((empleado) => empleado.cedula === doc) || null;
   }
 
   static async buscarEmpleadoID(idEnv) {
@@ -21,18 +18,40 @@ class Empleados {
     const nuevoEmpleado = {
       id: uuidv4(),
       cedula: data.cedula,
-      rif: data.rif,
       nombre: data.nombre,
       apellido: data.apellido,
-      funcion: {
-        cargo: data.cargo,
-        especialidad: data.especialidad,
-        mpps: data.mpps
-      },
+      cargo: data.cargo,
       telefono: data.telefono || "",
       email: data.email || "",
-      direccion: data.direccion || "",
+      activo: true,
+      datos_profesionales: {},
     };
+
+    switch (data.cargo) {
+      case "Bioanalista":
+        nuevoEmpleado.datos_profesionales = {
+          colegio_bioanalistas: data.datos_profesionales.colegio_bioanalistas || "Pendiente",
+          mpps: data.datos_profesionales.mpps || "",
+        };
+        break;
+
+      case "Recepcionista":
+        nuevoEmpleado.datos_profesionales = {
+          turno: data.turno || "Mañana",
+          idiomas: data.idiomas || ["Español"],
+        };
+        break;
+
+      case "Asistente de Laboratorio":
+        nuevoEmpleado.datos_profesionales = {
+          mpps: data.mpps || "",
+          certificacion_flebotomia: data.certificacion || true,
+        };
+        break;
+
+      default:
+        nuevoEmpleado.datos_profesionales = { nota: "Personal operativo" };
+    }
 
     empleados.push(nuevoEmpleado);
     return nuevoEmpleado;
@@ -49,23 +68,29 @@ class Empleados {
     return empleadoEliminado;
   }
 
+  // Actualizar, cambiado (por cuarta vez)
   static async actualizar(cedulaActual, empleadoData) {
-    const empleadoIndex = empleados.findIndex(
-      (c) => c.cedula === cedulaActual,
-    );
+    const empleadoIndex = empleados.findIndex((c) => c.cedula === cedulaActual);
 
     if (empleadoIndex === -1) return null;
 
+    const empleadoPrevio = empleados[empleadoIndex];
+
     const empleadoActualizado = {
-      ...empleados[empleadoIndex],
+      ...empleadoPrevio, 
       ...empleadoData,
+
+      datos_profesionales: {
+        ...(empleadoPrevio.datos_profesionales || {}),
+        ...(empleadoData.datos_profesionales || {}),
+      },
+      id: empleadoPrevio.id,
       cedula: empleadoData.cedula || cedulaActual,
     };
 
     empleados[empleadoIndex] = empleadoActualizado;
     return empleadoActualizado;
   }
-  
 }
 
 module.exports = Empleados;

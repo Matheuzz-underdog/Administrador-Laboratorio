@@ -27,7 +27,7 @@ class Controller {
       };
     }
 
-    const empleado = await empleados.buscarEmpleado(cedula, "cedula");
+    const empleado = await empleados.buscarEmpleado(cedula);
 
     if (!empleado) {
       throw {
@@ -71,7 +71,7 @@ class Controller {
       };
     }
 
-    const empleadoExistente = await empleados.buscarEmpleado(cedula, "cedula");
+    const empleadoExistente = await empleados.buscarEmpleado(cedula);
     if (!empleadoExistente) {
       throw {
         status: 404,
@@ -93,7 +93,7 @@ class Controller {
       };
     }
 
-    const obligatorios = ["cedula", "nombre", "apellido", "rif"];
+    const obligatorios = ["cedula", "nombre", "apellido"];
     const faltantes = obligatorios.filter((campo) => !data[campo]);
 
     if (faltantes.length > 0) {
@@ -112,33 +112,12 @@ class Controller {
       };
     }
 
-    if (!valid.rif(data.rif)) {
-      throw {
-        status: 400,
-        error: "RIF inválido",
-        detalle: "El RIF debe seguir el formato J-12345678 (8 dígitos)",
-      };
-    }
-
-    const existeCedula = await empleados.buscarEmpleado(data.cedula, "cedula");
-    const existeRIF = await empleados.buscarEmpleado(data.rif, "rif");
-    if (existeCedula && existeRIF) {
-      throw {
-        status: 409,
-        error: "Cédula y RIF duplicados",
-        detalle: `La cédula ${data.cedula} y el rif ${data.rif} ya están registrados`,
-      };
-    } else if (existeCedula && !existeRIF) {
+    const existeCedula = await empleados.buscarEmpleado(data.cedula);
+    if (existeCedula) {
       throw {
         status: 409,
         error: "Cédula duplicada",
         detalle: `La cédula ${data.cedula} ya está registrada`,
-      };
-    } else if (!existeCedula && existeRIF) {
-      throw {
-        status: 409,
-        error: "RIF duplicado",
-        detalle: `El RIF ${data.rif} ya está registrada`,
       };
     }
 
@@ -163,7 +142,7 @@ class Controller {
       };
     }
 
-    const empleadoExistente = await empleados.buscarEmpleado(cedula, "cedula");
+    const empleadoExistente = await empleados.buscarEmpleado(cedula);
     if (!empleadoExistente) {
       throw {
         status: 404,
@@ -181,10 +160,7 @@ class Controller {
         };
       }
 
-      const existeCedula = await empleados.buscarEmpleado(
-        nuevosDatos.cedula,
-        "cedula",
-      );
+      const existeCedula = await empleados.buscarEmpleado(nuevosDatos.cedula);
       if (existeCedula) {
         throw {
           status: 409,
