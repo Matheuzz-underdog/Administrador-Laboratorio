@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css" />
     <title>Lista de Empleados</title>
 </head>
 <body>
-    <%- include('header') %>
+    <%- include('partials/_header') %>
     
     <h1>Lista de Empleados</h1>
-    
-    <p>Total de empleados: <%= empleados.length %></p>
+    <div id="info">
     
     <table border="1" cellpadding="10" cellspacing="0">
         <thead>
@@ -38,8 +38,9 @@
             <% }); %>
         </tbody>
     </table>
+    <p>Total de empleados: <%= empleados.length %></p>
     
-    <br>
-    <a href="/">Volver al inicio</a>
+    </div>
+    <%- include('partials/_footer') %>
 </body>
 </html>

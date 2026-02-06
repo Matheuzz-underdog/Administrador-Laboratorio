@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css" />
     <title>Lista de Exámenes</title>
 </head>
 <body>
-    <%- include('header') %>
+    <%- include('partials/_header') %>
     
     <h1>Lista de Exámenes</h1>
-    
-    <p>Total de exámenes: <%= examenes.length %></p>
+    <div id="info">
     
     <table border="1" cellpadding="10" cellspacing="0">
         <thead>
@@ -20,7 +20,6 @@
                 <th>Área</th>
                 <th>Precio ($)</th>
                 <th>Tipo de Muestra</th>
-                <th>Parámetros</th>
             </tr>
         </thead>
         <tbody>
@@ -31,13 +30,13 @@
                 <td><%= examen.area %></td>
                 <td><%= examen.precio %></td>
                 <td><%= examen.tipoMuestra %></td>
-                <td><%= examen.parametros.length %> parámetros</td>
             </tr>
             <% }); %>
         </tbody>
     </table>
     
-    <br>
-    <a href="/">Volver al inicio</a>
+    <p>Total de exámenes: <%= examenes.length %></p>
+    </div>
+    <%- include('partials/_footer') %>
 </body>
 </html>

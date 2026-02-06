@@ -7,13 +7,13 @@
     <title><%= title %></title>
   </head>
   <body>
-    <%- include('header') %>
-      
-      <h1>Bienvenido al <%= title %></h1>
-      
-      
-      <h3>Información:</h3>
-      <p>Sistema de gestión de laboratorio clínico</p>
-      <p>Desarrollado Por Jose Godoy , Sergio cuevas y Nelson Sandoval</p>
+    <%- include('partials/_header') %>
+    <div class="index-text">
+      <h1 id="initial-msg">Bienvenido a <%= title %>!</h1>
+      <p>
+        [Este es un placeholder de lo que va a ser el dashboard del sistema]
+      </p>
+    </div>
+    <%- include('partials/_footer') %>
   </body>
 </html>
