@@ -51,7 +51,7 @@ class Controller {
     const paciente = await pacientes.buscarId(id);
 
     if (!paciente) {
-      throw {
+      throw { 
         status: 404,
         error: "Paciente no encontrado",
         detalle: `No existe paciente con ID que empiece por ${id}`,

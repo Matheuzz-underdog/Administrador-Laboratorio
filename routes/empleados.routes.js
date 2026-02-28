@@ -2,6 +2,19 @@ const express = require("express");
 const router = express.Router();
 const control = require("../controllers/empleados.controller");
 
+function manejarError(res, err, mensajePorDefecto) {
+  if (err.status) {
+    return res.status(err.status).json({
+      error: err.error || mensajePorDefecto,
+      detalle: err.detalle || err.message,
+    });
+  }
+  res.status(500).json({
+    error: mensajePorDefecto,
+    detalle: err.message || "Error desconocido",
+  });
+}
+
 // Mostrar todos los empleados
 
 router.get("/", async (req, res) => {
@@ -29,11 +42,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Ruta para llamar a buscar por Cedula
+// buscar por cedula
 
-router.post("/buscar", async (req, res) => {
+router.get("/ced/:cedula", async (req, res) => {
   try {
-    const empleado = await control.buscarPorCedula(req.body.cedula);
+    const empleado = await control.buscarCed(req.params.cedula);
 
     res.status(200).json({
       message: "Empleado encontrado",
@@ -54,11 +67,11 @@ router.post("/buscar", async (req, res) => {
   }
 });
 
-// Buscar por id, id, id, id, id, id, id
+// Buscar por numero
 
-router.get("/:id", async (req, res) => {
+router.get("/num/:numero", async (req, res) => {
   try {
-    const empleado = await control.buscarPorID(req.params.id);
+    const empleado = await control.buscarNum(req.params.numero);
 
     res.status(200).json({
       message: "Empleado encontrado",
@@ -79,39 +92,26 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Crear un nuevo esclavo asalariado
+// Crear un nuevo empleado
 
 router.post("/", async (req, res) => {
   try {
-    const empleadoCreado = await control.crearEmpleado(req.body);
+    const empleadoCreado = await control.crear(req.body);
 
     res.status(201).json({
       message: "Empleado creado exitosamente",
       data: empleadoCreado,
     });
   } catch (err) {
-    if (err.status) {
-      return res.status(err.status).json({
-        error: err.error,
-        detalle: err.detalle,
-      });
-    }
-
-    res.status(500).json({
-      error: "Error al crear empleado",
-      detalle: err.message,
-    });
+    manejarError(res, err, "Error al crear empleado")
   }
 });
 
 // Actualizar informacion de empleado
 
-router.put("/:cedula", async (req, res) => {
+router.put("/", async (req, res) => {
   try {
-    const empleadoActualizado = await control.actualizarEmpleado(
-      req.params.cedula,
-      req.body,
-    );
+    const empleadoActualizado = await control.actualizar(req.body);
 
     res.status(200).json({
       message: "Empleado actualizado exitosamente",
@@ -132,28 +132,18 @@ router.put("/:cedula", async (req, res) => {
   }
 });
 
-// Eliminar de la faz de la tierra al empleado que menos te guste
+// Eliminar empleado
 
 router.delete("/", async (req, res) => {
   try {
-    const empleadoEliminado = await control.eliminarEmpleado(req.body.cedula);
+    const empleadoEliminado = await control.borrar(req.body.cedula);
 
     res.status(200).json({
       message: "Empleado eliminado exitosamente",
       data: empleadoEliminado,
     });
   } catch (err) {
-    if (err.status) {
-      return res.status(err.status).json({
-        error: err.error,
-        detalle: err.detalle,
-      });
-    }
-
-    res.status(500).json({
-      error: "Error al eliminar empleado",
-      detalle: err.message,
-    });
+    manejarError(res, err, "Error al eliminar empleado")
   }
 });
 

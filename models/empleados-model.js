@@ -1,96 +1,95 @@
-const empleados = require('../connections/empleados-db');
-const { v4: uuidv4 } = require("uuid");
+const mysql = require("mysql");
+const util = require("util");
+const {v4: uuidv4} = require("uuid");
+const db = require("../connections/connection.js");
+const mapDBToModelEm = require("../utils/mapDBToModelEm.js");
 
-class Empleados {
-  static async verTodos() {
-    return empleados;
-  }
+const query = util.promisify(db.query).bind(db);
 
-  static async buscarEmpleado(doc) {
-    return empleados.find((empleado) => empleado.cedula === doc) || null;
-  }
-
-  static async buscarEmpleadoID(idEnv) {
-    return empleados.find((emp) => emp.id.startsWith(idEnv)) || null;
-  }
-
-  static async crearEmpleado(data) {
-    const nuevoEmpleado = {
-      id: uuidv4(),
-      cedula: data.cedula,
-      nombre: data.nombre,
-      apellido: data.apellido,
-      cargo: data.cargo,
-      telefono: data.telefono || "",
-      email: data.email || "",
-      activo: true,
-      datos_profesionales: {},
-    };
-
-    switch (data.cargo) {
-      case "Bioanalista":
-        nuevoEmpleado.datos_profesionales = {
-          colegio_bioanalistas: data.datos_profesionales.colegio_bioanalistas || "Pendiente",
-          mpps: data.datos_profesionales.mpps || "",
-        };
-        break;
-
-      case "Recepcionista":
-        nuevoEmpleado.datos_profesionales = {
-          turno: data.turno || "Mañana",
-          idiomas: data.idiomas || ["Español"],
-        };
-        break;
-
-      case "Asistente de Laboratorio":
-        nuevoEmpleado.datos_profesionales = {
-          mpps: data.mpps || "",
-          certificacion_flebotomia: data.certificacion || true,
-        };
-        break;
-
-      default:
-        nuevoEmpleado.datos_profesionales = { nota: "Personal operativo" };
+class Empleados { 
+    static async mostrarTodosEm() { //mostrar todos
+        try{
+            const resultado = await query("SELECT * FROM `empleados`");
+            return resultado.map(mapDBToModelEm);
+        }catch(err) {
+            console.log(`Ha ocurrido el siguiente error: ${err}`)
+        }
+    }
+    
+    static async buscarPorNumEm(numero) { //buscar por numero
+        try{
+            const consulta = "SELECT * FROM `empleados` WHERE telefono_empleado = ?";
+            const resultado = await query (consulta, numero);
+            return resultado.map(mapDBToModelEm)
+        }catch(err){
+            console.log(`Ha ocurrido el siguiente error: ${err}`)
+        }
     }
 
-    empleados.push(nuevoEmpleado);
-    return nuevoEmpleado;
-  }
+    static async buscarPorCedEm(cedula) { //buscar por cedula
+        try {
+            const consulta = "SELECT * FROM `empleados` WHERE cedula_empleado = ?";
+            const rows = await query (consulta, cedula);
+            return rows.map(mapDBToModelEm);
+        }catch(err){
+            console.log(`Ha ocurrido el siguiente error: ${err}`);
+        }
+    }
 
-  static async delete(cedula) {
-    const empleadoIndex = empleados.findIndex(
-      (empleado) => empleado.cedula === cedula,
-    );
+    static async crearEm(empleadoDatos){ //crear empleado
+        try {
+            const id = uuidv4();
+            const nuevoEmpleado = {
+                id_empleado: id,
+                cedula_empleado: empleadoDatos.cedula,
+                nombre_empleado: empleadoDatos.nombre,
+                apellido_empleado: empleadoDatos.apellido,
+                cargo_empleado: empleadoDatos.cargo,
+                telefono_empleado: empleadoDatos.telefono || "",
+                email_empleado: empleadoDatos.email || "",
+                actividad_empleado: empleadoDatos.actividad,
+                datos_profesionales: empleadoDatos.datos
+            }
+            const consulta = "INSERT INTO `empleados` SET ?";
+            await query(consulta, nuevoEmpleado);
+            return mapDBToModelEm(nuevoEmpleado);
+        }catch(err){
+            console.log(`Ha ocurrido el siguiente error: ${err}`)
+        }
+        
+    }
 
-    if (empleadoIndex === -1) return null;
+    static async actualizarEmCed(cedula, empleadoDatos) { //actualizar empleado
+        try {
+            const nuevosDatosEmpleado = {
+            id_empleado: empleadoDatos.id,
+            cedula_empleado: empleadoDatos.cedula,
+            nombre_empleado: empleadoDatos.nombre,
+            apellido_empleado: empleadoDatos.apellido,
+            cargo_empleado: empleadoDatos.cargo,
+            telefono_empleado: empleadoDatos.telefono || "",
+            email_empleado: empleadoDatos.email || "",
+            actividad_empleado: empleadoDatos.actividad,
+            datos_profesionales: empleadoDatos.datos
+        }
 
-    const [empleadoEliminado] = empleados.splice(empleadoIndex, 1);
-    return empleadoEliminado;
-  }
+        const consulta = 'UPDATE `empleados` SET ? WHERE cedula_empleado = ?';
+        await query(consulta, [nuevosDatosEmpleado, cedula]);
+        return mapDBToModelEm(nuevosDatosEmpleado);
+        }catch(err) {
+            console.log(`Ha ocurrido el siguiente error: ${err}`);
+        }
+    }
 
-  // Actualizar, cambiado (por cuarta vez)
-  static async actualizar(cedulaActual, empleadoData) {
-    const empleadoIndex = empleados.findIndex((c) => c.cedula === cedulaActual);
-
-    if (empleadoIndex === -1) return null;
-
-    const empleadoPrevio = empleados[empleadoIndex];
-
-    const empleadoActualizado = {
-      ...empleadoPrevio, 
-      ...empleadoData,
-
-      datos_profesionales: {
-        ...(empleadoPrevio.datos_profesionales || {}),
-        ...(empleadoData.datos_profesionales || {}),
-      },
-      id: empleadoPrevio.id,
-      cedula: empleadoData.cedula || cedulaActual,
-    };
-
-    empleados[empleadoIndex] = empleadoActualizado;
-    return empleadoActualizado;
-  }
+    static async borrarCedEm(cedula) { //borrar por cedula
+        try {
+            const consulta = 'DELETE FROM `empleados` WHERE cedula_empleado = ?';
+            const resultado = await query(consulta, cedula);
+            return resultado
+        } catch(err) {
+            console.log(`Ha ocurrido el siguiente error: ${err}`);
+        }
+    }
 }
 
 module.exports = Empleados;
