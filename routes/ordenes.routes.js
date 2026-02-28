@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
 });
 
 // Buscar orden por id (importante guardar la id de cada orden creada)
-router.get("/", async (req, res) => {
+router.get("/:", async (req, res) => {
   try {
     const idABuscar = req.query.id;
     const ordenEncontrada = await serviciosOrden.buscarOrden(idABuscar);
