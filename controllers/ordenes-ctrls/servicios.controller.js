@@ -1,4 +1,4 @@
-const ordenesModel = require("../../models/ordenes-model");
+const ordenesModel = require("../../models/ordenes.model");
 
 class Controller {
   static async todasOrdenes() {

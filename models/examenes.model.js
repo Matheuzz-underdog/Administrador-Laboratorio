@@ -57,7 +57,7 @@ class Examenes {
           if (result.length === 0) resolve(null);
           resolve(result);
         },
-      );
+      );git 
     });
   }
 
@@ -66,7 +66,6 @@ class Examenes {
     //   await db.query("SELECT * FROM examenes"),
     // );
     const info = await this.listaTotal();
-    console.log("HOLA", info);
     const nuevoID = generar(info);
 
     const nuevoExamen = {

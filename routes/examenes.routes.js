@@ -6,6 +6,15 @@ const control = require("../controllers/examenes.controller");
 
 router.get("/", async (req, res) => {
   try {
+    if (req.query.abreviatura) {
+      const abreviatura = req.query.abreviatura;
+      const examenDeseado = await control.buscarExamenDeseado(abreviatura);
+      return res.status(200).json({
+        message: `Se encontró el examen con la abreviatura deseada`,
+        data: examenDeseado,
+      });
+    }
+
     const datos = await control.mostrarTodos();
 
     if (datos.length === 0) {
@@ -15,23 +24,10 @@ router.get("/", async (req, res) => {
         total: 0,
       });
     }
-    res.render("examenes", {examenes: datos});
-  } catch (err) {
-    res.status(500).json({
-      error: "Ocurrio un error al obtener la lista de examenes",
-      detalle: err.message,
-    });
-  }
-});
-
-// Buscar por abreviartua
-
-router.get("/:abbrev", async (req, res) => {
-  try {
-    const examenDeseado = await control.buscarExamenDeseado(req.params.abbrev);
     res.status(200).json({
-      message: `Se encontró el examen con la abreviatura deseada`,
-      data: examenDeseado,
+      message: `Datos encontrados`,
+      cantidad: datos.length,
+      data: datos,
     });
   } catch (err) {
     if (err.status) {
@@ -40,9 +36,8 @@ router.get("/:abbrev", async (req, res) => {
         detalle: err.detalle,
       });
     }
-
     res.status(500).json({
-      error: "Ocurrio un error al buscar el examen",
+      error: "Ocurrio un error",
       detalle: err.message,
     });
   }
@@ -76,9 +71,10 @@ router.post("/", async (req, res) => {
 
 // Borar examen (por abreviatura)
 
-router.delete("/", async (req, res) => {
+router.delete("/:abrev", async (req, res) => {
   try {
-    const examenEliminado = await control.eliminarExamen(req.body.abreviatura);
+    const abreviatura = req.params.abrev;
+    const examenEliminado = await control.eliminarExamen(abreviatura);
 
     res.status(200).json({
       message: "Examen eliminado exitosamente",

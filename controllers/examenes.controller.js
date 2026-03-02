@@ -1,4 +1,5 @@
-const examenes = require("../models/examenes-model");
+const examenes = require("../models/examenes.model");
+const valid = require("../utils/validator")
 
 class Controller {
   static async mostrarTodos() {
@@ -8,7 +9,7 @@ class Controller {
 
   // busca examen por abrev
   static async buscarExamenDeseado(abbrevEnv) {
-    if (!abbrevEnv || abbrevEnv.length !== 3) {
+    if (!abbrevEnv || !valid.longitud(abbrevEnv)) {
       throw {
         status: 400,
         error: "Abreviatura requerida",
@@ -17,7 +18,6 @@ class Controller {
     }
 
     const examen = await examenes.buscarExamen(abbrevEnv);
-    console.log("examen:", examen);
     if (!examen) {
       throw {
         status: 404,
@@ -31,7 +31,7 @@ class Controller {
 
   // Crea/Evalua parametros de nuevo examen
   static async crearExamen(dataEnv) {
-    if (dataEnv.abreviatura.length !== 3) {
+    if (!valid.longitud(dataEnv.abreviatura)) {
       throw {
         status: 400,
         error: "La abreviatura debe poseer 3 letras (mayúsculas)",

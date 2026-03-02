@@ -57,15 +57,15 @@
       <tbody>
         <% pacientes.forEach(function(p) { %>
           <tr>
-            <td><%= p.cedula %></td>
-            <td><%= p.nombre %></td>
-            <td><%= p.apellido %></td>
-            <td><%= p.sexo %></td>
-            <td><%= p.fechaNacimiento ? new Date(p.fechaNacimiento).toLocaleDateString('es-VE') : '-' %></td>
-            <td><%= p.telefono || '-' %></td>
-            <td><%= p.email || '-' %></td>
-            <td><%= p.direccion || '-' %></td>
-            <td><%= p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString('es-VE') : '-' %></td>
+            <td><%= p.cedula_paciente %></td>
+            <td><%= p.nombre_paciente %></td>
+            <td><%= p.apellido_paciente %></td>
+            <td><%= p.sexo_paciente %></td>
+            <td><%= p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-VE') : '-' %></td>
+            <td><%= p.telefono_paciente || '-' %></td>
+            <td><%= p.email_paciente || '-' %></td>
+            <td><%= p.direccion_paciente || '-' %></td>
+            <td><%= p.fecha_registro ? new Date(p.fecha_registro).toLocaleString('es-VE') : '-' %></td>
           </tr>
         <% }) %>
       </tbody>
@@ -235,7 +235,7 @@
         nombre:          document.getElementById('c-nombre').value.trim(),
         apellido:        document.getElementById('c-apellido').value.trim(),
         sexo:            document.getElementById('c-sexo').value,
-        fechaNacimiento: document.getElementById('c-fecha').value,
+        fecha_nacimiento: document.getElementById('c-fecha').value,
         telefono:        document.getElementById('c-telefono').value.trim(),
         email:           document.getElementById('c-email').value.trim(),
         direccion:       document.getElementById('c-direccion').value.trim(),
@@ -291,7 +291,7 @@
               '<td>' + (p.nombre    || '-') + '</td>' +
               '<td>' + (p.apellido  || '-') + '</td>' +
               '<td>' + (p.sexo      || '-') + '</td>' +
-              '<td>' + (p.fechaNacimiento ? new Date(p.fechaNacimiento).toLocaleDateString('es-VE') : '-') + '</td>' +
+              '<td>' + (p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-VE') : '-') + '</td>' +
               '<td>' + (p.telefono  || '-') + '</td>' +
               '<td>' + (p.email     || '-') + '</td>' +
               '<td>' + (p.direccion || '-') + '</td>' +
@@ -338,7 +338,7 @@
               '<td>' + (p.nombre    || '-') + '</td>' +
               '<td>' + (p.apellido  || '-') + '</td>' +
               '<td>' + (p.sexo      || '-') + '</td>' +
-              '<td>' + (p.fechaNacimiento ? new Date(p.fechaNacimiento).toLocaleDateString('es-VE') : '-') + '</td>' +
+              '<td>' + (p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-VE') : '-') + '</td>' +
               '<td>' + (p.telefono  || '-') + '</td>' +
               '<td>' + (p.email     || '-') + '</td>' +
               '<td>' + (p.direccion || '-') + '</td>' +
@@ -375,7 +375,7 @@
       if (nombre)    datos.nombre          = nombre;
       if (apellido)  datos.apellido        = apellido;
       if (sexo)      datos.sexo            = sexo;
-      if (fecha)     datos.fechaNacimiento = fecha;
+      if (fecha)     datos.fecha_nacimiento = fecha;
       if (telefono)  datos.telefono        = telefono;
       if (email)     datos.email           = email;
       if (direccion) datos.direccion       = direccion;

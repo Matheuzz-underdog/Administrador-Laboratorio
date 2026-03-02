@@ -2,24 +2,20 @@ const express = require("express");
 const router = express.Router();
 const control = require("../controllers/empleados.controller");
 
-function manejarError(res, err, mensajePorDefecto) {
-  if (err.status) {
-    return res.status(err.status).json({
-      error: err.error || mensajePorDefecto,
-      detalle: err.detalle || err.message,
-    });
-  }
-  res.status(500).json({
-    error: mensajePorDefecto,
-    detalle: err.message || "Error desconocido",
-  });
-}
-
 // Mostrar todos los empleados
 
 router.get("/", async (req, res) => {
   try {
-    const datos = await control.mostrarTodos();
+    if (req.query.cedula) {
+      const queryCedula = req.query.cedula;
+      const empleado = await control.buscarPorCedula(queryCedula);
+
+      return res.status(200).json({
+        message: "Empleado encontrado",
+        data: empleado,
+      });
+    }
+    const datos = await control.verTodos();
 
     if (datos.length === 0) {
       return res.status(200).json({
@@ -35,83 +31,56 @@ router.get("/", async (req, res) => {
       data: datos,
     });
   } catch (err) {
-    res.status(500).json({
-      error: "Ocurrio un error al obtener la lista de empleados",
-      detalle: err.message,
-    });
-  }
-});
-
-// buscar por cedula
-
-router.get("/ced/:cedula", async (req, res) => {
-  try {
-    const empleado = await control.buscarCed(req.params.cedula);
-
-    res.status(200).json({
-      message: "Empleado encontrado",
-      data: empleado,
-    });
-  } catch (err) {
     if (err.status) {
       return res.status(err.status).json({
         error: err.error,
         detalle: err.detalle,
       });
     }
-
     res.status(500).json({
-      error: "Error al buscar empleados",
+      error: "Ocurrio un error en el servidor al obtener la lista de empleados",
       detalle: err.message,
     });
   }
 });
 
-// Buscar por numero
-
-router.get("/num/:numero", async (req, res) => {
-  try {
-    const empleado = await control.buscarNum(req.params.numero);
-
-    res.status(200).json({
-      message: "Empleado encontrado",
-      data: empleado,
-    });
-  } catch (err) {
-    if (err.status) {
-      return res.status(err.status).json({
-        error: err.error,
-        detalle: err.detalle,
-      });
-    }
-
-    res.status(500).json({
-      error: "Error al buscar empleado",
-      detalle: err.message,
-    });
-  }
-});
-
-// Crear un nuevo empleado
+// Crear un nuevo empleado (esclavo asalariado)
 
 router.post("/", async (req, res) => {
   try {
-    const empleadoCreado = await control.crear(req.body);
+    const empleadoCreado = await control.crearEmpleado(req.body);
 
     res.status(201).json({
       message: "Empleado creado exitosamente",
       data: empleadoCreado,
     });
   } catch (err) {
-    manejarError(res, err, "Error al crear empleado")
+    if (err.status) {
+      return res.status(err.status).json({
+        error: err.error,
+        detalle: err.detalle,
+      });
+    }
+
+    res.status(500).json({
+      error: "Error en servidor al crear pacientes",
+      detalle: err.message,
+    });
   }
 });
 
-// Actualizar informacion de empleado
+// Actualizar informacion de empleado (esclavo)
 
-router.put("/", async (req, res) => {
+router.put("/:cedula", async (req, res) => {
   try {
-    const empleadoActualizado = await control.actualizar(req.body);
+    const cedulaAntigua = req.params.cedula;
+    console.log(cedulaAntigua);
+    const datosNuevos = req.body;
+
+    const empleadoActualizado = await control.actualizarEmpleado(
+      cedulaAntigua,
+      datosNuevos,
+    );
 
     res.status(200).json({
       message: "Empleado actualizado exitosamente",
@@ -126,24 +95,61 @@ router.put("/", async (req, res) => {
     }
 
     res.status(500).json({
-      error: "Error al actualizar empleado",
+      error: "Error en servidor al actualizar empleado",
       detalle: err.message,
     });
   }
 });
 
-// Eliminar empleado
+// Eliminar empleado de la existencia
 
-router.delete("/", async (req, res) => {
+router.delete("/:cedula", async (req, res) => {
   try {
-    const empleadoEliminado = await control.borrar(req.body.cedula);
+    const eliminarData = req.params.cedula;
+    const empleadoEliminado =
+      await control.fulminarEmpleadoDeLaExistencia(eliminarData);
 
     res.status(200).json({
       message: "Empleado eliminado exitosamente",
       data: empleadoEliminado,
     });
   } catch (err) {
-    manejarError(res, err, "Error al eliminar empleado")
+    if (err.status) {
+      return res.status(err.status).json({
+        error: err.error,
+        detalle: err.detalle,
+      });
+    }
+    res.status(500).json({
+      error: "Error en servidor al borrar empleado",
+      detalle: err.message,
+    });
+  }
+});
+
+//cambio actividad_empleado
+router.put("/actividad/:cedula", async (req, res) => {
+  try {
+    const cedulaEmpleado = req.params.cedula;
+    const datos = req.body.actividad;
+
+    const exito = await control.cambioDeActividad(cedulaEmpleado, datos);
+
+    res.status(200).json({
+      message: "Actividad del empleado cambiada exitosamente",
+      data: exito,
+    });
+  } catch (err) {
+    if (err.status) {
+      return res.status(err.status).json({
+        error: err.error,
+        detalle: err.detalle,
+      });
+    }
+    res.status(500).json({
+      error: "Error en servidor al cambiar actividad del empleado",
+      detalle: err.message,
+    });
   }
 });
 

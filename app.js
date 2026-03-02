@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/pacientes", pacientesRouter);
 app.use("/empleados", empleadosRouter);
-app.use("/exam", examenesRouter);
+app.use("/examenes", examenesRouter);
 app.use("/ordenes", ordenesRouter);
 
 // catch 404 and forward to error handler

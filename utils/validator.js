@@ -30,6 +30,12 @@ class Validador {
     const formato = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return formato.test(emailEnv);
   }
+
+  // Exclusivo de examenes
+  static longitud(abrev) {
+    if (abrev.length < 3 || abrev.length > 4) return false;
+    return true;
+  }
 }
 
 module.exports = Validador;

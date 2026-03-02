@@ -1,4 +1,4 @@
-const pacientes = require("../models/pacientes-model");
+const pacientes = require("../models/pacientes.model");
 const valid = require("../utils/validator");
 
 // Controller de pacientes (asi queda mas ordenado)
@@ -51,7 +51,7 @@ class Controller {
     const paciente = await pacientes.buscarId(id);
 
     if (!paciente) {
-      throw { 
+      throw {
         status: 404,
         error: "Paciente no encontrado",
         detalle: `No existe paciente con ID que empiece por ${id}`,
@@ -59,11 +59,6 @@ class Controller {
     }
 
     return paciente;
-  }
-
-  static async ultimosveinte() {
-    const ultimos = await pacientes.ultimosveinte();
-    return ultimos;
   }
 
   static async eliminarPaciente(cedula) {
@@ -97,7 +92,15 @@ class Controller {
       };
     }
 
-    const obligatorios = ["cedula", "nombre", "apellido", "fechaNacimiento", "sexo", "telefono", "direccion"];
+    const obligatorios = [
+      "cedula",
+      "nombre",
+      "apellido",
+      "fecha_nacimiento",
+      "sexo",
+      "telefono",
+      "direccion",
+    ];
     const faltantes = obligatorios.filter((campo) => !data[campo]);
 
     if (faltantes.length > 0) {
@@ -115,7 +118,7 @@ class Controller {
         detalle: "Formato: V-XXXXXXXX (6-8 dígitos)",
       };
     }
-    
+
     if (!valid.telefono(data.telefono)) {
       throw {
         status: 400,
@@ -133,7 +136,7 @@ class Controller {
       };
     }
 
-    if (!valid.fecha(data.fechaNacimiento)) {
+    if (!valid.fecha(data.fecha_nacimiento)) {
       throw {
         status: 400,
         error: "Fecha inválida",
@@ -204,8 +207,8 @@ class Controller {
     }
 
     if (
-      nuevosDatos.fechaNacimiento &&
-      !valid.fecha(nuevosDatos.fechaNacimiento)
+      nuevosDatos.fecha_nacimiento &&
+      !valid.fecha(nuevosDatos.fecha_nacimiento)
     ) {
       throw {
         status: 400,

@@ -2,22 +2,6 @@ const util = require("util");
 const { v4: uuidv4 } = require("uuid");
 const db = require("../connections/connection");
 
-function clear(dbRow) {
-  if (!dbRow) return null;
-  return {
-    id: dbRow.id_paciente,
-    cedula: dbRow.cedula_paciente,
-    nombre: dbRow.nombre_paciente,
-    apellido: dbRow.apellido_paciente,
-    sexo: dbRow.sexo_paciente,
-    fechaNacimiento: dbRow.fecha_nacimiento,
-    telefono: dbRow.telefono_paciente,
-    email: dbRow.email_paciente,
-    direccion: dbRow.direccion_paciente,
-    fechaRegistro: dbRow.fecha_registro, 
-  };
-}
-
 // promisificar para poder trabjar con asyn funcions
 const query = util.promisify(db.query).bind(db);
 
@@ -27,7 +11,7 @@ class Pacientes {
     try {
       const sql = "SELECT * FROM pacientes";
       const rows = await query(sql);
-      return rows.map(clear) //regresa un duplicado legible
+      return rows;
     } catch (error) {
       throw new Error(`Error al obtener pacientes: ${error.message}`);
     }
@@ -38,7 +22,7 @@ class Pacientes {
       const sql = "SELECT * FROM pacientes WHERE cedula_paciente = ?";
       const rows = await query(sql, [cedulaValor]);
       if (rows.length === 0) return null;
-      return clear(rows[0]);
+      return rows[0];
     } catch (error) {
       throw new Error(`Error al buscar paciente por cédula: ${error.message}`);
     }
@@ -54,7 +38,7 @@ class Pacientes {
         nombre_paciente: pacientesData.nombre,
         apellido_paciente: pacientesData.apellido,
         sexo_paciente: pacientesData.sexo,
-        fecha_nacimiento: pacientesData.fechaNacimiento,
+        fecha_nacimiento: pacientesData.fecha_nacimiento,
         telefono_paciente: pacientesData.telefono || "",
         email_paciente: pacientesData.email || "",
         direccion_paciente: pacientesData.direccion || null,
@@ -63,7 +47,7 @@ class Pacientes {
       const sql = "INSERT INTO pacientes SET ?";
       await query(sql, nuevoPacienteDB);
 
-      return clear(nuevoPacienteDB); // da el paciente creado en forma de modelo
+      return nuevoPacienteDB; // da el paciente creado en forma de modelo
     } catch (error) {
       throw new Error(`Error al crear paciente: ${error.message}`);
     }
@@ -80,8 +64,8 @@ class Pacientes {
         camposActualizados.apellido_paciente = pacientesData.apellido;
       if (pacientesData.sexo !== undefined)
         camposActualizados.sexo_paciente = pacientesData.sexo;
-      if (pacientesData.fechaNacimiento !== undefined)
-        camposActualizados.fecha_nacimiento = pacientesData.fechaNacimiento;
+      if (pacientesData.fecha_nacimiento !== undefined)
+        camposActualizados.fecha_nacimiento = pacientesData.fecha_nacimiento;
       if (pacientesData.telefono !== undefined)
         camposActualizados.telefono_paciente = pacientesData.telefono;
       if (pacientesData.email !== undefined)
@@ -119,24 +103,11 @@ class Pacientes {
       const sql = "SELECT * FROM pacientes WHERE id_paciente LIKE ?";
       const rows = await query(sql, [`${idEnv}%`]);
       if (rows.length === 0) return null;
-      return clear(rows[0]);
+      return rows[0];
     } catch (error) {
       throw new Error(`Error al buscar paciente por ID: ${error.message}`);
     }
   } 
-
-  /*
-  static async ultimosveinte() {
-    try {
-      const sql =
-        "SELECT * FROM pacientes ORDER BY fecha_registro DESC LIMIT 20";
-      const rows = await query(sql);
-      return rows.map(clear);
-    } catch (error) {
-      throw new Error(`Error al obtener últimos pacientes: ${error.message}`);
-    }
-  }
-  */
 }
 
 
