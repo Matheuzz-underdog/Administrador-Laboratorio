@@ -40,7 +40,6 @@ class Empleados {
       actividad_empleado: datos.actividad,
       datos_profesionales: datosFormateados,
     };
-
     return new Promise((resolve, reject) => {
       db.query(
         "INSERT INTO empleados SET ?",
