@@ -93,7 +93,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-//eliminar unicamente dun detaller
+//eliminar unicamente un detalle
 router.delete("/detalle/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -111,7 +111,56 @@ router.delete("/detalle/:id", async (req, res) => {
       });
     }
     res.status(500).json({
-      error: "Ocurrio un error al eliminar la orden",
+      error: "Ocurrio un error al eliminar el detalle de la orden",
+      detalle: err.message,
+    });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const datos = req.body;
+
+    const modificar = await serviciosOrden.modificarOrden(id, datos);
+
+    res.status(200).json({
+      message: "Orden modificada existosamente",
+      data: modificar,
+    });
+  } catch (err) {
+    if (err.status) {
+      return res.status(err.status).json({
+        error: err.error,
+        detalle: err.detalle,
+      });
+    }
+    res.status(500).json({
+      error: "Ocurrio un error al eliminar el detalle de la orden",
+      detalle: err.message,
+    });
+  }
+});
+
+router.put("/facturar/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const estado = req.body.estado;
+    const cambiar = await serviciosOrden.cambiarEstado(id, estado);
+
+    res.status(200).json({
+      message: "Se cambió el estado de la orden",
+      data: cambiar,
+    });
+  } catch (err) {
+    if (err.status) {
+      return res.status(err.status).json({
+        error: err.error,
+        detalle: err.detalle,
+      });
+    }
+    res.status(500).json({
+      error: "Ocurrio un error al cambiar el estado de la orden",
       detalle: err.message,
     });
   }

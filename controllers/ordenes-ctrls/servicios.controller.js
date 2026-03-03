@@ -62,29 +62,10 @@ class Controller {
       };
     }
 
-    const existePaciente = await pacientesModel.buscarCedula(
-      datos.cedula_paciente,
+    this.comprobarExistencia(datos.cedula_paciente, datos.cedula_empleado);
+    const orden_detalles = await detallesControl.formatear(
+      datos.detalles_orden,
     );
-    const existeEmpleado = await empleadosModel.buscarCedula(
-      datos.cedula_empleado,
-    );
-
-    if (!existePaciente) {
-      throw {
-        status: 404,
-        error: `No existe un paciente con la cedula ${datos.cedula_paciente}`,
-        detalle:
-          "Debe ingresar la información del paciente en la pestaña de registro de Nuevos Pacientes",
-      };
-    }
-    if (!existeEmpleado) {
-      throw {
-        status: 404,
-        error: `No existe un empleado con la cedula ${datos.cedula_empleado}`,
-        detalle: "Compruebe que la cedula ingresada es correcta",
-      };
-    }
-    const orden_detalles = await detallesControl.formatear(datos.detalles_orden);
     if (!orden_detalles) {
       throw {
         status: 404,
@@ -99,7 +80,6 @@ class Controller {
       },
       orden_detalles,
     };
-    console.log("SOY DATOS FINALES", datosFinales);
     const crear = await ordenesModel.crear(datosFinales);
 
     return crear;
@@ -133,6 +113,100 @@ class Controller {
 
     const eliminado = await ordenesModel.eliminar(id);
     return eliminado;
+  }
+
+  static async modificarOrden(id, datos) {
+    if (!datos) {
+      throw {
+        status: 400,
+        error: "Datos requeridos",
+        detalle: "Los datos son muy importantes. ¿Por qué no envías nada?",
+      };
+    }
+    const transform = Number(id);
+    if (!transform) {
+      throw {
+        status: 400,
+        error: `Envíe un valor numérico`,
+        detalle: "Las ordenes tienen IDs numéricos",
+      };
+    }
+    const cedulaAsignada = await ordenesModel.buscarId(id);
+    const cedulaExiste = cedulaAsignada[0].cedula_paciente;
+
+    if (cedulaExiste === datos.cedula_paciente) {
+      throw {
+        status: 400,
+        error: `Cédula ya registrada`,
+        detalle: `Una de las cedulas enviadas ya está registrada`,
+      };
+    }
+    this.comprobarExistenciaPorCedula(
+      datos.cedula_paciente,
+      datos.cedula_empleado,
+    );
+
+    const nuevosDatos = await ordenesModel.actualizar(id, datos);
+    return nuevosDatos;
+  }
+
+  // etc
+  static async comprobarExistenciaPorCedula(cedulaPaciente, cedulaEmpleado) {
+    if (cedulaPaciente) {
+      const existePaciente = await pacientesModel.buscarCedula(cedulaPaciente);
+      if (!existePaciente) {
+        throw {
+          status: 404,
+          error: `No existe un paciente con la cedula ${cedulaPaciente}`,
+          detalle:
+            "Debe ingresar la información del paciente en la pestaña de registro de Nuevos Pacientes",
+        };
+      }
+    }
+    if (cedulaEmpleado) {
+      const existeEmpleado = await empleadosModel.buscarCedula(cedulaEmpleado);
+      if (!existeEmpleado) {
+        throw {
+          status: 404,
+          error: `No existe un empleado con la cedula ${datos.cedula_empleado}`,
+          detalle: "Compruebe que la cedula ingresada es correcta",
+        };
+      }
+    }
+    return true;
+  }
+
+  static async cambiarEstado(id, estado) {
+    if (!estado || !id) {
+      throw {
+        status: 400,
+        error: "Datos requeridos",
+        detalle: "Los datos son muy importantes. ¿Por qué no envías nada?",
+      };
+    }
+
+    const posible = ["Pendiente", "Pagado"];
+    const esValido = posible.includes(estado)
+
+    if (!esValido) {
+      throw {
+        status: 400,
+        error: "El valor ingresado es inválido",
+        detalle: "Solo hay dos posibles estados (Pendiente/Pagado)",
+      };
+    }
+
+    const comprobarEstado = await ordenesModel.buscarId(id);
+    if (comprobarEstado[0].estado_pago === estado) {
+      throw {
+        status: 400,
+        error: "La orden a se encuentra en ese estado",
+        detalle: `Esa orden ya se encuentra en el estado ${estado}`,
+      }
+    }
+
+    const cambiar = await ordenesModel.cambiar(id, estado);
+    return cambiar;
   }
 }
 /*
