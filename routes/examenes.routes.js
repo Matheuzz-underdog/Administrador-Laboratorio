@@ -16,19 +16,8 @@ router.get("/", async (req, res) => {
     }
 
     const datos = await control.mostrarTodos();
+    res.render("examenes", { examenes: datos });
 
-    if (datos.length === 0) {
-      return res.status(200).json({
-        message: "Actualmente no hay datos de exámenes guardados",
-        data: [],
-        total: 0,
-      });
-    }
-    res.status(200).json({
-      message: `Datos encontrados`,
-      cantidad: datos.length,
-      data: datos,
-    });
   } catch (err) {
     if (err.status) {
       return res.status(err.status).json({

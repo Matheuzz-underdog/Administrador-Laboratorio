@@ -57,7 +57,7 @@ class Examenes {
           if (result.length === 0) resolve(null);
           resolve(result);
         },
-      );git 
+      );
     });
   }
 
