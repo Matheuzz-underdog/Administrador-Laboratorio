@@ -34,7 +34,7 @@ class Controller {
     if (!valid.longitud(dataEnv.abreviatura)) {
       throw {
         status: 400,
-        error: "La abreviatura debe poseer 3 letras (mayúsculas)",
+        error: "La abreviatura debe poseer de 3 a 4 letras (mayúsculas)",
         detalle: "Debería verse algo como: GLU (glucosa)",
       };
     }
