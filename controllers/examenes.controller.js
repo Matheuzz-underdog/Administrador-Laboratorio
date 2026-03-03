@@ -4,12 +4,12 @@ const valid = require("../utils/validator")
 class Controller {
   static async mostrarTodos() {
     const listaExamenes = await examenes.listaTotal();
-    return listaExamenes;
+    return listaExamenes.reverse();
   }
 
   // busca examen por abrev
   static async buscarExamenDeseado(abbrevEnv) {
-    if (!abbrevEnv || !valid.longitud(abbrevEnv)) {
+    if (!abbrevEnv || !valid.longitud(abbrevEnv.trim())) {
       throw {
         status: 400,
         error: "Abreviatura requerida",
@@ -17,7 +17,7 @@ class Controller {
       };
     }
 
-    const examen = await examenes.buscarExamen(abbrevEnv);
+    const examen = await examenes.buscarExamen(abbrevEnv.trim().toUpperCase());
     if (!examen) {
       throw {
         status: 404,
@@ -63,8 +63,48 @@ class Controller {
         detalle: `Faltan: ${faltantes.join(", ")}`,
       };
     }
-    const existeNombre = await examenes.existeNombre(dataEnv.nombre);
 
+    const camposTexto = ["nombre", "abreviatura", "area", "tipoMuestra"];
+    for (let campo of camposTexto) {
+      if (!dataEnv[campo] || typeof dataEnv[campo] !== 'string' || dataEnv[campo].trim() === '') {
+        throw {
+          status: 400,
+          error: `El campo ${campo} no puede estar vacío`,
+          detalle: `Ingrese un valor válido para ${campo}.`,
+        };
+      }
+    }
+
+    if (typeof dataEnv.precio !== 'number' || dataEnv.precio <= 0) {
+      throw {
+        status: 400,
+        error: "Precio inválido",
+        detalle: "El precio debe ser un número mayor a cero.",
+      };
+    }
+
+    
+    if (!Array.isArray(dataEnv.parametros)) {
+      throw {
+        status: 400,
+        error: "Parámetros inválidos",
+        detalle: "El campo 'parametros' debe ser una lista.",
+      };
+    }
+
+    
+    for (let i = 0; i < dataEnv.parametros.length; i++) {
+      const p = dataEnv.parametros[i];
+      if (!p.nombre || typeof p.nombre !== 'string' || p.nombre.trim() === '') {
+        throw {
+          status: 400,
+          error: "Parámetro sin nombre",
+          detalle: `El parámetro en la posición ${i + 1} no tiene un nombre válido.`,
+        };
+      }
+    }
+
+    const existeNombre = await examenes.existeNombre(dataEnv.nombre);
     const existeAbreviatura = await examenes.buscarExamen(dataEnv.abreviatura);
     if (existeAbreviatura || existeNombre) {
       throw {

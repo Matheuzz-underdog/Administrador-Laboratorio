@@ -1,14 +1,331 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css" />
-    <title>Lista de Exámenes</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Gestion de Examenes</title>
 </head>
 <body>
-    <%- include('partials/_header') %>
-    
-    <%- include('partials/_footer') %>
+  <%- include('partials/_header') %>
+
+  <h1>Gestion de Examenes</h1>
+  <hr>
+
+  <div id="modal-fondo" onclick="cerrarModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.45);">
+    <div onclick="event.stopPropagation()" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border:2px solid black; padding:30px 40px; min-width:280px; max-width:420px; text-align:center;">
+      <p id="texto-modal" style="font-size:1.1em; margin:0 0 18px 0;"></p>
+      <small>click para cerrar</small>
+    </div>
+  </div>
+
+  <h2>Lista de Examenes</h2>
+
+  <% if (examenes && examenes.length > 0) { %>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Abreviatura</th>
+          <th>Area</th>
+          <th>Precio</th>
+          <th>Tipo de Muestra</th>
+          <th>Parametros</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i = 0; i < examenes.length; i++) { %>
+          <% var e = examenes[i]; %>
+          <% var params = []; %>
+          <% try { params = JSON.parse(e.parametros); } catch(ex) { params = []; } %>
+          <% if (!Array.isArray(params)) { params = []; } %>
+          <tr>
+            <td><%= e.id_examen %></td>
+            <td><%= e.nombre_examen %></td>
+            <td><%= e.abreviatura_examen %></td>
+            <td><%= e.area_examen %></td>
+            <td><%= e.precio_examen %></td>
+            <td><%= e.tipo_muestra %></td>
+            <td>
+              <% if (params.length > 0) { %>
+                <ul style="margin:0; padding-left:18px;">
+                  <% for (var j = 0; j < params.length; j++) { %>
+                    <li>
+                      <strong><%= params[j].nombre %></strong>
+                      <% if (params[j].unidad) { %> (<%= params[j].unidad %>)<% } %>
+                      <% if (params[j].referencia) { %> &mdash; Ref: <%= params[j].referencia %><% } %>
+                    </li>
+                  <% } %>
+                </ul>
+              <% } else { %>
+                <em>Sin parametros</em>
+              <% } %>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No hay examenes registrados.</p>
+  <% } %>
+
+  <hr>
+
+  <h2>Registrar Examen</h2>
+
+  <form id="form-crear">
+    <table>
+      <tr>
+        <td><label for="c-nombre">Nombre:</label></td>
+        <td><input type="text" id="c-nombre" placeholder="Hemograma completo"></td>
+      </tr>
+      <tr>
+        <td><label for="c-abreviatura">Abreviatura:</label></td>
+        <td><input type="text" id="c-abreviatura" placeholder="HEM" maxlength="3"></td>
+      </tr>
+      <tr>
+        <td><label for="c-area">Area:</label></td>
+        <td><input type="text" id="c-area" placeholder="Hematologia, Quimica, etc."></td>
+      </tr>
+      <tr>
+        <td><label for="c-precio">Precio (Bs):</label></td>
+        <td><input type="number" id="c-precio" placeholder="0.00" step="0.01" min="0"></td>
+      </tr>
+      <tr>
+        <td><label for="c-muestra">Tipo de Muestra:</label></td>
+        <td><input type="text" id="c-muestra" placeholder="Sangre, Orina, etc."></td>
+      </tr>
+    </table>
+
+    <br>
+
+    <fieldset>
+      <legend>Parametros &nbsp;<button type="button" id="btn-agregar-param" title="Agregar parametro (Tecla: +)">+</button></legend>
+      <div id="contenedor-parametros"></div>
+      <small>Nombre es obligatorio. Unidad y Referencia son opcionales.</small>
+    </fieldset>
+
+    <br>
+    <button type="button" onclick="crearExamen()">Registrar</button>
+  </form>
+
+  <hr>
+
+  <h2>Buscar Examen</h2>
+
+  <label for="b-abreviatura">Abreviatura:</label>
+  <input type="text" id="b-abreviatura" placeholder="HEM, GLU, etc.">
+  <button type="button" onclick="buscarExamen()">Buscar</button>
+
+  <div id="resultado-busqueda"></div>
+
+  <hr>
+
+  <h2>Eliminar Examen</h2>
+
+  <label for="e-abreviatura">Abreviatura:</label>
+  <input type="text" id="e-abreviatura" placeholder="HEM, GLU, etc.">
+  <button type="button" onclick="eliminarExamen()">Eliminar</button>
+
+  <hr>
+
+  <script>
+  //  >:3 Utilidades generales 
+
+  let recargarAlCerrar = false;
+
+  function mostrarMensaje(texto, exito, recargar) {
+    recargarAlCerrar = recargar || false;
+    const p = document.getElementById('texto-modal');
+    p.textContent = texto;
+    p.style.color = exito ? 'green' : 'red';
+    document.getElementById('modal-fondo').style.display = 'block';
+  }
+
+  function cerrarModal() {
+    document.getElementById('modal-fondo').style.display = 'none';
+    if (recargarAlCerrar) location.reload();
+  }
+
+  function parsearParametros(raw) {
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'string') {
+      try {
+        const p = JSON.parse(raw);
+        return Array.isArray(p) ? p : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  }
+
+  function renderizarParametros(raw) {
+    const params = parsearParametros(raw);
+    if (!params.length) return '<em>Sin parametros</em>';
+    let html = '<ul style="margin:0; padding-left:18px;">';
+    for (let i = 0; i < params.length; i++) {
+      const p = params[i];
+      html += '<li><strong>' + p.nombre + '</strong>';
+      if (p.unidad) html += ' (' + p.unidad + ')';
+      if (p.referencia) html += ' &mdash; Ref: ' + p.referencia;
+      html += '</li>';
+    }
+    return html + '</ul>';
+  }
+
+  //  Parametros dinamicos en el formulario 
+
+  let contadorParam = 0;
+
+  function agregarParametro() {
+    contadorParam++;
+    const n = contadorParam;
+    const div = document.createElement('div');
+    div.id = 'param-' + n;
+    div.style.marginBottom = '4px';
+    div.innerHTML =
+      '<strong>#' + n + '</strong> ' +
+      '<input type="text" id="p-nombre-' + n + '" placeholder="Nombre *" style="width:140px;"> ' +
+      '<input type="text" id="p-unidad-' + n + '" placeholder="Unidad (ej: mg/dL)" style="width:130px;"> ' +
+      '<input type="text" id="p-ref-' + n + '" placeholder="Referencia (ej: 70-110)" style="width:130px;"> ' +
+      '<button type="button" onclick="quitarParametro(' + n + ')">X</button>';
+    document.getElementById('contenedor-parametros').appendChild(div);
+    document.getElementById('p-nombre-' + n).focus();
+  }
+
+  function quitarParametro(n) {
+    const fila = document.getElementById('param-' + n);
+    if (fila) fila.remove();
+  }
+
+  function obtenerParametros() {
+    const filas = document.getElementById('contenedor-parametros').querySelectorAll('[id^="param-"]');
+    const lista = [];
+    for (let i = 0; i < filas.length; i++) {
+      const n = filas[i].id.replace('param-', '');
+      const nombre = document.getElementById('p-nombre-' + n).value.trim();
+      if (!nombre) continue;
+      const param = { nombre: nombre };
+      const unidad = document.getElementById('p-unidad-' + n).value.trim();
+      const ref = document.getElementById('p-ref-' + n).value.trim();
+      if (unidad) param.unidad = unidad;
+      if (ref) param.referencia = ref;
+      lista.push(param);
+    }
+    return lista;
+  }
+
+  document.getElementById('btn-agregar-param').addEventListener('click', agregarParametro);
+
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key !== '+') return;
+    const tag = document.activeElement.tagName;
+    const dentroFieldset = document.querySelector('fieldset').contains(document.activeElement);
+    if (tag !== 'INPUT' || dentroFieldset) {
+      ev.preventDefault();
+      agregarParametro();
+    }
+  });
+
+// ° CRUD
+
+  async function crearExamen() {
+    const datos = {
+      nombre: document.getElementById('c-nombre').value.trim(),
+      abreviatura: document.getElementById('c-abreviatura').value.trim().toUpperCase(),
+      area: document.getElementById('c-area').value.trim(),
+      precio: parseFloat(document.getElementById('c-precio').value),
+      tipoMuestra: document.getElementById('c-muestra').value.trim(),
+      parametros: obtenerParametros()
+    };
+
+    try {
+      const res = await fetch('/exam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+      const json = await res.json();
+      if (res.ok) {
+        mostrarMensaje('Examen registrado correctamente.', true, true);
+        document.getElementById('form-crear').reset();
+        document.getElementById('contenedor-parametros').innerHTML = '';
+        contadorParam = 0;
+      } else {
+        mostrarMensaje((json.detalle || json.error), false, false);
+      }
+    } catch (err) {
+      mostrarMensaje('Error de conexion al registrar.', false, false);
+    }
+  }
+
+  async function buscarExamen() {
+    const abreviatura = document.getElementById('b-abreviatura').value.trim().toUpperCase();
+    const contenedor = document.getElementById('resultado-busqueda');
+
+    if (!abreviatura) {
+      contenedor.innerHTML = '<p style="color:red;">Ingrese una abreviatura.</p>';
+      return;
+    }
+
+    try {
+      const res = await fetch('/exam?abreviatura=' + encodeURIComponent(abreviatura));
+      const json = await res.json();
+
+      if (res.ok && json.data) {
+        const lista = Array.isArray(json.data) ? json.data : [json.data];
+        let filas = '';
+        for (let i = 0; i < lista.length; i++) {
+          const e = lista[i];
+          filas +=
+            '<tr>' +
+            '<td>' + e.id_examen + '</td>' +
+            '<td>' + e.nombre_examen + '</td>' +
+            '<td>' + e.abreviatura_examen + '</td>' +
+            '<td>' + e.area_examen + '</td>' +
+            '<td>' + e.precio_examen + '</td>' +
+            '<td>' + e.tipo_muestra + '</td>' +
+            '<td>' + renderizarParametros(e.parametros) + '</td>' +
+            '</tr>';
+        }
+        contenedor.innerHTML =
+          '<table border="1" cellpadding="6" cellspacing="0">' +
+          '<tr><th>ID</th><th>Nombre</th><th>Abreviatura</th><th>Area</th><th>Precio</th><th>Tipo Muestra</th><th>Parametros</th></tr>' +
+          filas + '</table>';
+      } else {
+        contenedor.innerHTML = '<p style="color:red;">' + (json.detalle || json.error || 'No encontrado.') + '</p>';
+      }
+    } catch (err) {
+      contenedor.innerHTML = '<p style="color:red;">Error de conexion al buscar.</p>';
+    }
+  }
+
+  async function eliminarExamen() {
+    const abreviatura = document.getElementById('e-abreviatura').value.trim().toUpperCase();
+
+    if (!abreviatura) {
+      mostrarMensaje('Ingrese la abreviatura del examen a eliminar.', false, false);
+      return;
+    }
+
+    if (!confirm('Seguro que desea eliminar el examen "' + abreviatura + '"?')) return;
+
+    try {
+      const res = await fetch('/exam/' + encodeURIComponent(abreviatura), { method: 'DELETE' });
+      const json = await res.json();
+      if (res.ok) {
+        mostrarMensaje('Examen eliminado correctamente.', true, true);
+      } else {
+        mostrarMensaje((json.detalle || json.error), false, false);
+      }
+    } catch (err) {
+      mostrarMensaje('Error de conexion al eliminar.', false, false);
+    }
+  }
+</script>
+
 </body>
 </html>
