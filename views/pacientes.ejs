@@ -287,14 +287,14 @@
             '<table border="1" cellpadding="6" cellspacing="0">' +
             '<tr><th>Cedula</th><th>Nombre</th><th>Apellido</th><th>Sexo</th><th>Fecha Nacimiento</th><th>Telefono</th><th>Email</th><th>Direccion</th></tr>' +
             '<tr>' +
-              '<td>' + (p.cedula    || '-') + '</td>' +
-              '<td>' + (p.nombre    || '-') + '</td>' +
-              '<td>' + (p.apellido  || '-') + '</td>' +
-              '<td>' + (p.sexo      || '-') + '</td>' +
+              '<td>' + (p.cedula_paciente    || '-') + '</td>' +
+              '<td>' + (p.nombre_paciente    || '-') + '</td>' +
+              '<td>' + (p.apellido_paciente  || '-') + '</td>' +
+              '<td>' + (p.sexo_paciente      || '-') + '</td>' +
               '<td>' + (p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-VE') : '-') + '</td>' +
-              '<td>' + (p.telefono  || '-') + '</td>' +
-              '<td>' + (p.email     || '-') + '</td>' +
-              '<td>' + (p.direccion || '-') + '</td>' +
+              '<td>' + (p.telefono_paciente  || '-') + '</td>' +
+              '<td>' + (p.email_paciente     || '-') + '</td>' +
+              '<td>' + (p.direccion_paciente || '-') + '</td>' +
             '</tr>' +
             '</table>';
         } else {
@@ -334,14 +334,14 @@
             '<table border="1" cellpadding="6" cellspacing="0">' +
             '<tr><th>Cedula</th><th>Nombre</th><th>Apellido</th><th>Sexo</th><th>Fecha Nacimiento</th><th>Telefono</th><th>Email</th><th>Direccion</th></tr>' +
             '<tr>' +
-              '<td>' + (p.cedula    || '-') + '</td>' +
-              '<td>' + (p.nombre    || '-') + '</td>' +
-              '<td>' + (p.apellido  || '-') + '</td>' +
-              '<td>' + (p.sexo      || '-') + '</td>' +
+              '<td>' + (p.cedula_paciente    || '-') + '</td>' +
+              '<td>' + (p.nombre_paciente    || '-') + '</td>' +
+              '<td>' + (p.apellido_paciente  || '-') + '</td>' +
+              '<td>' + (p.sexo_paciente      || '-') + '</td>' +
               '<td>' + (p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-VE') : '-') + '</td>' +
-              '<td>' + (p.telefono  || '-') + '</td>' +
-              '<td>' + (p.email     || '-') + '</td>' +
-              '<td>' + (p.direccion || '-') + '</td>' +
+              '<td>' + (p.telefono_paciente  || '-') + '</td>' +
+              '<td>' + (p.email_paciente     || '-') + '</td>' +
+              '<td>' + (p.direccion_paciente || '-') + '</td>' +
             '</tr>' +
             '</table>';
         } else {
@@ -417,11 +417,9 @@
       if (!confirmar) return;
 
       try {
-        const respuesta = await fetch('/pacientes', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cedula })
-        });
+        const respuesta = await fetch('/pacientes/' + encodeURIComponent(cedula), {
+        method: 'DELETE'
+      });
 
         const json = await respuesta.json();
 

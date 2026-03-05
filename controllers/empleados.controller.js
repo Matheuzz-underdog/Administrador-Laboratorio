@@ -6,7 +6,7 @@ const valid = require("../utils/validator.js");
 class Controller {
   //HAce lo que dice el nombre
   static async verTodos() {
-    const todos = Empleados.todos();
+    const todos = await Empleados.todos();
     return todos;
   }
 

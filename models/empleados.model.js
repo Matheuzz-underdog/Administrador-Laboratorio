@@ -70,7 +70,7 @@ class Empleados {
       datosNuevos.email_empleado = empleadoDatos.email;
     if (empleadoDatos.datos_profesionales !== undefined) {
       datosNuevos.datos_profesionales = this.formatearDatosProfesionales(
-        empleadoDatos.actividad_empleado,
+        empleadoDatos.datos_profesionales,
       );
     }
 
@@ -112,7 +112,7 @@ class Empleados {
 
   // Extras
   static formatearDatosProfesionales(datos) {
-    if (Object.keys(datos).length !== 0) {
+    if (datos && Object.keys(datos).length !== 0) {
       return JSON.stringify(datos.datos_profesionales);
     }
     return null;
