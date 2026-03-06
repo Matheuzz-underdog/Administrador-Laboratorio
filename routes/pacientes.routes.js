@@ -75,6 +75,28 @@ router.post("/", async (req, res) => {
   }
 });
 
+// buscar por cedula
+router.post("/buscar", async (req, res) => {
+  try {
+    const paciente = await control.buscarPorCedula(req.body.cedula);
+    res.status(200).json({ message: "Paciente encontrado", data: paciente });
+  } catch (err) {
+    if (err.status) return res.status(err.status).json({ error: err.error, detalle: err.detalle });
+    res.status(500).json({ error: "Error al buscar paciente", detalle: err.message });
+    if (err.status) {
+      return res.status(err.status).json({
+        error: err.error,
+        detalle: err.detalle,
+      });
+    }
+
+    res.status(500).json({
+      error: "Error al buscar paciente",
+      detalle: err.message,
+    });
+  }
+});
+
 // buscar por id
 router.get("/:id", async (req, res) => {
   try {
