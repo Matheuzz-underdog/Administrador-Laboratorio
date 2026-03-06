@@ -62,7 +62,7 @@ class Controller {
       };
     }
 
-    this.comprobarExistencia(datos.cedula_paciente, datos.cedula_empleado);
+    await this.comprobarExistenciaPorCedula(datos.cedula_paciente, datos.cedula_empleado);
     const orden_detalles = await detallesControl.formatear(
       datos.detalles_orden,
     );
@@ -123,6 +123,18 @@ class Controller {
         detalle: "Los datos son muy importantes. ¿Por qué no envías nada?",
       };
     }
+
+    const filtro = ["cedula_paciente", "cedula_empleado"];
+    const esValido = Object.keys(datos).every(key => filtro.includes(key));
+
+    if (!esValido) {
+      throw {
+        status: 400,
+        error: "Datos inválidos",
+        detalle: "Datos invalidos. Parametros no permitidos",
+      };
+    }
+
     const transform = Number(id);
     if (!transform) {
       throw {
@@ -141,7 +153,8 @@ class Controller {
         detalle: `Una de las cedulas enviadas ya está registrada`,
       };
     }
-    this.comprobarExistenciaPorCedula(
+    
+    await this.comprobarExistenciaPorCedula(
       datos.cedula_paciente,
       datos.cedula_empleado,
     );
@@ -153,8 +166,9 @@ class Controller {
   // etc
   static async comprobarExistenciaPorCedula(cedulaPaciente, cedulaEmpleado) {
     if (cedulaPaciente) {
+      console.log("HELLO")
       const existePaciente = await pacientesModel.buscarCedula(cedulaPaciente);
-      if (!existePaciente) {
+      if (!existePaciente || Object.keys(existePaciente).length === 0) {
         throw {
           status: 404,
           error: `No existe un paciente con la cedula ${cedulaPaciente}`,
@@ -165,10 +179,10 @@ class Controller {
     }
     if (cedulaEmpleado) {
       const existeEmpleado = await empleadosModel.buscarCedula(cedulaEmpleado);
-      if (!existeEmpleado) {
+      if (!existeEmpleado || Object.keys(existeEmpleado).length === 0) {
         throw {
           status: 404,
-          error: `No existe un empleado con la cedula ${datos.cedula_empleado}`,
+          error: `No existe un empleado con la cedula ${cedulaEmpleado}`,
           detalle: "Compruebe que la cedula ingresada es correcta",
         };
       }
