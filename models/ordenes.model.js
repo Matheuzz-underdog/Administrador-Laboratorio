@@ -101,9 +101,8 @@ class Ordenes {
     await db.query(
       "DELETE FROM ordenes_servicio WHERE id_orden = ?",
       [id],
-      (err, result) => {
-        if (err) reject(err);
-        resolve(result);
+      (err) => {
+        if (err) throw err;
       },
     );
     return `Se ha eliminado la orden con el ID #${id}`;

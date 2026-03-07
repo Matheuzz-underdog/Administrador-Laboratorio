@@ -136,7 +136,7 @@ router.put("/:id", async (req, res) => {
       });
     }
     res.status(500).json({
-      error: "Ocurrio un error al eliminar el detalle de la orden",
+      error: "Ocurrio un error al intentar modificar los detalles de la orden",
       detalle: err.message,
     });
   }
