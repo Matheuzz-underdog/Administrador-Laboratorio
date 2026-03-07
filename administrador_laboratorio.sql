@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-03-2026 a las 13:01:51
+-- Tiempo de generación: 07-03-2026 a las 20:37:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `administrador_laboratorio`
+-- Base de datos: `administrador-laboratorio`
 --
 
 -- --------------------------------------------------------
@@ -88,7 +88,7 @@ INSERT INTO `empleados` (`id_empleado`, `cedula_empleado`, `nombre_empleado`, `a
 ('a8ac6304-d56c-4d1f-a48c-23b9f6bc9408', 'V-11888999', 'Roberto', 'Sánchez', 'Gerente de Operaciones', '0212-3334455', 'r.sanchez@lab.com', 1, '{\"postgrado\":\"Gerencia de Salud\",\"certificacion\":\"ISO 9001:2015\"}'),
 ('c83cfb04-40cc-41bb-a615-b3a00bce1423', 'V-14222333', 'Ricardo', 'Torres', 'Mantenimiento y Equipos', '0414-2223344', 'r.torres@lab.com', 1, '{\"tecnico\":\"Electromedicina\",\"especialidad\":\"Calibración de Equipos\"}'),
 ('c975a4a1-5e62-45f3-b2d8-d01265eb532c', 'V-21444555', 'Ana', 'Sol', 'Especialista en Endocrinología', '0412-7773344', 'b.luna@lab.com', 1, NULL),
-('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-19555666', 'Sofía', 'López', 'Bioanalista de Guardia', '0424-7778899', 's.lopez@lab.com', 1, '{\"especialidad\":\"Serología e Inmunología\",\"colegiado\":\"SB-1102\"}');
+('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-32084066', 'Mateo', 'Cuevas', 'Bioanalista de Guardia', '0424-7778899', 'm.lopez@lab.com', 1, '{\"especialidad\":\"nada\",\"colegiado\":\"SB-1102\"}');
 
 -- --------------------------------------------------------
 
@@ -214,12 +214,20 @@ CREATE TABLE `resultado_examenes` (
 --
 
 CREATE TABLE `usuarios` (
-  `id_usuario` char(30) NOT NULL,
-  `username` varchar(30) NOT NULL,
+  `id_usuario` char(36) NOT NULL,
+  `cedula` varchar(15) NOT NULL,
   `password` varchar(255) NOT NULL,
   `nivel_cuenta` enum('lector','editor','admin') NOT NULL DEFAULT 'lector',
-  `id_empleado` char(36) NOT NULL
+  `id_empleado` char(36) NOT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `cedula`, `password`, `nivel_cuenta`, `id_empleado`, `fecha_registro`) VALUES
+('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-32084066', '$2b$10$tRDod6swdl1PS0b61YUg1O8Yr4M7rCPlZ.nosADPN1hTgNPlvoXF6', 'admin', 'd2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', '2026-03-07 17:20:52');
 
 --
 -- Índices para tablas volcadas
@@ -277,7 +285,7 @@ ALTER TABLE `resultado_examenes`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `uq_username` (`username`),
+  ADD UNIQUE KEY `uq_username` (`cedula`),
   ADD KEY `fk_usuarios_empleado` (`id_empleado`);
 
 --
