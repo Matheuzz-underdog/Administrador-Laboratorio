@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../connections/connection.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const TokenExpiredError = require('jsonwebtoken/lib/TokenExpiredError.js');
 const saltRounds = 10;
 
 class Usuarios {
@@ -79,7 +80,8 @@ class Usuarios {
                                 nivel: results[0].nivel_cuenta,
                                 id_empleado: results[0].id_empleado
                             },
-                            process.env.JWT_SECRET
+                            process.env.JWT_SECRET,
+                            { expiresIn: '8h' }
                         );
                         resolve(token);
                     } else {

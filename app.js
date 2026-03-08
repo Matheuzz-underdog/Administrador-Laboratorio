@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const rateLimit = require("express-rate-limit");
 
 var indexRouter = require("./routes/index.routes");
 var pacientesRouter = require("./routes/pacientes.routes");
@@ -17,6 +18,16 @@ var app = express();
 
 const colors = require("colors");
 const pjson = require("./package.json");
+
+//limite de llamadas
+const limiter = rateLimit({
+    windowMs: 60 * 1000,   
+    max: 30,               
+    message: {
+        error: "Demasiadas peticiones",
+        detalle: "Ha excedido el límite de peticiones, intente en un momento"
+    }
+});
 
 process.argv[2] = "dev";
 
@@ -38,6 +49,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(limiter)
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
