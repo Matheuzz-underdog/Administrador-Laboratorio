@@ -26,7 +26,7 @@ class Empleados {
 
   static async crear(datos) {
     const datosFormateados = this.formatearDatosProfesionales(
-      datos.datos_profesionales,
+      datos,
     );
 
     const nuevoEmpleado = {
@@ -70,7 +70,7 @@ class Empleados {
       datosNuevos.email_empleado = empleadoDatos.email;
     if (empleadoDatos.datos_profesionales !== undefined) {
       datosNuevos.datos_profesionales = this.formatearDatosProfesionales(
-        empleadoDatos.datos_profesionales,
+        empleadoDatos,
       );
     }
 

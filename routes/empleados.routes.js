@@ -63,7 +63,7 @@ router.post("/", async (req, res) => {
     }
 
     res.status(500).json({
-      error: "Error en servidor al crear pacientes",
+      error: "Error en servidor al crear empleado",
       detalle: err.message,
     });
   }

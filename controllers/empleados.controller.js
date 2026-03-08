@@ -173,7 +173,7 @@ class Controller {
     }
 
     const existe = await Empleados.buscarCedula(cedula);
-    if (!existe) {
+    if (existe.length === 0) {
       throw {
         status: 404,
         error: "Empleado no encontrado",
