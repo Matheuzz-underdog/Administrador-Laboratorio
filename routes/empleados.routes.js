@@ -24,12 +24,7 @@ router.get("/", async (req, res) => {
         total: 0,
       });
     }
-
-    res.status(200).json({
-      message: `${datos.length} empleados encontrados`,
-      total: datos.length,
-      data: datos,
-    });
+    res.render('empleados', {empleados : datos.reverse(), form : 'get-form'});
   } catch (err) {
     if (err.status) {
       return res.status(err.status).json({

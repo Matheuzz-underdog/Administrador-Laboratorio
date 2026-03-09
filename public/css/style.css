@@ -7,13 +7,17 @@ body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   height: 100dvh;
   width: 100dvw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: #DCE2E8;
+  box-sizing: border-box;
 }
 
 header {
-  color: #fff;
+  color: #1D242C;
   width: 100dvw;
-  height: max-content;
-  background-color: #000;
+  height: 6.5vh;
+  background-color: #FAFAFA;
 }
 
 header h2 {
@@ -31,14 +35,15 @@ nav {
 nav > a {
   text-decoration: none;
   font-size: 0.9rem;
-  color: #fff;
-  padding: 2px 5px;
+  color: #1D242C;
+  padding: 2px 5px 5px 5px;
   margin: 5px;
 }
 
 nav > a:hover {
-  color: #000;
-  background-color: #fff;
+  color: #FAFAFA;
+  background-color: #5E90FD;
+  border-radius: 20px;
 }
 
 h1 {
@@ -92,4 +97,130 @@ footer {
   color: #ccc;
   text-align: center;
   font-size: 0.8rem;
+}
+
+/*estilos para empleados, se podrian intregar a los demas*/
+
+.center {
+  width: 100vw;
+  height: 90vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sideNavBar{
+  margin: 20px 30px;
+  width: 20vw;
+  height: 50%;
+  background: #FAFAFA;
+  box-shadow: 0 0 10px 2px #0003;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.sideNavBar > button {
+  width: 90%;
+  margin: 15px 8px;
+  border: none;
+  background-color: #ECF2F8;
+  font-size: 20px;
+  letter-spacing: 4px;
+  padding: 8px 5px 8px 5px;
+  border-radius: 20px;
+}
+
+.sideNavBar > button:hover {
+  background: #5E90FD;
+  color: #FAFAFA;
+}
+
+.form-container {
+  width: 80vw;
+  min-height: max-content;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20px;
+}
+
+#get-form > form, #delete-form > form{
+  margin: 20px 0;
+  width: 70vw;
+  min-height: max-content;
+  background: #FAFAFA;
+  border-radius: 30px;
+  padding: 18px;
+  box-shadow: 0 0 10px 2px #0003;
+  display: flex;
+}
+
+#post-form > form, #put-form > form{
+  margin: 20px 0;
+  width: 70vw;
+  min-height: max-content;
+  background: #FAFAFA;
+  border-radius: 30px;
+  padding: 18px;
+  box-shadow: 0 0 10px 2px #0003;
+  display: flex;
+  flex-direction: column;
+}
+
+#post-form > form > div, #put-form > form > div{
+  margin: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#get-form, #post-form, #put-form, #delete-form {
+  height: max-content;
+  width: 100%;
+  flex-direction: column;
+  display: none;
+  margin: 20px;
+}
+
+input {
+  margin: 12px ;
+  width: 50%;
+  padding: 5px;
+}
+
+label {
+  font-size: 20px;
+  letter-spacing: 1px;
+  margin: 10px 3%;
+}
+
+button {
+  margin: 6px 3%;
+  width: 10%;
+  height: 80%;
+}
+
+#result > p {
+  color: #F61509;
+  margin-top: 10%;
+  background: #CCD2D8;
+  padding: 200px;
+  border-radius: 30px;
+  font-size: 26px;
+}
+
+table {
+  border: 1px solid #CCD2D8;
+  border-collapse: collapse;
+  width: 90%;
+  margin: 20px 0 20px 5%;
+  background: #FAFAFA;
+  box-shadow: 0 0 10px 2px #0003;
+}
+
+td {
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
 }

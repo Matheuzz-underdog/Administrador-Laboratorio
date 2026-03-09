@@ -4,43 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css" />
-    <title>Lista de Empleados</title>
+    <title>Gestion de Empleados</title>
 </head>
 <body>
+    <!--codigo muy mejorable-->
     <%- include('partials/_header') %>
-    
-    <h1>Lista de Empleados</h1>
-    <div id="info">
-    
-    <table border="1" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Cédula</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Cargo</th>
-                <th>Teléfono</th>
-                <th>Email</th>
-                <th>Activo</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% empleados.forEach(function(empleado) { %>
-            <tr>
-                <td><%= empleado.cedula %></td>
-                <td><%= empleado.nombre %></td>
-                <td><%= empleado.apellido %></td>
-                <td><%= empleado.cargo %></td>
-                <td><%= empleado.telefono %></td>
-                <td><%= empleado.email %></td>
-                <td><%= empleado.activo ? 'Sí' : 'No' %></td>
-            </tr>
-            <% }); %>
-        </tbody>
-    </table>
-    <p>Total de empleados: <%= empleados.length %></p>
-    
+    <div class="center">
+        <div class="sideNavBar">
+            <button onclick="mostrarForm(0)">Mostrar Todos</button>
+            <button onclick="mostrarForm(1)">Buscar</button>
+            <button onclick="mostrarForm(2)">Registrar</button>
+            <button onclick="mostrarForm(3)">Actualizar</button>
+            <button onclick="mostrarForm(4)">Borrar</button>
+        </div>
+        <div class="form-container">
+            <div id="get-all">
+                <% if (form === 'get-form') { %>
+                    <% if (empleados && empleados.length > 0) { %>
+                        <table border="1" cellpadding="6" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Cedula</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Cargo</th>
+                                <th>Telefono</th>
+                                <th>Correo</th>
+                                <th>Actividad</th>
+                                <th>Datos Profesionales</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% empleados.forEach(function(e) { %>
+                                    <tr>
+                                        <td><%= e.cedula_empleado %></td>
+                                        <td><%= e.nombre_empleado %></td>
+                                        <td><%= e.apellido_empleado %></td>
+                                        <td><%= e.cargo_empleado || '-' %></td>
+                                        <td><%= e.telefono_empleado || '-' %></td>
+                                        <td><%= e.email_empleado || '-' %></td>
+                                        <td><%= e.actividad_empleado %></td>
+                                        <td><%= e.datos_profesionales || "Sin datos profesionales" %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                            </table>
+                    <% } else { %> 
+                        <p>No hay empleados en la base de datos</p>
+                    <% } %> 
+                <% } %> 
+            </div>
+            <div id="get-form" class="div-form">
+                <h2>Buscar Empleado</h2>
+                <form>
+                    <label for="cedula-get">Cedula del Empleado</label>
+                    <input type="text" placeholder="V-12345678" id="cedula-get">
+                    <button>Buscar</button>
+                </form>
+            </div>
+            <div id="post-form" class="div-form">
+                <h2>Registrar Empleado</h2>
+                <form>
+                    <div>
+                        <label for="">Cedula</label>
+                        <input type="text" placeholder="V-1234567">
+                    </div>
+                    <div>
+                        <label for="">Nombre</label>
+                        <input type="text" placeholder="Jhon">
+                    </div>
+                    <div>
+                        <label for="">Apellido</label>
+                        <input type="text" placeholder="Briceño">
+                    </div>
+                    <div>
+                        <label for="">Cargo</label>
+                        <input type="text" placeholder="Bionalista">
+                    </div>
+                    <div>
+                        <label for="">Telefono</label>
+                        <input type="text" placeholder="0412-1234567">
+                    </div>
+                    <div>
+                        <label for="">Correo</label>
+                        <input type="text" placeholder="ejemplo@gmail.com">
+                    </div>
+                    <div>
+                        <label for="">Actividad</label>
+                        <input type="number" placeholder="1" min="0" max="1">
+                    </div>
+                    <div>
+                        <label for="">Datos Profesionales</label>
+                        <input type="text" placeholder="no se">
+                    </div>
+                    
+                </form>
+            </div>
+            <div id="put-form" class="div-form">
+                <h2>Actualizar Empleado</h2>
+                <form>
+                    <div>
+                        <label for="">Cedula</label>
+                        <input type="text" placeholder="V-1234567">
+                    </div>
+                    <div>
+                        <label for="">Nombre</label>
+                        <input type="text" placeholder="Jhon">
+                    </div>
+                    <div>
+                        <label for="">Apellido</label>
+                        <input type="text" placeholder="Briceño">
+                    </div>
+                    <div>
+                        <label for="">Cargo</label>
+                        <input type="text" placeholder="Bionalista">
+                    </div>
+                    <div>
+                        <label for="">Telefono</label>
+                        <input type="text" placeholder="0412-1234567">
+                    </div>
+                    <div>
+                        <label for="">Correo</label>
+                        <input type="text" placeholder="ejemplo@gmail.com">
+                    </div>
+                    <div>
+                        <label for="">Actividad</label>
+                        <input type="number" placeholder="1" min="0" max="1">
+                    </div>
+                    <div>
+                        <label for="">Datos Profesionales</label>
+                        <input type="text" placeholder="no se">
+                    </div>
+                    
+                </form>
+            </div>
+            <div id="delete-form" class="div-form">
+                <h2>Eliminar Empleado</h2>
+                <form>
+                    <label for="">Cedula del Empleado</label>
+                    <input type="text" placeholder="V-12345678">
+                    <button>Eliminar</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <%- include('partials/_footer') %>
+
+    <script>
+        const formGet = document.getElementById("get-form");
+        const formPost = document.getElementById("post-form");
+        const formPut = document.getElementById("put-form");
+        const formDelete = document.getElementById("delete-form");
+        const todos = document.getElementById("get-all");
+
+        let forms = [todos, formGet, formPost, formPut, formDelete];
+
+        function mostrarForm(num){
+            for (let i = 0; i < forms.length; i++) {
+                form = forms[i];
+                if (i === num) {
+                    form.style.display = "flex";
+                } else {
+                    form.style.display = "none";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
