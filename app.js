@@ -9,6 +9,7 @@ var pacientesRouter = require("./routes/pacientes.routes");
 var empleadosRouter = require("./routes/empleados.routes");
 var examenesRouter = require("./routes/examenes.routes");
 var ordenesRouter = require("./routes/ordenes.routes");
+var resultadoExamenes = require("./routes/resultados.routes")
 
 const { readFile } = require("fs");
 
@@ -44,6 +45,7 @@ app.use("/pacientes", pacientesRouter);
 app.use("/empleados", empleadosRouter);
 app.use("/exam", examenesRouter);
 app.use("/ordenes", ordenesRouter);
+app.use("/ordenes/res", resultadoExamenes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
