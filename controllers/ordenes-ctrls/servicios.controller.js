@@ -62,7 +62,10 @@ class Controller {
       };
     }
 
-    await this.comprobarExistenciaPorCedula(datos.cedula_paciente, datos.cedula_empleado);
+    await this.comprobarExistenciaPorCedula(
+      datos.cedula_paciente,
+      datos.cedula_empleado,
+    );
     const orden_detalles = await detallesControl.formatear(
       datos.detalles_orden,
     );
@@ -125,7 +128,7 @@ class Controller {
     }
 
     const filtro = ["cedula_paciente", "cedula_empleado"];
-    const esValido = Object.keys(datos).every(key => filtro.includes(key));
+    const esValido = Object.keys(datos).every((key) => filtro.includes(key));
 
     if (!esValido) {
       throw {
@@ -153,7 +156,7 @@ class Controller {
         detalle: `Una de las cedulas enviadas ya está registrada`,
       };
     }
-    
+
     await this.comprobarExistenciaPorCedula(
       datos.cedula_paciente,
       datos.cedula_empleado,
@@ -166,7 +169,7 @@ class Controller {
   // etc
   static async comprobarExistenciaPorCedula(cedulaPaciente, cedulaEmpleado) {
     if (cedulaPaciente) {
-      console.log("HELLO")
+      console.log("HELLO");
       const existePaciente = await pacientesModel.buscarCedula(cedulaPaciente);
       if (!existePaciente || Object.keys(existePaciente).length === 0) {
         throw {
@@ -200,7 +203,7 @@ class Controller {
     }
 
     const posible = ["Pendiente", "Pagado"];
-    const esValido = posible.includes(estado)
+    const esValido = posible.includes(estado);
 
     if (!esValido) {
       throw {
@@ -216,11 +219,16 @@ class Controller {
         status: 400,
         error: "La orden a se encuentra en ese estado",
         detalle: `Esa orden ya se encuentra en el estado ${estado}`,
-      }
+      };
     }
 
     const cambiar = await ordenesModel.cambiar(id, estado);
     return cambiar;
+  }
+
+  static async buscarPorID(id) {
+    const orden = await ordenesModel.buscarTodoDetalles(id);
+    return orden;
   }
 }
 /*

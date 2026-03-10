@@ -6,6 +6,14 @@ const Controller = require("../controllers/resultados.controller");
 // si
 router.get("/", async (req, res) => {
   try {
+    if (req.query.buscar_detalle) {
+      const id = req.query.buscar_detalle;
+      const resultado = await Controller.buscarResultado(id);
+      return res.status(200).json({
+        message: `Encontrado el Resultado`,
+        data: resultado,
+      });
+    }
     const resultados = await Controller.todosResultados();
     res.status(200).json({
       message: `${resultados.length} resultados encontrados`,

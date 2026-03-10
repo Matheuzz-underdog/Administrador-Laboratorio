@@ -50,6 +50,19 @@ class Ordenes {
     });
   }
 
+  static async buscarTodoDetalles(id) {
+    return new Promise((resolve, reject) => {
+      db.query(
+        "SELECT * FROM detalle_orden WHERE id_orden = ?",
+        [id],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(result);
+        },
+      );
+    });
+  }
+
   static async crear(datos) {
     let montoTotal = 0;
     const detalles = datos.orden_detalles;

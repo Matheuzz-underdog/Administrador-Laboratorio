@@ -17,7 +17,27 @@ router.get("/", async (req, res) => {
 
     const datos = await control.mostrarTodos();
     res.render("examenes", { examenes: datos });
+  } catch (err) {
+    if (err.status) {
+      return res.status(err.status).json({
+        error: err.error,
+        detalle: err.detalle,
+      });
+    }
+    res.status(500).json({
+      error: "Ocurrio un error",
+      detalle: err.message,
+    });
+  }
+});
 
+router.get("/ex-abreviaturas", async (req, res) => {
+  try {
+    const datos = await control.obtenerAbreviaturas();
+
+    res.status(200).json({
+      data: datos,
+    });
   } catch (err) {
     if (err.status) {
       return res.status(err.status).json({

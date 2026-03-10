@@ -121,6 +121,12 @@ class Controller {
     return creado;
   }
 
+  static async buscarResultado(id) {
+    const esIDValido = await this.validadorID(id);
+    const buscar = await Model.buscarPorDetalle(id);
+    return buscar;
+  }
+
   // FALTA PODER MODIFICAR RESULTADOS, PENDIENTE
   // WIP
 

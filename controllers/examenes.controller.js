@@ -1,5 +1,5 @@
 const examenes = require("../models/examenes.model");
-const valid = require("../utils/validator")
+const valid = require("../utils/validator");
 
 class Controller {
   static async mostrarTodos() {
@@ -66,7 +66,11 @@ class Controller {
 
     const camposTexto = ["nombre", "abreviatura", "area", "tipoMuestra"];
     for (let campo of camposTexto) {
-      if (!dataEnv[campo] || typeof dataEnv[campo] !== 'string' || dataEnv[campo].trim() === '') {
+      if (
+        !dataEnv[campo] ||
+        typeof dataEnv[campo] !== "string" ||
+        dataEnv[campo].trim() === ""
+      ) {
         throw {
           status: 400,
           error: `El campo ${campo} no puede estar vacío`,
@@ -75,7 +79,7 @@ class Controller {
       }
     }
 
-    if (typeof dataEnv.precio !== 'number' || dataEnv.precio <= 0) {
+    if (typeof dataEnv.precio !== "number" || dataEnv.precio <= 0) {
       throw {
         status: 400,
         error: "Precio inválido",
@@ -83,7 +87,6 @@ class Controller {
       };
     }
 
-    
     if (!Array.isArray(dataEnv.parametros)) {
       throw {
         status: 400,
@@ -92,10 +95,9 @@ class Controller {
       };
     }
 
-    
     for (let i = 0; i < dataEnv.parametros.length; i++) {
       const p = dataEnv.parametros[i];
-      if (!p.nombre || typeof p.nombre !== 'string' || p.nombre.trim() === '') {
+      if (!p.nombre || typeof p.nombre !== "string" || p.nombre.trim() === "") {
         throw {
           status: 400,
           error: "Parámetro sin nombre",
@@ -139,6 +141,11 @@ class Controller {
 
     const examenEliminado = await examenes.delete(abbrevEnv);
     return examenEliminado;
+  }
+
+  static async obtenerAbreviaturas() {
+    const listaAbreviaturas = await examenes.listaAbreviaturas();
+    return listaAbreviaturas;
   }
 }
 

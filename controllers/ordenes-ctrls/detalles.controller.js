@@ -36,10 +36,9 @@ class Controller {
   // idk
   static async formatear(datos) {
     const nuevaData = {};
-    const data = Object.values(datos);
 
-    for (let i = 0; i < data.length; i++) {
-      const abreviatura = data[i].abreviatura_examen;
+    for (let i = 0; i < datos.length; i++) {
+      const abreviatura = datos[i];
 
       if (!valid.longitud(abreviatura)) {
         throw {

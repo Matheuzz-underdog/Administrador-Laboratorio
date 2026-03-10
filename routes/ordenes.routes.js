@@ -17,6 +17,15 @@ router.get("/", async (req, res) => {
         data: ordenEncontrada,
       });
     }
+    if (req.query.buscar_detalle) {
+      const detalleBuscar = req.query.buscar_detalle;
+      const ordenEncontrada = await serviciosOrden.buscarPorID(detalleBuscar);
+
+      return res.status(200).json({
+        message: "Se encontro la orden deseada",
+        data: ordenEncontrada,
+      });
+    }
     // Si no hay query, muestra todo...
     const ordenesTotales = await serviciosOrden.todasOrdenes();
 
@@ -27,11 +36,7 @@ router.get("/", async (req, res) => {
         total: 0,
       });
     }
-    res.status(200).json({
-      message: `${ordenesTotales.length} ordenes encontradas`,
-      total: ordenesTotales.length,
-      data: ordenesTotales,
-    });
+    res.render("ordenes", {datos: ordenesTotales});
   } catch (err) {
     if (err.status) {
       return res.status(err.status).json({

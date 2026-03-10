@@ -12,6 +12,15 @@ class Examenes {
     });
   }
 
+  static async listaAbreviaturas() {
+    const todosExamenes = await this.listaTotal();
+    let valores = [];
+    todosExamenes.forEach(examen => {
+      valores.push(examen.abreviatura_examen);
+    });
+    return valores;
+  }
+
   static async buscarExamen(abbrev) {
     return new Promise((resolve, reject) => {
       db.query(

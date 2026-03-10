@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Gestión de Órdenes</title>
+</head>
+
+<body>
+  <%- include('partials/_header') %>
+  <div class="titulo-general">
+    <h2>Ordenes Registradas</h2>
+    <button onclick="window.location.reload()">Refrescar</button>
+  </div>
+
+  <table id="table-ordenes">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cédula (paciente)</th>
+        <th>Cédula (empleado)</th>
+        <th>Monto Total</th>
+        <th>Estado Pago</th>
+        <th>Fecha de Orden</th>
+        <th>Detalles</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (locals.datos && datos.length > 0) { %>
+      <% for (let i = 0; i < datos.length; i++) { %>
+      <% let orden = datos[i]; %>
+      <tr>
+        <td><%= orden.id_orden %></td>
+        <td><%= orden.cedula_paciente %></td>
+        <td><%= orden.cedula_empleado %></td>
+        <td><%= orden.monto_total %></td>
+        <td><%= orden.estado_pago %> <button type="button" onclick="cambiarEstado('<%= orden.id_orden %>','<%= orden.estado_pago %>', 'cambiar')">Cambiar</button></td>
+        <td><%= orden.fecha_orden %></td>
+        <td><button onclick="mostrarDetalle('<%= orden.id_orden %>')">VER</button></td>
+        <td><button onclick="eliminarOrden('<%= orden.id_orden %>', 'eliminar')">BORRAR</button></td>
+      </tr>
+      <% } %>
+      <% } else { %>
+      <tr>
+        <td colspan="7" style="text-align: center;">¡¡¡NO HAY ÓRDENES REGISTRADAS!!!</td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+  <%- include('partials/_detalles') %>
+
+  <%- include('partials/_resultados') %>
+
+  <div class="div-todo-resultados">
+    <label for="valor-busqueda" class="label-busqueda">
+      Buscar por Cedula:
+      <input type="text" id="valor-busqueda" pattern="^[VE]-[0-8]+$" placeholder="P.E: V-12345678">
+      <button type="button" onclick="buscarOrden()">Buscar</button>
+    </label>
+
+    <div id="div-resultados-busqueda">
+      <table id="table-ordenes">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cédula (paciente)</th>
+            <th>Cédula (empleado)</th>
+            <th>Monto Total</th>
+            <th>Estado Pago</th>
+            <th>Fecha de Orden</th>
+            <th>Detalles</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-busqueda-orden">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Confirm que quiere borrar-->
+
+  <!-- USAR SweetAlert2 en futuro -->
+  <div id="confirmacion-borrar">
+    <div id="confirmacion-borrar-message">
+      <span class="cerrar-btn"><button onclick="cerrarConfirmacion()">X</button></span>
+      <h5 id="valor-texto-confirmar"></h5>
+      <div class="confirmacion-btn">
+        <button id="btn-si">Si</button>
+        <button id="btn-no">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AAAAAA -->
+  <section id="div-crear-orden">
+    <h3>Ingresar una nueva orden</h3>
+    <form id="formulario-crear-orden">
+      <label for="cedula-paciente" class='label-cedula-detalle'>
+        Cedula del paciente:
+        <input type="text" id="cedula-paciente" pattern="^[VE]-[0-8]+$" placeholder="P.E: V-12345678">
+      </label>
+      <label for="cedula-empleado" class='label-cedula-detalle'>
+        Cedula del empleado:
+        <input type="text" id="cedula-empleado" pattern="^[VE]-[0-8]+$" placeholder="P.E: V-12345678">
+      </label>
+      <label for="datos-detalle" class='label-valores-detalle'>
+        <fieldset>
+          <legend>Detalles de la Orden <button type="button" id="btn-nuevo-detalle">+</button></legend>
+          <div id="detalle-container"></div>
+        </fieldset>
+      </label>
+      <button type="button" id='btn-crear-orden' onclick="crearOrden()">Registrar</button>
+    </form>
+  </section>
+
+  <script src="/js/ordenes.js"></script>
+</body>
+
+</html>
