@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-03-2026 a las 20:37:01
+-- Tiempo de generación: 10-03-2026 a las 16:40:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -163,7 +163,7 @@ CREATE TABLE `pacientes` (
   `sexo_paciente` char(1) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
   `telefono_paciente` varchar(20) NOT NULL,
-  `email_paciente` varchar(255) NOT NULL,
+  `email_paciente` varchar(255) DEFAULT NULL,
   `direccion_paciente` text DEFAULT NULL,
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
@@ -174,8 +174,9 @@ CREATE TABLE `pacientes` (
 
 INSERT INTO `pacientes` (`id_paciente`, `cedula_paciente`, `nombre_paciente`, `apellido_paciente`, `sexo_paciente`, `fecha_nacimiento`, `telefono_paciente`, `email_paciente`, `direccion_paciente`, `fecha_registro`) VALUES
 ('22eef8d4-9895-4921-b18f-c1418cea1afe', 'V-16444333', 'Patricia', 'Herrera', 'F', '1981-12-12', '0412-2228833', 'p.herrera@email.com', 'Av. Intercomunal, Sector El Remanso, Barcelona', '2026-03-02 00:34:25'),
-('2f92a03a-6954-4994-b0f9-f5aee1454448', 'V-22444555', 'Sofía', 'Torres', 'F', '1994-04-18', '0412-6663344', 'sofia.torres@email.com', 'Urb. Prebo, Calle 110, Valencia', '2026-03-02 00:32:47'),
+('233996d3-7ebb-457c-82f9-f7ff760da701', 'V-32084456', 'Castillo', 'Herrera', 'M', '2000-11-15', '0412-0474789', NULL, 'Las acacias', '2026-03-10 08:24:50'),
 ('34399f57-52eb-451a-ba22-bc1dc409099f', 'V-13111222', 'Miguel', 'Ángel', 'M', '1975-07-07', '0414-1234567', 'mangel.75@email.com', 'Barrio Obrero, Carrera 15, San Cristóbal', '2026-03-02 00:34:04'),
+('4e5cd198-7900-4faf-a856-ce56fb326f5d', 'V-22444555', 'Juan', 'Romero', 'M', '2007-02-19', '0412-6551724', '', 'taladro-1', '2026-03-09 17:18:38'),
 ('751c839b-d8f0-41eb-bdaa-4ba6803934fd', 'E-15999000', 'Ana', 'López', 'F', '1983-01-09', '0416-8887711', 'alopez.bio@email.com', 'Av. Las Américas, Res. Humboldt, Mérida', '2026-03-02 00:32:30'),
 ('7b052e9a-fc1f-413b-bd51-362b9b4db844', 'V-15666777', 'Paula', 'Vargas', 'F', '1984-09-21', '0414-0001122', 'pvargas.84@email.com', 'Urb. El Rosal, Edif. Galipán, Caracas', '2026-03-02 00:35:07'),
 ('a436da91-1445-4335-b9ae-08067cbd3525', 'E-82111000', 'John', 'Smith', 'M', '1978-02-15', '0414-3334455', 'jsmith.lab@email.com', 'Res. El Bosque, Apto 4-B, Chacao, Caracas', '2026-03-02 00:32:00'),
@@ -227,6 +228,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `cedula`, `password`, `nivel_cuenta`, `id_empleado`, `fecha_registro`) VALUES
+('40e4267d-3960-4cae-8583-89a63f314d37', 'V-13444555', '$2b$10$MkRinBh7pMv15XmSHsiabOrEtmoufgw.WCxbjHzXPEs6AO.Wm/t2O', 'lector', '223bc5c6-929a-4fb4-8733-b17692fd91d0', '2026-03-09 16:47:33'),
+('6284576c-73c9-451b-af0d-54a8093e20d7', 'E-84561230', '$2b$10$S9SP5xlE.l5HIETX/g4dk.9by3xJFAgXCgC.xikcT5bKePjAoo2N6', 'editor', 'a77e576a-4ec5-443c-a6bc-be8f340710d0', '2026-03-10 09:51:58'),
 ('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-32084066', '$2b$10$tRDod6swdl1PS0b61YUg1O8Yr4M7rCPlZ.nosADPN1hTgNPlvoXF6', 'admin', 'd2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', '2026-03-07 17:20:52');
 
 --
