@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Usuarios</title>
+</head>
+<body>
+    <%- include('partials/_header') %>
+
+    <h1>Gestion de Usuarios</h1>
+    <hr>
+
+    <div id="modal-fondo"
+        onclick="cerrarModal()"
+        style="display:none;
+            position:fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background-color:rgba(0,0,0,0.45);">
+
+        <div onclick="event.stopPropagation()"
+            style="position:absolute;
+                top:50%; left:50%;
+                transform:translate(-50%, -50%);
+                background:white;
+                border:2px solid black;
+                padding:30px 40px;
+                min-width:280px;
+                max-width:420px;
+                text-align:center;">
+
+            <p id="texto-modal" style="font-size:1.1em; margin:0 0 18px 0;"></p>
+            <small>click para cerrar</small>
+        </div>
+    </div>
+
+    <h2>Lista de Usuarios</h2>
+
+    <% if (usuarios && usuarios.length > 0) { %>
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Cedula</th>
+                <th>Nivel</th>
+                <th>ID Empleado</th>
+                <th>Fecha Registro</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% usuarios.forEach(function(u) { %>
+            <tr>
+                <td><%= u.cedula %></td>
+                <td><%= u.nivel_cuenta %></td>
+                <td><%= u.id_empleado %></td>
+                <td><%= u.fecha_registro ? new Date(u.fecha_registro).toLocaleString('es-VE') : '-' %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <% } else { %>
+        <p>No hay usuarios registrados.</p>
+    <% } %>
+
+    <hr>
+
+    <h2>Registrar Usuario</h2>
+    <p>La cedula debe pertenecer a un empleado registrado en el sistema.</p>
+
+    <form id="form-registrar">
+        <table>
+            <tr>
+                <td><label for="r-cedula">Cedula:</label></td>
+                <td><input type="text" id="r-cedula" placeholder="V-12345678"></td>
+            </tr>
+            <tr>
+                <td><label for="r-password">Contraseña:</label></td>
+                <td><input type="password" id="r-password"></td>
+            </tr>
+            <tr>
+                <td><label for="r-nivel">Nivel:</label></td>
+                <td>
+                    <select id="r-nivel">
+                        <option value="">-- Seleccione --</option>
+                        <option value="lector">Lector</option>
+                        <option value="editor">Editor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <button type="button" onclick="registrarUsuario()">Registrar</button>
+    </form>
+
+    <hr>
+
+    <h2>Actualizar Usuario</h2>
+    <p>Solo complete los campos que desea cambiar. La cedula es obligatoria.</p>
+
+    <table>
+        <tr>
+            <td><label for="a-cedula">Cedula:</label></td>
+            <td><input type="text" id="a-cedula" placeholder="V-12345678"></td>
+        </tr>
+        <tr>
+            <td><label for="a-password">Nueva contraseña (opcional):</label></td>
+            <td><input type="password" id="a-password"></td>
+        </tr>
+        <tr>
+            <td><label for="a-nivel">Nuevo nivel (opcional):</label></td>
+            <td>
+                <select id="a-nivel">
+                    <option value="">-- Sin cambio --</option>
+                    <option value="lector">Lector</option>
+                    <option value="editor">Editor</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <button type="button" onclick="actualizarUsuario()">Actualizar</button>
+
+    <hr>
+
+    <h2>Eliminar Usuario</h2>
+    <table>
+        <tr>
+            <td><label for="e-cedula">Cedula:</label></td>
+            <td><input type="text" id="e-cedula" placeholder="V-12345678"></td>
+        </tr>
+    </table>
+    <br>
+    <button type="button" onclick="eliminarUsuario()">Eliminar</button>
+
+    <hr>
+
+    <script>
+
+        let recargarAlCerrar = false;
+
+        function mostrarMensaje(texto, exito, recargar) {
+            recargarAlCerrar = recargar || false;
+            const parrafo = document.getElementById('texto-modal');
+            parrafo.textContent = texto;
+            parrafo.style.color = exito ? 'green' : 'red';
+            document.getElementById('modal-fondo').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-fondo').style.display = 'none';
+            if (recargarAlCerrar) location.reload();
+        }
+
+        async function registrarUsuario() {
+            const datos = {
+                cedula:      document.getElementById('r-cedula').value.trim(),
+                password:    document.getElementById('r-password').value,
+                nivel_cuenta: document.getElementById('r-nivel').value
+            };
+
+            if (!datos.cedula || !datos.password || !datos.nivel_cuenta) {
+                mostrarMensaje('Todos los campos son obligatorios.', false, false);
+                return;
+            }
+
+            try {
+                const respuesta = await fetch('/usuarios/registro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                const json = await respuesta.json();
+
+                if (respuesta.ok) {
+                    mostrarMensaje('Usuario registrado correctamente.', true, true);
+                    document.getElementById('form-registrar').reset();
+                } else {
+                    mostrarMensaje('Error: ' + (json.detalle || json.error), false, false);
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexion al registrar el usuario.', false, false);
+            }
+        }
+
+        async function actualizarUsuario() {
+            const cedula = document.getElementById('a-cedula').value.trim();
+
+            if (!cedula) {
+                mostrarMensaje('La cedula es obligatoria para actualizar.', false, false);
+                return;
+            }
+
+            const datos = {};
+            const password = document.getElementById('a-password').value;
+            const nivel    = document.getElementById('a-nivel').value;
+
+            if (password) datos.password     = password;
+            if (nivel)    datos.nivel_cuenta = nivel;
+
+            if (Object.keys(datos).length === 0) {
+                mostrarMensaje('Complete al menos un campo para actualizar.', false, false);
+                return;
+            }
+
+            try {
+                const respuesta = await fetch('/usuarios/' + encodeURIComponent(cedula), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                const json = await respuesta.json();
+
+                if (respuesta.ok) {
+                    mostrarMensaje('Usuario actualizado correctamente.', true, true);
+                } else {
+                    mostrarMensaje('Error: ' + (json.detalle || json.error), false, false);
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexion al actualizar el usuario.', false, false);
+            }
+        }
+
+        async function eliminarUsuario() {
+            const cedula = document.getElementById('e-cedula').value.trim();
+
+            if (!cedula) {
+                mostrarMensaje('La cedula es obligatoria para eliminar.', false, false);
+                return;
+            }
+
+            try {
+                const respuesta = await fetch('/usuarios/' + encodeURIComponent(cedula), {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const json = await respuesta.json();
+
+                if (respuesta.ok) {
+                    mostrarMensaje('Usuario eliminado correctamente.', true, true);
+                    document.getElementById('e-cedula').value = '';
+                } else {
+                    mostrarMensaje('Error: ' + (json.detalle || json.error), false, false);
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexion al eliminar el usuario.', false, false);
+            }
+        }
+
+    </script>
+
+</body>
+</html>

@@ -84,6 +84,40 @@ class UsuariosController {
         return eliminado;
     }
 
+    static async actualizar(cedula, datos) {
+        if (!cedula) {
+            throw { status: 400, error: 'Cédula requerida', detalle: 'Envíe una cédula' };
+        }
+        if (!valid.cedula(cedula)) {
+            throw { status: 400, error: 'Formato de cédula inválido', detalle: 'Formato requerido: V-XXXXXXXX (6-8 dígitos)' };
+        }
+        if (!datos || Object.keys(datos).length === 0) {
+            throw { status: 400, error: 'Datos requeridos', detalle: 'Envíe los datos a actualizar' };
+        }
+
+        const camposValidos = ['password', 'nivel_cuenta'];
+        const camposEnviados = Object.keys(datos);
+        const camposInvalidos = camposEnviados.filter(c => !camposValidos.includes(c));
+        if (camposInvalidos.length > 0) {
+            throw { status: 400, error: 'Campos inválidos', detalle: `Solo se puede actualizar: ${camposValidos.join(', ')}` };
+        }
+
+        if (datos.nivel_cuenta) {
+            const nivelesValidos = ['lector', 'editor', 'admin'];
+            if (!nivelesValidos.includes(datos.nivel_cuenta)) {
+                throw { status: 400, error: 'Nivel inválido', detalle: 'Los niveles válidos son: lector, editor, admin' };
+            }
+        }
+
+        const existe = await Usuarios.buscarPorCedula(cedula);
+        if (existe.length === 0) {
+            throw { status: 404, error: 'Usuario no encontrado', detalle: `No existe un usuario con cédula: ${cedula}` };
+        }
+
+        const actualizado = await Usuarios.actualizar(cedula, datos);
+        return actualizado;
+    }
+
 }
 
 module.exports = UsuariosController;

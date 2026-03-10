@@ -11,6 +11,7 @@ var empleadosRouter = require("./routes/empleados.routes");
 var examenesRouter = require("./routes/examenes.routes");
 var ordenesRouter = require("./routes/ordenes.routes");
 var usuariosRouter = require("./routes/usuarios.routes");
+var loginRouter = require("./routes/login.routes");
 
 const { readFile } = require("fs");
 
@@ -51,6 +52,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(limiter)
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use("/login", loginRouter);
 
 app.use("/", indexRouter);
 app.use("/pacientes", pacientesRouter);

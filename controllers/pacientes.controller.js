@@ -144,6 +144,10 @@ class Controller {
       };
     }
 
+    if (data.email !== undefined && data.email.trim() === '') {
+      data.email = null;
+    }
+
     if (data.email && !valid.email(data.email)) {
       throw {
         status: 400,
@@ -215,6 +219,10 @@ class Controller {
         error: "Fecha inválida",
         detalle: "Use formato YYYY-MM-DD",
       };
+    }
+
+    if (nuevosDatos.email !== undefined && nuevosDatos.email.trim() === '') {
+      nuevosDatos.email = null;
     }
 
     if (nuevosDatos.email && !valid.email(nuevosDatos.email)) {

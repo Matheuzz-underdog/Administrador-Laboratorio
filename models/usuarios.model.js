@@ -104,6 +104,28 @@ class Usuarios {
             );
         });
     }
+
+    static async actualizar(cedula, datos) {
+        const datosNuevos = {};
+
+        if (datos.password) {
+            datosNuevos.password = bcrypt.hashSync(datos.password, saltRounds);
+        }
+        if (datos.nivel_cuenta) {
+            datosNuevos.nivel_cuenta = datos.nivel_cuenta;
+        }
+
+        return new Promise((resolve, reject) => {
+            db.query(
+                'UPDATE usuarios SET ? WHERE cedula = ?',
+                [datosNuevos, cedula],
+                (err, result) => {
+                    if (err) return reject(err);
+                    resolve(result);
+                }
+            );
+        });
+    }
 }
 
 module.exports = Usuarios;
