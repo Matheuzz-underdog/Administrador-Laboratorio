@@ -9,7 +9,7 @@ class Usuarios {
 
     static async todos() {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM usuarios', (err, result) => {
+            db.query("SELECT * FROM usuarios ORDER BY fecha_registro ASC", (err, result) => {
                 if (err) reject(err);
                 resolve(result);
             });
