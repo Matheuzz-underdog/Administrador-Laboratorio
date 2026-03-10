@@ -16,7 +16,10 @@ function checkLogin(req, res, next) {
         req.usuario = decoded;
         next();
     } catch (err) {
-        return res.status(401).json({ error: 'Token inválido', detalle: 'El token no es válido o expiró' });
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token expirado', detalle: 'La sesión expiró, inicie sesión nuevamente' });
+        }
+        return res.status(401).json({ error: 'Token inválido', detalle: 'El token no es válido' });
     }
 }
 
@@ -49,6 +52,9 @@ function checkVista(req, res, next) {
         next();
     } catch (err) {
         res.clearCookie('token');
+        if (err.name === 'TokenExpiredError') {
+            return res.redirect('/login?razon=expirado');
+        }
         return res.redirect('/login');
     }
 }
