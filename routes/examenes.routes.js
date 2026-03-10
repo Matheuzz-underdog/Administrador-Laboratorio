@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const control = require("../controllers/examenes.controller");
+const { checkLogin, checkNivel, checkVista } = require('../middlewares/auth.js');
 
 // Es obvio lo que hace
 
-router.get("/", async (req, res) => {
+router.get("/", checkVista, checkNivel('lector', 'editor', 'admin'), async (req, res) => {
   try {
     if (req.query.abreviatura) {
       const abreviatura = req.query.abreviatura;
@@ -54,7 +55,7 @@ router.get("/ex-abreviaturas", async (req, res) => {
 
 // Crear nuevo examen
 
-router.post("/", async (req, res) => {
+router.post("/", checkLogin, checkNivel('admin'), async (req, res) => {
   try {
     const data = req.body;
 
@@ -80,7 +81,7 @@ router.post("/", async (req, res) => {
 
 // Borar examen (por abreviatura)
 
-router.delete("/:abrev", async (req, res) => {
+router.delete("/:abrev", checkLogin, checkNivel('admin'), async (req, res) => {
   try {
     const abreviatura = req.params.abrev;
     const examenEliminado = await control.eliminarExamen(abreviatura);

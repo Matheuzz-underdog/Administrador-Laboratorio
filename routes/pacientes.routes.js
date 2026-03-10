@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const control = require("../controllers/pacientes.controller");
+const { checkLogin, checkNivel, checkVista } = require('../middlewares/auth');
 
 //mostrara todos
-router.get("/", async (req, res) => {
+router.get("/", checkVista, checkNivel('lector','editor','admin' ) , async (req, res) => {
   try {
     if (req.query.cedula) {
       const cedulaLimpia = req.query.cedula;
@@ -31,12 +32,12 @@ router.get("/", async (req, res) => {
 });
 
 // crear pacientes
-router.post("/", async (req, res) => {
+router.post("/", checkLogin, checkNivel('editor', 'admin'), async (req, res) => {
   try {
     const pacientesCreado = await control.crearPaciente(req.body);
 
     res.status(201).json({
-      message: "Paciente creado exitosamente",
+      message: "Paciente creado exitosamente", 
       data: pacientesCreado,
     });
   } catch (err) {
@@ -51,32 +52,11 @@ router.post("/", async (req, res) => {
       error: "Error al crear pacientes",
       detalle: err.message,
     });
-
-    if (nuevosDatos.cedula && nuevosDatos.cedula !== cedula) {
-      if (!valid.cedula(nuevosDatos.cedula)) {
-        throw {
-          status: 400,
-          error: "Nueva cédula inválida",
-          detalle: "Formato: V-12345678",
-        };
-      }
-
-      const existeNuevaCedula = await pacientes.buscarCedula(
-        nuevosDatos.cedula,
-      );
-      if (existeNuevaCedula) {
-        throw {
-          status: 409,
-          error: "Cédula duplicada",
-          detalle: `La cédula ${nuevosDatos.cedula} ya está registrada`,
-        };
-      }
-    }
   }
 });
 
 // buscar por cedula
-router.post("/buscar", async (req, res) => {
+router.post("/buscar", checkLogin, checkNivel('lector', 'editor', 'admin'), async (req, res) => {
   try {
     const paciente = await control.buscarPorCedula(req.body.cedula);
     res.status(200).json({ message: "Paciente encontrado", data: paciente });
@@ -98,7 +78,7 @@ router.post("/buscar", async (req, res) => {
 });
 
 // buscar por id
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkLogin, checkNivel( 'lector','editor', 'admin'), async (req, res) => {
   try {
     const pacientes = await control.buscarPorID(req.params.id);
 
@@ -122,7 +102,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // actualizar paciente
-router.put("/:cedula", async (req, res) => {
+router.put("/:cedula", checkLogin, checkNivel('editor', 'admin'), async (req, res) => {
   try {
     const pacientesActualizado = await control.actualizarPaciente(
       req.params.cedula,
@@ -149,7 +129,7 @@ router.put("/:cedula", async (req, res) => {
 });
 
 // eliminar pacientes
-router.delete("/:cedula", async (req, res) => {
+router.delete("/:cedula", checkLogin, checkNivel('admin'), async (req, res) => {
   try {
     const pacientesEliminado = await control.eliminarPaciente(req.params.cedula);
 

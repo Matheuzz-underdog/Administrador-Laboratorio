@@ -9,7 +9,7 @@ const query = util.promisify(db.query).bind(db);
 class Pacientes {
   static async todos() {
     try {
-      const sql = "SELECT * FROM pacientes";
+      const sql = "SELECT * FROM pacientes ORDER BY fecha_registro ASC";
       const rows = await query(sql);
       return rows;
     } catch (error) {
@@ -40,7 +40,7 @@ class Pacientes {
         sexo_paciente: pacientesData.sexo,
         fecha_nacimiento: pacientesData.fecha_nacimiento,
         telefono_paciente: pacientesData.telefono || "",
-        email_paciente: pacientesData.email || "",
+        email_paciente: pacientesData.email ?? null,
         direccion_paciente: pacientesData.direccion || null,
       }; // la db da por defecto la fecha y hora de creacion
 
@@ -69,7 +69,7 @@ class Pacientes {
       if (pacientesData.telefono !== undefined)
         camposActualizados.telefono_paciente = pacientesData.telefono;
       if (pacientesData.email !== undefined)
-        camposActualizados.email_paciente = pacientesData.email;
+        camposActualizados.email_paciente = pacientesData.email ?? null;
       if (pacientesData.direccion !== undefined)
         camposActualizados.direccion_paciente = pacientesData.direccion;
 
