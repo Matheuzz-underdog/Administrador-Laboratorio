@@ -2,7 +2,6 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../connections/connection.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const TokenExpiredError = require('jsonwebtoken/lib/TokenExpiredError.js');
 const saltRounds = 10;
 
 class Usuarios {
