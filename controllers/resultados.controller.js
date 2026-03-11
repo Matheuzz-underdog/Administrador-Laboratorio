@@ -21,7 +21,7 @@ class Controller {
       };
     }
     const esIDValido = await this.validadorID(id);
-    const existe = await Model.buscarPorResultado(transform);
+    const existe = await Model.buscarPorResultado(id);
     if (!existe || Object.keys(existe).length === 0) {
       throw {
         status: 404,
@@ -47,7 +47,6 @@ class Controller {
         detalle: `No hay ningun empleado registrado con la cedula ${datos.cedula_empleado}`,
       };
     }
-
     const obligatorios = [
       "id_detalle",
       "cedula_empleado",

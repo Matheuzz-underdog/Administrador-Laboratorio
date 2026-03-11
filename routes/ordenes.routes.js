@@ -2,127 +2,148 @@ const express = require("express");
 const router = express.Router();
 const detallesOrden = require("../controllers/ordenes-ctrls/detalles.controller");
 const serviciosOrden = require("../controllers/ordenes-ctrls/servicios.controller");
-const empleadosController = require("../controllers/empleados.controller");
+
+const { checkLogin, checkNivel, checkVista } = require("../middlewares/auth");
 
 // Ver todas las ordenes dentro de la database
-router.get("/", async (req, res) => {
-  try {
-    if (req.query.buscar_orden) {
-      // Buscar orden por paciente
-      const cedulaBuscar = req.query.buscar_orden;
-      const ordenEncontrada = await serviciosOrden.buscarOrden(cedulaBuscar);
+router.get(
+  "/",
+  checkVista,
+  checkNivel("lector", "editor", "admin"),
+  async (req, res) => {
+    try {
+      if (req.query.buscar_orden) {
+        // Buscar orden por paciente
+        const cedulaBuscar = req.query.buscar_orden;
+        const ordenEncontrada = await serviciosOrden.buscarOrden(cedulaBuscar);
 
-      return res.status(200).json({
-        message: "Se encontro la orden deseada",
-        data: ordenEncontrada,
-      });
-    }
-    if (req.query.buscar_detalle) {
-      const detalleBuscar = req.query.buscar_detalle;
-      const ordenEncontrada = await serviciosOrden.buscarPorID(detalleBuscar);
+        return res.status(200).json({
+          message: "Se encontro la orden deseada",
+          data: ordenEncontrada,
+        });
+      }
+      if (req.query.buscar_detalle) {
+        const detalleBuscar = req.query.buscar_detalle;
+        const ordenEncontrada = await serviciosOrden.buscarPorID(detalleBuscar);
 
-      return res.status(200).json({
-        message: "Se encontro la orden deseada",
-        data: ordenEncontrada,
-      });
-    }
-    // Si no hay query, muestra todo...
-    const ordenesTotales = await serviciosOrden.todasOrdenes();
+        return res.status(200).json({
+          message: "Se encontro la orden deseada",
+          data: ordenEncontrada,
+        });
+      }
+      // Si no hay query, muestra todo...
+      const ordenesTotales = await serviciosOrden.todasOrdenes();
 
-    if (ordenesTotales.length === 0) {
-      return res.status(200).json({
-        message: "Actualmente no hay ordenes guardadas",
-        data: [],
-        total: 0,
+      if (ordenesTotales.length === 0) {
+        return res.status(200).json({
+          message: "Actualmente no hay ordenes guardadas",
+          data: [],
+          total: 0,
+        });
+      }
+      res.render("ordenes", { datos: ordenesTotales });
+    } catch (err) {
+      if (err.status) {
+        return res.status(err.status).json({
+          error: err.error,
+          detalle: err.detalle,
+        });
+      }
+      res.status(500).json({
+        error: "Ocurrio un error en el servidor al buscar la(s) orden(es)",
+        detalle: err.message,
       });
     }
-    res.render("ordenes", {datos: ordenesTotales});
-  } catch (err) {
-    if (err.status) {
-      return res.status(err.status).json({
-        error: err.error,
-        detalle: err.detalle,
-      });
-    }
-    res.status(500).json({
-      error: "Ocurrio un error en el servidor al buscar la(s) orden(es)",
-      detalle: err.message,
-    });
-  }
-});
+  },
+);
 
 // nuevo
-router.post("/", async (req, res) => {
-  try {
-    const datos = req.body;
-    const creado = await serviciosOrden.crearOrden(datos);
+router.post(
+  "/",
+  checkLogin,
+  checkNivel("editor", "admin"),
+  async (req, res) => {
+    try {
+      const datos = req.body;
+      const creado = await serviciosOrden.crearOrden(datos);
 
-    res.status(200).json({
-      message: "Orden creada",
-      data: creado,
-    });
-  } catch (err) {
-    if (err.status) {
-      return res.status(err.status).json({
-        error: err.error,
-        detalle: err.detalle,
+      res.status(200).json({
+        message: "Orden creada",
+        data: creado,
+      });
+    } catch (err) {
+      if (err.status) {
+        return res.status(err.status).json({
+          error: err.error,
+          detalle: err.detalle,
+        });
+      }
+      res.status(500).json({
+        error: "Ocurrio un error al crear la orden",
+        detalle: err.message,
       });
     }
-    res.status(500).json({
-      error: "Ocurrio un error al crear la orden",
-      detalle: err.message,
-    });
-  }
-});
+  },
+);
 //eliminar )si)
-router.delete("/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const eliminado = await serviciosOrden.eliminarOrden(id);
+router.delete(
+  "/:id",
+  checkLogin,
+  checkNivel("editor", "admin"),
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+      const eliminado = await serviciosOrden.eliminarOrden(id);
 
-    res.status(200).json({
-      message: "Orden eliminada",
-      data: eliminado,
-    });
-  } catch (err) {
-    if (err.status) {
-      return res.status(err.status).json({
-        error: err.error,
-        detalle: err.detalle,
+      res.status(200).json({
+        message: "Orden eliminada",
+        data: eliminado,
+      });
+    } catch (err) {
+      if (err.status) {
+        return res.status(err.status).json({
+          error: err.error,
+          detalle: err.detalle,
+        });
+      }
+      res.status(500).json({
+        error: "Ocurrio un error al eliminar la orden",
+        detalle: err.message,
       });
     }
-    res.status(500).json({
-      error: "Ocurrio un error al eliminar la orden",
-      detalle: err.message,
-    });
-  }
-});
+  },
+);
 
 //eliminar unicamente un detalle
-router.delete("/detalle/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const eliminado = await detallesOrden.eliminarDetalle(id);
+router.delete(
+  "/detalle/:id",
+  checkLogin,
+  checkNivel("editor", "admin"),
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+      const eliminado = await detallesOrden.eliminarDetalle(id);
 
-    res.status(200).json({
-      message: "Orden eliminada",
-      data: eliminado,
-    });
-  } catch (err) {
-    if (err.status) {
-      return res.status(err.status).json({
-        error: err.error,
-        detalle: err.detalle,
+      res.status(200).json({
+        message: "Orden eliminada",
+        data: eliminado,
+      });
+    } catch (err) {
+      if (err.status) {
+        return res.status(err.status).json({
+          error: err.error,
+          detalle: err.detalle,
+        });
+      }
+      res.status(500).json({
+        error: "Ocurrio un error al eliminar el detalle de la orden",
+        detalle: err.message,
       });
     }
-    res.status(500).json({
-      error: "Ocurrio un error al eliminar el detalle de la orden",
-      detalle: err.message,
-    });
-  }
-});
+  },
+);
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", checkLogin, checkNivel('editor', 'admin'), async (req, res) => {
   try {
     const id = req.params.id;
     const datos = req.body;
@@ -147,7 +168,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.put("/facturar/:id", async (req, res) => {
+router.put("/facturar/:id", checkLogin, checkNivel('editor', 'admin'), async (req, res) => {
   try {
     const id = req.params.id;
     const estado = req.body.estado;

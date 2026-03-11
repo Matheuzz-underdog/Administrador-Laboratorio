@@ -4,7 +4,7 @@ const control = require("../controllers/pacientes.controller");
 const { checkLogin, checkNivel, checkVista } = require('../middlewares/auth');
 
 //mostrara todos
-router.get("/", checkVista, checkNivel('lector','editor','admin' ) , async (req, res) => {
+router.get("/", checkVista, checkNivel('lector','editor','admin') , async (req, res) => {
   try {
     if (req.query.cedula) {
       const cedulaLimpia = req.query.cedula;
