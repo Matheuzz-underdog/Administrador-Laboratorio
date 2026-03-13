@@ -9,21 +9,19 @@
 </head>
 
 <body>
-  <!--codigo muy mejorable-->
   <%- include('partials/_header') %>
   <div class="center">
-    <!--
-    <div class="sideNavBar">
-      <button onclick="mostrarForm(0)">Mostrar Todos</button>
-      <button onclick="mostrarForm(1)">Buscar</button>
-      <button onclick="mostrarForm(2)">Registrar</button>
-      <button onclick="mostrarForm(3)">Actualizar</button>
-      <button onclick="mostrarForm(4)">Borrar</button>
+    
+    <div id="modal-fondo" onclick="cerrarModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.45);">
+    <div onclick="event.stopPropagation()" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border:2px solid black; padding:30px 40px; min-width:280px; max-width:420px; text-align:center;">
+      <p id="texto-modal" style="font-size:1.1em; margin:0 0 18px 0;"></p>
+      <small>click para cerrar</small>
     </div>
-    -->
+  </div>
+
     <div class="form-container">
       <div id="get-all">
-        <% if (form === 'get-form') { %>
+        
         <% if (empleados && empleados.length > 0) { %>
         <table border="1" cellpadding="6" cellspacing="0">
           <thead>
@@ -54,125 +52,124 @@
           </tbody>
         </table>
         <% } else { %>
-        <p>No hay empleados en la base de datos</p>
-        <% } %>
+        <p style = "color : #f00">No hay empleados en la base de datos</p>
         <% } %>
       </div>
+
+      <hr>
+
       <div id="get-form" class="div-form">
         <h2>Buscar Empleado</h2>
         <form>
           <label for="cedula-get">Cedula del Empleado</label>
           <input type="text" placeholder="V-12345678" id="cedula-get">
-          <button>Buscar</button>
+          <button onclick="buscarEmpleado()" type="button">Buscar</button>
         </form>
+        <div id="resultado-get"></div>
       </div>
+
+      <hr>
+
       <div id="post-form" class="div-form">
         <h2>Registrar Empleado</h2>
-        <form>
+        <form id="post-formulario">
           <div>
             <label for="">Cedula</label>
-            <input type="text" placeholder="V-1234567">
+            <input type="text" placeholder="V-1234567" id="cedula-post">
           </div>
           <div>
             <label for="">Nombre</label>
-            <input type="text" placeholder="Jhon">
+            <input type="text" placeholder="Jhon" id="nombre-post">
           </div>
           <div>
             <label for="">Apellido</label>
-            <input type="text" placeholder="Briceño">
+            <input type="text" placeholder="Briceño" id="apellido-post">
           </div>
           <div>
             <label for="">Cargo</label>
-            <input type="text" placeholder="Bionalista">
+            <input type="text" placeholder="Bionalista" id="cargo-post">
           </div>
           <div>
             <label for="">Telefono</label>
-            <input type="text" placeholder="0412-1234567">
+            <input type="text" placeholder="0412-1234567" id="telefono-post">
           </div>
           <div>
             <label for="">Correo</label>
-            <input type="text" placeholder="ejemplo@gmail.com">
+            <input type="text" placeholder="ejemplo@gmail.com" id="correo-post">
           </div>
           <div>
             <label for="">Actividad</label>
-            <input type="number" placeholder="1" min="0" max="1">
+            <input type="number" placeholder="1" min="0" max="1" id="actividad-post">
           </div>
-          <div>
-            <label for="">Datos Profesionales</label>
-            <input type="text" placeholder="no se">
+          <label for="">Datos Profesionales  </label><button type="button" onclick="crearCampoDato(0)">+</button>
+          <br>
+          <div id="contenedor-datos-post">
+              
           </div>
-
+          <button type="button" onclick="registrarEmpleado()">Registrar</button>
         </form>
       </div>
+
+      <hr>
+
       <div id="put-form" class="div-form">
         <h2>Actualizar Empleado</h2>
-        <form>
+        <form id="put-formulario">
           <div>
-            <label for="">Cedula</label>
-            <input type="text" placeholder="V-1234567">
+            <label for="">Cedula Actual</label>
+            <input type="text" placeholder="V-1234567" id="cedula-put">
+          </div>
+          <div>
+            <label for="">Cedula Nueva (opcional)</label>
+            <input type="text" placeholder="V-1234567" id="cedula-op-put">
           </div>
           <div>
             <label for="">Nombre</label>
-            <input type="text" placeholder="Jhon">
+            <input type="text" placeholder="Jhon" id="nombre-put">
           </div>
           <div>
             <label for="">Apellido</label>
-            <input type="text" placeholder="Briceño">
+            <input type="text" placeholder="Briceño" id="apellido-put">
           </div>
           <div>
             <label for="">Cargo</label>
-            <input type="text" placeholder="Bionalista">
+            <input type="text" placeholder="Bionalista" id="cargo-put">
           </div>
           <div>
             <label for="">Telefono</label>
-            <input type="text" placeholder="0412-1234567">
+            <input type="text" placeholder="0412-1234567" id="telefono-put">
           </div>
           <div>
             <label for="">Correo</label>
-            <input type="text" placeholder="ejemplo@gmail.com">
+            <input type="text" placeholder="ejemplo@gmail.com" id="correo-put">
           </div>
           <div>
             <label for="">Actividad</label>
-            <input type="number" placeholder="1" min="0" max="1">
+            <input type="number" placeholder="1" min="0" max="1" id="actividad-put">
           </div>
-          <div>
-            <label for="">Datos Profesionales</label>
-            <input type="text" placeholder="no se">
+          <label for="">Datos Profesionales  </label><button type="button" onclick="crearCampoDato(1)">+</button>
+          <br>
+          <div id="contenedor-datos-put">
+              
           </div>
-
+          <button type="button" onclick="actualizarEmpleado()">Actualizar</button>
         </form>
       </div>
+
+      <hr>
+
       <div id="delete-form" class="div-form">
         <h2>Eliminar Empleado</h2>
-        <form>
+        <form id="delete-formulario">
           <label for="">Cedula del Empleado</label>
-          <input type="text" placeholder="V-12345678">
-          <button>Eliminar</button>
+          <input type="text" placeholder="V-12345678" id="cedula-delete">
+          <button type="button" onclick="eliminarEmpleado()">Eliminar</button>
         </form>
       </div>
     </div>
   </div>
 
-  <script>
-    const formGet = document.getElementById("get-form");
-    const formPost = document.getElementById("post-form");
-    const formPut = document.getElementById("put-form");
-    const formDelete = document.getElementById("delete-form");
-    const todos = document.getElementById("get-all");
-
-    let forms = [todos, formGet, formPost, formPut, formDelete];
-
-    function mostrarForm(num) {
-      for (let i = 0; i < forms.length; i++) {
-        form = forms[i];
-        if (i === num) {
-          form.style.display = "flex";
-        } else {
-          form.style.display = "none";
-        }
-      }
-    }
-  </script>
+  <script src="/js/empleados.js"></script>
 </body>
 
 </html>

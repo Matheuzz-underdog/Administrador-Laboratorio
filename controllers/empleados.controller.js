@@ -71,7 +71,7 @@ class Controller {
       throw {
         status: 400,
         error: "Cédula inválida",
-        detalle: "Formato: V-XXXXXXXX (6-8 dígitos)",
+        detalle: "Formato Cédula: V-XXXXXXXX (6-8 dígitos)",
       };
     }
 
@@ -79,7 +79,7 @@ class Controller {
       throw {
         status: 400,
         error: "Teléfono inválido",
-        detalle: "Formato: XXXX-XXXXXXX",
+        detalle: "Formato Teléfono: XXXX-XXXXXXX",
       };
     }
 

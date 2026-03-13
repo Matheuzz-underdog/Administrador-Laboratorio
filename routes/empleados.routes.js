@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
         detalle: err.detalle,
       });
     }
-    res.status(500).json({
+    return res.status(500).json({
       error: "Ocurrio un error en el servidor al obtener la lista de empleados",
       detalle: err.message,
     });
@@ -66,10 +66,10 @@ router.post("/", async (req, res) => {
 
 // Actualizar informacion de empleado (esclavo)
 
-router.put("/:cedula", async (req, res) => {
+router.put("/", async (req, res) => {
   try {
-    const cedulaAntigua = req.params.cedula;
-    console.log(cedulaAntigua);
+    const cedulaAntigua = req.query.cedula;
+    /* console.log(cedulaAntigua); */
     const datosNuevos = req.body;
 
     const empleadoActualizado = await control.actualizarEmpleado(
@@ -98,9 +98,9 @@ router.put("/:cedula", async (req, res) => {
 
 // Eliminar empleado de la existencia
 
-router.delete("/:cedula", async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
-    const eliminarData = req.params.cedula;
+    const eliminarData = req.query.cedula;
     const empleadoEliminado =
       await control.fulminarEmpleadoDeLaExistencia(eliminarData);
 
