@@ -25,7 +25,8 @@ router.post('/', async (req, res) => {
 
     } catch (err) {
         if (err.status) {
-            return res.render('login', { error: err.error });
+            const mensaje = err.detalle ? `${err.error}: ${err.detalle}` : err.error;
+            return res.render('login', { error: mensaje });
         }
         res.render('login', { error: 'Error en el servidor' });
     }

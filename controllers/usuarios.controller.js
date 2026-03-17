@@ -40,6 +40,12 @@ class UsuariosController {
             throw { status: 400, error: 'Formato de cédula inválido', detalle: 'Formato requerido: V-XXXXXXXX (6-8 dígitos)' };
         }
 
+        // Validar password
+        const validacionPassword = valid.password(datos.password);
+        if (!validacionPassword.valido) {
+            throw { status: 400, error: 'Contraseña inválida', detalle: validacionPassword.error };
+        }
+
         const nivelesValidos = ['lector', 'editor', 'admin'];
         if (!nivelesValidos.includes(datos.nivel_cuenta)) {
             throw { status: 400, error: 'Nivel de cuenta inválido', detalle: 'Los niveles válidos son: lector, editor, admin' };
@@ -61,6 +67,12 @@ class UsuariosController {
 
         if (!valid.cedula(datos.cedula)) {
             throw { status: 400, error: 'Formato de cédula inválido', detalle: 'Formato requerido: V-XXXXXXXX (6-8 dígitos)' };
+        }
+
+        // Validar password
+        const validacionPassword = valid.password(datos.password);
+        if (!validacionPassword.valido) {
+            throw { status: 400, error: 'Contraseña inválida', detalle: validacionPassword.error };
         }
 
         const token = await Usuarios.login(datos);
@@ -106,6 +118,14 @@ class UsuariosController {
             const nivelesValidos = ['lector', 'editor', 'admin'];
             if (!nivelesValidos.includes(datos.nivel_cuenta)) {
                 throw { status: 400, error: 'Nivel inválido', detalle: 'Los niveles válidos son: lector, editor, admin' };
+            }
+        }
+
+        // Validar password si se proporciona
+        if (datos.password) {
+            const validacionPassword = valid.password(datos.password);
+            if (!validacionPassword.valido) {
+                throw { status: 400, error: 'Contraseña inválida', detalle: validacionPassword.error };
             }
         }
 

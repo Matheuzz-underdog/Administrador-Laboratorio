@@ -31,6 +31,26 @@ class Validador {
     return formato.test(emailEnv);
   }
 
+  static password(passwordEnv) {
+    if (!passwordEnv || typeof passwordEnv !== 'string') {
+      return { valido: false, error: 'La contraseña es requerida' };
+    }
+    if (passwordEnv.length < 6) {
+      return { valido: false, error: 'La contraseña debe tener al menos 6 caracteres' };
+    }
+    // No permite comillas simples ni dobles
+    if (/['"]/.test(passwordEnv)) {
+      return { valido: false, error: 'La contraseña no puede contener comillas' };
+    }
+    return { valido: true };
+  }
+
+  static sanitizar(str) {
+    if (!str || typeof str !== 'string') return '';
+    // Elimina comillas simples y dobles
+    return str.replace(/['"]/g, '');
+  }
+
   // Exclusivo de examenes
   static longitud(abrev) {
     if (abrev.length < 3 || abrev.length > 4) return false;
