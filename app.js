@@ -24,7 +24,7 @@ const pjson = require("./package.json");
 //limite de llamadas
 const limiter = rateLimit({
     windowMs: 60 * 1000,   
-    max: 30,               
+    max: 100,               
     message: {
         error: "Demasiadas peticiones",
         detalle: "Ha excedido el límite de peticiones, intente en un momento"
