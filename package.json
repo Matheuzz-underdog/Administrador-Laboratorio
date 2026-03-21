@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "migration": "npm i && node ./migration.js "
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
