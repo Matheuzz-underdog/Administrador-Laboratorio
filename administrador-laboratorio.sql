@@ -29,7 +29,7 @@ USE `administrador-laboratorio`;
 -- Estructura de tabla para la tabla `detalle_orden`
 --
 
-CREATE TABLE `detalle_orden` (
+CREATE TABLE IF NOT EXISTS `detalle_orden` (
   `id_detalle` int(11) NOT NULL,
   `id_orden` int(11) NOT NULL,
   `abreviatura_examen` varchar(6) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE `detalle_orden` (
 -- Volcado de datos para la tabla `detalle_orden`
 --
 
-INSERT INTO `detalle_orden` (`id_detalle`, `id_orden`, `abreviatura_examen`, `precio_historico`) VALUES
+INSERT IGNORE INTO `detalle_orden` (`id_detalle`, `id_orden`, `abreviatura_examen`, `precio_historico`) VALUES
 (2, 11, 'GLU', 5.00),
 (3, 11, 'VDRL', 7.00),
 (4, 12, 'HEM', 15.00),
@@ -55,7 +55,7 @@ INSERT INTO `detalle_orden` (`id_detalle`, `id_orden`, `abreviatura_examen`, `pr
 -- Estructura de tabla para la tabla `empleados`
 --
 
-CREATE TABLE `empleados` (
+CREATE TABLE IF NOT EXISTS `empleados` (
   `id_empleado` char(36) NOT NULL,
   `cedula_empleado` varchar(15) NOT NULL,
   `nombre_empleado` varchar(100) NOT NULL,
@@ -71,22 +71,22 @@ CREATE TABLE `empleados` (
 -- Volcado de datos para la tabla `empleados`
 --
 
-INSERT INTO `empleados` (`id_empleado`, `cedula_empleado`, `nombre_empleado`, `apellido_empleado`, `cargo_empleado`, `telefono_empleado`, `email_empleado`, `actividad_empleado`, `datos_profesionales`) VALUES
-('16a793d9-c8c2-4004-b001-b3333b464ea3', 'V-12345678', 'Carlos', 'Mendoza', 'Bioanalista Principal', '0412-5551234', 'c.mendoza@lab.com', 1, '{\"especialidad\":\"Hematología y Coagulación\",\"colegiado\":\"HB-9921\",\"nivel_academico\":\"Postgrado\"}'),
-('223bc5c6-929a-4fb4-8733-b17692fd91d0', 'V-13444555', 'Julia', 'Blanco', 'Bioanalista de Citología', '0424-1112233', 'j.blanco@lab.com', 1, '{\"especialidad\":\"Citopatología\",\"colegiado\":\"CB-8812\"}'),
+INSERT IGNORE INTO `empleados` (`id_empleado`, `cedula_empleado`, `nombre_empleado`, `apellido_empleado`, `cargo_empleado`, `telefono_empleado`, `email_empleado`, `actividad_empleado`, `datos_profesionales`) VALUES
+('16a793d9-c8c2-4004-b001-b3333b464ea3', 'V-12345678', 'Carlos', 'Mendoza', 'Bioanalista Principal', '0412-5551234', 'c.mendoza@lab.com', 1, '{"especialidad":"Hematología y Coagulación","colegiado":"HB-9921","nivel_academico":"Postgrado"}'),
+('223bc5c6-929a-4fb4-8733-b17692fd91d0', 'V-13444555', 'Julia', 'Blanco', 'Bioanalista de Citología', '0424-1112233', 'j.blanco@lab.com', 1, '{"especialidad":"Citopatología","colegiado":"CB-8812"}'),
 ('2bd382f5-dea8-4da3-b903-75f3c2096055', 'V-20111222', 'Luis', 'García', 'Recepcionista Médico', '0414-9991122', 'l.garcia@lab.com', 1, NULL),
 ('3e7aa881-45d0-4f62-87b7-5758c50b3a1f', 'V-25666777', 'Mónica', 'Díaz', 'Asistente de Laboratorio', '0412-0001122', 'm.diaz@lab.com', 1, NULL),
 ('41273021-92dd-4d0d-bc47-357aae133644', 'V-30111000', 'Gabriel', 'Suárez', 'Auxiliar de Almacén', '0412-3330011', 'g.suarez@lab.com', 1, NULL),
 ('48f881d7-3946-4ac4-9ede-1de0f7dcaac8', 'V-22333444', 'Jorge', 'Peña', 'Mensajero Motorizado', '0416-1234567', 'j.pena@lab.com', 1, NULL),
-('69dc501d-b3a1-4096-9ae7-6ca1e3c7d422', 'V-24555666', 'Andrés', 'Castro', 'Analista de Sistemas Lab', '0416-8887766', 'a.castro@lab.com', 1, '{\"certificacion\":\"Administración de Bases de Datos\",\"software\":\"LIMS Pro\"}'),
-('7e42f520-ffaa-4d1f-9f42-c0333f369e41', 'E-16777888', 'Patricia', 'Vargas', 'Especialista en Virología', '0414-6667788', 'p.vargas@lab.com', 1, '{\"especialidad\":\"PCR y Biología Molecular\",\"laboratorio_referencia\":\"Instituto de Higiene\"}'),
-('8630e71a-b8a4-414c-8ff3-a8059f725a57', 'V-28999000', 'Paola', 'Rivas', 'Pasante de Bioanálisis', '0412-9998877', 'p.rivas@lab.com', 1, '{\"universidad\":\"ULA\",\"proyecto\":\"Pruebas de Dengue\"}'),
-('88b2f5cc-648f-4149-a171-9d1be1599fbd', 'E-15777888', 'Ana', 'Martínez', 'Especialista en Microbiología', '0412-8884433', 'a.martinez@lab.com', 1, '{\"especialidad\":\"Bacteriología\",\"colegiado\":\"MB-4432\"}'),
-('a77e576a-4ec5-443c-a6bc-be8f340710d0', 'E-84561230', 'Elena', 'Rodríguez', 'Técnico de Laboratorio', '0424-5556789', 'e.rodriguez@lab.com', 1, '{\"especialidad\":\"Extracción de Muestras Pediátricas\",\"turno\":\"Diurno\"}'),
-('a8ac6304-d56c-4d1f-a48c-23b9f6bc9408', 'V-11888999', 'Roberto', 'Sánchez', 'Gerente de Operaciones', '0212-3334455', 'r.sanchez@lab.com', 1, '{\"postgrado\":\"Gerencia de Salud\",\"certificacion\":\"ISO 9001:2015\"}'),
-('c83cfb04-40cc-41bb-a615-b3a00bce1423', 'V-14222333', 'Ricardo', 'Torres', 'Mantenimiento y Equipos', '0414-2223344', 'r.torres@lab.com', 1, '{\"tecnico\":\"Electromedicina\",\"especialidad\":\"Calibración de Equipos\"}'),
+('69dc501d-b3a1-4096-9ae7-6ca1e3c7d422', 'V-24555666', 'Andrés', 'Castro', 'Analista de Sistemas Lab', '0416-8887766', 'a.castro@lab.com', 1, '{"certificacion":"Administración de Bases de Datos","software":"LIMS Pro"}'),
+('7e42f520-ffaa-4d1f-9f42-c0333f369e41', 'E-16777888', 'Patricia', 'Vargas', 'Especialista en Virología', '0414-6667788', 'p.vargas@lab.com', 1, '{"especialidad":"PCR y Biología Molecular","laboratorio_referencia":"Instituto de Higiene"}'),
+('8630e71a-b8a4-414c-8ff3-a8059f725a57', 'V-28999000', 'Paola', 'Rivas', 'Pasante de Bioanálisis', '0412-9998877', 'p.rivas@lab.com', 1, '{"universidad":"ULA","proyecto":"Pruebas de Dengue"}'),
+('88b2f5cc-648f-4149-a171-9d1be1599fbd', 'E-15777888', 'Ana', 'Martínez', 'Especialista en Microbiología', '0412-8884433', 'a.martinez@lab.com', 1, '{"especialidad":"Bacteriología","colegiado":"MB-4432"}'),
+('a77e576a-4ec5-443c-a6bc-be8f340710d0', 'E-84561230', 'Elena', 'Rodríguez', 'Técnico de Laboratorio', '0424-5556789', 'e.rodriguez@lab.com', 1, '{"especialidad":"Extracción de Muestras Pediátricas","turno":"Diurno"}'),
+('a8ac6304-d56c-4d1f-a48c-23b9f6bc9408', 'V-11888999', 'Roberto', 'Sánchez', 'Gerente de Operaciones', '0212-3334455', 'r.sanchez@lab.com', 1, '{"postgrado":"Gerencia de Salud","certificacion":"ISO 9001:2015"}'),
+('c83cfb04-40cc-41bb-a615-b3a00bce1423', 'V-14222333', 'Ricardo', 'Torres', 'Mantenimiento y Equipos', '0414-2223344', 'r.torres@lab.com', 1, '{"tecnico":"Electromedicina","especialidad":"Calibración de Equipos"}'),
 ('c975a4a1-5e62-45f3-b2d8-d01265eb532c', 'V-21444555', 'Ana', 'Sol', 'Especialista en Endocrinología', '0412-7773344', 'b.luna@lab.com', 1, NULL),
-('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-32084066', 'Mateo', 'Cuevas', 'Bioanalista de Guardia', '0424-7778899', 'm.lopez@lab.com', 1, '{\"especialidad\":\"nada\",\"colegiado\":\"SB-1102\"}');
+('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-32084066', 'Mateo', 'Cuevas', 'Bioanalista de Guardia', '0424-7778899', 'm.lopez@lab.com', 1, '{"especialidad":"nada","colegiado":"SB-1102"}');
 
 -- --------------------------------------------------------
 
@@ -94,7 +94,7 @@ INSERT INTO `empleados` (`id_empleado`, `cedula_empleado`, `nombre_empleado`, `a
 -- Estructura de tabla para la tabla `examenes`
 --
 
-CREATE TABLE `examenes` (
+CREATE TABLE IF NOT EXISTS `examenes` (
   `id_examen` varchar(6) NOT NULL,
   `nombre_examen` varchar(100) NOT NULL,
   `abreviatura_examen` char(4) NOT NULL,
@@ -108,18 +108,18 @@ CREATE TABLE `examenes` (
 -- Volcado de datos para la tabla `examenes`
 --
 
-INSERT INTO `examenes` (`id_examen`, `nombre_examen`, `abreviatura_examen`, `area_examen`, `precio_examen`, `tipo_muestra`, `parametros`) VALUES
-('EX0001', 'Hematología Completa', 'HEM', 'Hematología', 15.00, 'Sangre Total (EDTA)', '[{\"nombre\":\"Hemoglobina\",\"unidad\":\"g/dL\",\"referencia\":{\"M\":[13.5,17.5],\"F\":[12,16]}},{\"nombre\":\"Hematocrito\",\"unidad\":\"%\",\"referencia\":{\"M\":[41,50],\"F\":[36,44]}},{\"nombre\":\"Leucocitos\",\"unidad\":\"mm3\",\"referencia\":{\"general\":[4500,11000]}},{\"nombre\":\"Plaquetas\",\"unidad\":\"mm3\",\"referencia\":{\"general\":[150000,450000]}}]'),
-('EX0002', 'Grupo Sanguíneo y Factor Rh', 'GRU', 'Hematología', 10.00, 'Sangre Total', '[{\"nombre\":\"Grupo\",\"unidad\":\"Texto\",\"referencia\":{\"tipo\":\"cualitativo\"}},{\"nombre\":\"Factor Rh\",\"unidad\":\"Texto\",\"referencia\":{\"tipo\":\"cualitativo\"}}]'),
-('EX0003', 'Glucosa en Ayunas', 'GLU', 'Química Sanguínea', 5.00, 'Suero', '[{\"nombre\":\"Glucosa\",\"unidad\":\"mg/dL\",\"referencia\":{\"general\":[70,110]}}]'),
-('EX0006', 'Prueba de Embarazo (HCG)', 'HCG', 'Serología', 10.00, 'Suero / Orina', '[{\"nombre\":\"HCG\",\"unidad\":\"mIU/mL\",\"referencia\":{\"tipo\":\"cualitativo\",\"notas\":\"Positivo/Negativo\"}}]'),
-('EX0007', 'VDRL (Sífilis)', 'VDRL', 'Serología', 7.00, 'Suero', '[{\"nombre\":\"Resultado\",\"unidad\":\"Dilución\",\"referencia\":{\"tipo\":\"cualitativo\",\"notas\":\"No Reactivo\"}}]'),
-('EX0008', 'Perfil Renal (Urea y Creatinina)', 'PREN', 'Química Sanguínea', 12.00, 'Suero', '[{\"nombre\":\"Urea\",\"unidad\":\"mg/dL\",\"referencia\":{\"general\":[15,45]}},{\"nombre\":\"Creatinina\",\"unidad\":\"mg/dL\",\"referencia\":{\"M\":[0.7,1.3],\"F\":[0.6,1.1]}}]'),
-('EX0009', 'Perfil Hepático', 'PHEP', 'Química Sanguínea', 25.00, 'Suero', '[{\"nombre\":\"TGP (ALAT)\",\"unidad\":\"U/L\",\"referencia\":{\"general\":[0,41]}},{\"nombre\":\"TGO (ASAT)\",\"unidad\":\"U/L\",\"referencia\":{\"general\":[0,40]}},{\"nombre\":\"Bilirrubina Total\",\"unidad\":\"mg/dL\",\"referencia\":{\"general\":[0.1,1.2]}}]'),
-('EX0010', 'VIH (Anticuerpos)', 'VIH', 'Serología', 15.00, 'Suero', '[{\"nombre\":\"Resultado\",\"unidad\":\"S/CO\",\"referencia\":{\"tipo\":\"cualitativo\",\"notas\":\"No Reactivo\"}}]'),
-('EX0011', 'Examen General de Orina', 'EGO', 'Uroanálisis', 8.00, 'Orina', '[{\"nombre\":\"Color\",\"unidad\":\"Texto\",\"referencia\":{\"tipo\":\"cualitativo\"}},{\"nombre\":\"Aspecto\",\"unidad\":\"Texto\",\"referencia\":{\"tipo\":\"cualitativo\"}},{\"nombre\":\"Proteínas\",\"unidad\":\"mg/dL\",\"referencia\":{\"general\":[0,30]}},{\"nombre\":\"Glucosa (Orina)\",\"unidad\":\"mg/dL\",\"referencia\":{\"general\":[0,0.8]}}]'),
-('EX0012', 'Examen de Heces', 'HEC', 'Coprología', 8.00, 'Heces', '[{\"nombre\":\"Consistencia\",\"unidad\":\"Texto\",\"referencia\":{\"tipo\":\"cualitativo\"}},{\"nombre\":\"Parásitos\",\"unidad\":\"Texto\",\"referencia\":{\"tipo\":\"cualitativo\",\"notas\":\"No se observan\"}}]'),
-('EX0013', 'Hormona Tiroidea (TSH)', 'TSH', 'Hormonas', 18.00, 'Suero', '[{\"nombre\":\"TSH\",\"unidad\":\"uIU/mL\",\"referencia\":{\"general\":[0.4,4.2]}}]');
+INSERT IGNORE INTO `examenes` (`id_examen`, `nombre_examen`, `abreviatura_examen`, `area_examen`, `precio_examen`, `tipo_muestra`, `parametros`) VALUES
+('EX0001', 'Hematología Completa', 'HEM', 'Hematología', 15.00, 'Sangre Total (EDTA)', '[{"nombre":"Hemoglobina","unidad":"g/dL","referencia":{"M":[13.5,17.5],"F":[12,16]}},{"nombre":"Hematocrito","unidad":"%","referencia":{"M":[41,50],"F":[36,44]}},{"nombre":"Leucocitos","unidad":"mm3","referencia":{"general":[4500,11000]}},{"nombre":"Plaquetas","unidad":"mm3","referencia":{"general":[150000,450000]}}]'),
+('EX0002', 'Grupo Sanguíneo y Factor Rh', 'GRU', 'Hematología', 10.00, 'Sangre Total', '[{"nombre":"Grupo","unidad":"Texto","referencia":{"tipo":"cualitativo"}},{"nombre":"Factor Rh","unidad":"Texto","referencia":{"tipo":"cualitativo"}}]'),
+('EX0003', 'Glucosa en Ayunas', 'GLU', 'Química Sanguínea', 5.00, 'Suero', '[{"nombre":"Glucosa","unidad":"mg/dL","referencia":{"general":[70,110]}}]'),
+('EX0006', 'Prueba de Embarazo (HCG)', 'HCG', 'Serología', 10.00, 'Suero / Orina', '[{"nombre":"HCG","unidad":"mIU/mL","referencia":{"tipo":"cualitativo","notas":"Positivo/Negativo"}}]'),
+('EX0007', 'VDRL (Sífilis)', 'VDRL', 'Serología', 7.00, 'Suero', '[{"nombre":"Resultado","unidad":"Dilución","referencia":{"tipo":"cualitativo","notas":"No Reactivo"}}]'),
+('EX0008', 'Perfil Renal (Urea y Creatinina)', 'PREN', 'Química Sanguínea', 12.00, 'Suero', '[{"nombre":"Urea","unidad":"mg/dL","referencia":{"general":[15,45]}},{"nombre":"Creatinina","unidad":"mg/dL","referencia":{"M":[0.7,1.3],"F":[0.6,1.1]}}]'),
+('EX0009', 'Perfil Hepático', 'PHEP', 'Química Sanguínea', 25.00, 'Suero', '[{"nombre":"TGP (ALAT)","unidad":"U/L","referencia":{"general":[0,41]}},{"nombre":"TGO (ASAT)","unidad":"U/L","referencia":{"general":[0,40]}},{"nombre":"Bilirrubina Total","unidad":"mg/dL","referencia":{"general":[0.1,1.2]}}]'),
+('EX0010', 'VIH (Anticuerpos)', 'VIH', 'Serología', 15.00, 'Suero', '[{"nombre":"Resultado","unidad":"S/CO","referencia":{"tipo":"cualitativo","notas":"No Reactivo"}}]'),
+('EX0011', 'Examen General de Orina', 'EGO', 'Uroanálisis', 8.00, 'Orina', '[{"nombre":"Color","unidad":"Texto","referencia":{"tipo":"cualitativo"}},{"nombre":"Aspecto","unidad":"Texto","referencia":{"tipo":"cualitativo"}},{"nombre":"Proteínas","unidad":"mg/dL","referencia":{"general":[0,30]}},{"nombre":"Glucosa (Orina)","unidad":"mg/dL","referencia":{"general":[0,0.8]}}]'),
+('EX0012', 'Examen de Heces', 'HEC', 'Coprología', 8.00, 'Heces', '[{"nombre":"Consistencia","unidad":"Texto","referencia":{"tipo":"cualitativo"}},{"nombre":"Parásitos","unidad":"Texto","referencia":{"tipo":"cualitativo","notas":"No se observan"}}]'),
+('EX0013', 'Hormona Tiroidea (TSH)', 'TSH', 'Hormonas', 18.00, 'Suero', '[{"nombre":"TSH","unidad":"uIU/mL","referencia":{"general":[0.4,4.2]}}]');
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ INSERT INTO `examenes` (`id_examen`, `nombre_examen`, `abreviatura_examen`, `are
 -- Estructura de tabla para la tabla `ordenes_servicio`
 --
 
-CREATE TABLE `ordenes_servicio` (
+CREATE TABLE IF NOT EXISTS `ordenes_servicio` (
   `id_orden` int(11) NOT NULL,
   `cedula_paciente` char(36) NOT NULL,
   `cedula_empleado` char(36) NOT NULL,
@@ -140,7 +140,7 @@ CREATE TABLE `ordenes_servicio` (
 -- Volcado de datos para la tabla `ordenes_servicio`
 --
 
-INSERT INTO `ordenes_servicio` (`id_orden`, `cedula_paciente`, `cedula_empleado`, `monto_total`, `estado_pago`, `fecha_orden`) VALUES
+INSERT IGNORE INTO `ordenes_servicio` (`id_orden`, `cedula_paciente`, `cedula_empleado`, `monto_total`, `estado_pago`, `fecha_orden`) VALUES
 (11, 'V-30111222', 'V-12345678', 12.00, 'Pagado', '2026-03-03 13:28:40'),
 (12, 'V-13111222', 'V-25666777', 27.00, 'Pendiente', '2026-03-06 11:11:18'),
 (14, 'V-28555444', 'E-15777888', 25.00, 'Pagado', '2026-03-06 11:16:48'),
@@ -152,7 +152,7 @@ INSERT INTO `ordenes_servicio` (`id_orden`, `cedula_paciente`, `cedula_empleado`
 -- Estructura de tabla para la tabla `pacientes`
 --
 
-CREATE TABLE `pacientes` (
+CREATE TABLE IF NOT EXISTS `pacientes` (
   `id_paciente` char(36) NOT NULL,
   `cedula_paciente` varchar(15) NOT NULL,
   `nombre_paciente` varchar(100) NOT NULL,
@@ -169,7 +169,7 @@ CREATE TABLE `pacientes` (
 -- Volcado de datos para la tabla `pacientes`
 --
 
-INSERT INTO `pacientes` (`id_paciente`, `cedula_paciente`, `nombre_paciente`, `apellido_paciente`, `sexo_paciente`, `fecha_nacimiento`, `telefono_paciente`, `email_paciente`, `direccion_paciente`, `fecha_registro`) VALUES
+INSERT IGNORE INTO `pacientes` (`id_paciente`, `cedula_paciente`, `nombre_paciente`, `apellido_paciente`, `sexo_paciente`, `fecha_nacimiento`, `telefono_paciente`, `email_paciente`, `direccion_paciente`, `fecha_registro`) VALUES
 ('22eef8d4-9895-4921-b18f-c1418cea1afe', 'V-16444333', 'Patricia', 'Herrera', 'F', '1981-12-12', '0412-2228833', 'p.herrera@email.com', 'Av. Intercomunal, Sector El Remanso, Barcelona', '2026-03-02 00:34:25'),
 ('2f92a03a-6954-4994-b0f9-f5aee1454448', 'V-22444555', 'Sofía', 'Torres', 'F', '1994-04-18', '0412-6663344', 'sofia.torres@email.com', 'Urb. Prebo, Calle 110, Valencia', '2026-03-02 00:32:47'),
 ('34399f57-52eb-451a-ba22-bc1dc409099f', 'V-13111222', 'Miguel', 'Ángel', 'M', '1975-07-07', '0414-1234567', 'mangel.75@email.com', 'Barrio Obrero, Carrera 15, San Cristóbal', '2026-03-02 00:34:04'),
@@ -195,7 +195,7 @@ INSERT INTO `pacientes` (`id_paciente`, `cedula_paciente`, `nombre_paciente`, `a
 -- Estructura de tabla para la tabla `resultado_examenes`
 --
 
-CREATE TABLE `resultado_examenes` (
+CREATE TABLE IF NOT EXISTS `resultado_examenes` (
   `id_resultado` int(11) NOT NULL,
   `id_detalle` int(11) NOT NULL,
   `cedula_empleado` char(36) NOT NULL,
@@ -208,9 +208,9 @@ CREATE TABLE `resultado_examenes` (
 -- Volcado de datos para la tabla `resultado_examenes`
 --
 
-INSERT INTO `resultado_examenes` (`id_resultado`, `id_detalle`, `cedula_empleado`, `valores_resultados`, `observaciones`, `fecha_finalizacion`) VALUES
-(1, 2, 'V-28999000', '[{\"nombre\":\"Glucosa\",\"valor\":\"150mg/dL\",\"referencia\":{\"general\":[70,110]}}]', 'Ninguna', '2026-03-10 14:54:30'),
-(3, 4, 'V-28999000', '[{\"nombre\":\"Hemoglobina\",\"valor\":\"100g/dL\",\"referencia\":{\"M\":[13.5,17.5],\"F\":[12,16]}},{\"nombre\":\"Hematocrito\",\"valor\":\"23%\",\"referencia\":{\"M\":[41,50],\"F\":[36,44]}},{\"nombre\":\"Leucocitos\",\"valor\":\"5000mm3\",\"referencia\":{\"general\":[4500,11000]}},{\"nombre\":\"Plaquetas\",\"valor\":\"80000mm3\",\"referencia\":{\"general\":[150000,450000]}}]', 'Creo que algo no esta bien', '2026-03-15 10:36:41');
+INSERT IGNORE INTO `resultado_examenes` (`id_resultado`, `id_detalle`, `cedula_empleado`, `valores_resultados`, `observaciones`, `fecha_finalizacion`) VALUES
+(1, 2, 'V-28999000', '[{"nombre":"Glucosa","valor":"150mg/dL","referencia":{"general":[70,110]}}]', 'Ninguna', '2026-03-10 14:54:30'),
+(3, 4, 'V-28999000', '[{"nombre":"Hemoglobina","valor":"100g/dL","referencia":{"M":[13.5,17.5],"F":[12,16]}},{"nombre":"Hematocrito","valor":"23%","referencia":{"M":[41,50],"F":[36,44]}},{"nombre":"Leucocitos","valor":"5000mm3","referencia":{"general":[4500,11000]}},{"nombre":"Plaquetas","valor":"80000mm3","referencia":{"general":[150000,450000]}}]', 'Creo que algo no esta bien', '2026-03-15 10:36:41');
 
 -- --------------------------------------------------------
 
@@ -218,7 +218,7 @@ INSERT INTO `resultado_examenes` (`id_resultado`, `id_detalle`, `cedula_empleado
 -- Estructura de tabla para la tabla `usuarios`
 --
 
-CREATE TABLE `usuarios` (
+CREATE TABLE IF NOT EXISTS `usuarios` (
   `id_usuario` char(36) NOT NULL,
   `cedula` varchar(15) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -231,121 +231,9 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `cedula`, `password`, `nivel_cuenta`, `id_empleado`, `fecha_registro`) VALUES
+INSERT IGNORE INTO `usuarios` (`id_usuario`, `cedula`, `password`, `nivel_cuenta`, `id_empleado`, `fecha_registro`) VALUES
 ('45f04a35-e361-48c7-ae60-6cc59a4679cb', 'V-24555666', '$2b$10$LM347EUTRGVyFlUtsyVv1.uzykOEP4SwF6HH2a7KLunGc6bq2G2yu', 'lector', '69dc501d-b3a1-4096-9ae7-6ca1e3c7d422', '2026-03-10 23:30:31'),
 ('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-32084066', '$2b$10$tRDod6swdl1PS0b61YUg1O8Yr4M7rCPlZ.nosADPN1hTgNPlvoXF6', 'admin', 'd2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', '2026-03-07 17:20:52');
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `detalle_orden`
---
-ALTER TABLE `detalle_orden`
-  ADD PRIMARY KEY (`id_detalle`),
-  ADD KEY `fk_detalle_orden` (`id_orden`),
-  ADD KEY `fk_detalle_examen` (`abreviatura_examen`);
-
---
--- Indices de la tabla `empleados`
---
-ALTER TABLE `empleados`
-  ADD PRIMARY KEY (`id_empleado`),
-  ADD UNIQUE KEY `uq_cedula_empleado` (`cedula_empleado`);
-
---
--- Indices de la tabla `examenes`
---
-ALTER TABLE `examenes`
-  ADD PRIMARY KEY (`id_examen`),
-  ADD UNIQUE KEY `uq_nombre_examen` (`nombre_examen`),
-  ADD UNIQUE KEY `uq_abreviatura_examen` (`abreviatura_examen`);
-
---
--- Indices de la tabla `ordenes_servicio`
---
-ALTER TABLE `ordenes_servicio`
-  ADD PRIMARY KEY (`id_orden`),
-  ADD KEY `fk_paciente_a_orden` (`cedula_paciente`),
-  ADD KEY `fk_empleado_a_orden` (`cedula_empleado`);
-
---
--- Indices de la tabla `pacientes`
---
-ALTER TABLE `pacientes`
-  ADD PRIMARY KEY (`id_paciente`),
-  ADD UNIQUE KEY `uq_cedula_paciente` (`cedula_paciente`),
-  ADD UNIQUE KEY `uq_email_paciente` (`email_paciente`);
-
---
--- Indices de la tabla `resultado_examenes`
---
-ALTER TABLE `resultado_examenes`
-  ADD PRIMARY KEY (`id_resultado`),
-  ADD KEY `fk_resultado_detalle` (`id_detalle`),
-  ADD KEY `fk_resultado_empleado` (`cedula_empleado`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `uq_username` (`cedula`),
-  ADD KEY `fk_usuarios_empleado` (`id_empleado`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `detalle_orden`
---
-ALTER TABLE `detalle_orden`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
-
---
--- AUTO_INCREMENT de la tabla `ordenes_servicio`
---
-ALTER TABLE `ordenes_servicio`
-  MODIFY `id_orden` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- AUTO_INCREMENT de la tabla `resultado_examenes`
---
-ALTER TABLE `resultado_examenes`
-  MODIFY `id_resultado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `detalle_orden`
---
-ALTER TABLE `detalle_orden`
-  ADD CONSTRAINT `detalle_orden_ibfk_1` FOREIGN KEY (`abreviatura_examen`) REFERENCES `examenes` (`abreviatura_examen`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_detalle_orden` FOREIGN KEY (`id_orden`) REFERENCES `ordenes_servicio` (`id_orden`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `ordenes_servicio`
---
-ALTER TABLE `ordenes_servicio`
-  ADD CONSTRAINT `ordenes_servicio_ibfk_1` FOREIGN KEY (`cedula_paciente`) REFERENCES `pacientes` (`cedula_paciente`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `ordenes_servicio_ibfk_2` FOREIGN KEY (`cedula_empleado`) REFERENCES `empleados` (`cedula_empleado`) ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `resultado_examenes`
---
-ALTER TABLE `resultado_examenes`
-  ADD CONSTRAINT `fk_resultado_detalle` FOREIGN KEY (`id_detalle`) REFERENCES `detalle_orden` (`id_detalle`),
-  ADD CONSTRAINT `fk_resultado_empleado` FOREIGN KEY (`cedula_empleado`) REFERENCES `empleados` (`cedula_empleado`);
-
---
--- Filtros para la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD CONSTRAINT `fk_usuarios_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleados` (`id_empleado`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

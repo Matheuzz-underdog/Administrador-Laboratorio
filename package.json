@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "migration": "npm i && node ./migration.js "
+    "postinstall": "node ./migration.js",
+    "migration:demo": "node ./migration.js demo"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
