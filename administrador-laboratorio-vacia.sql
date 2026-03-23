@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-03-2026 a las 17:51:51
+-- Tiempo de generación: 23-03-2026
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -29,7 +29,7 @@ USE `administrador-laboratorio`;
 -- Estructura de tabla para la tabla `detalle_orden`
 --
 
-CREATE TABLE `detalle_orden` (
+CREATE TABLE IF NOT EXISTS `detalle_orden` (
   `id_detalle` int(11) NOT NULL,
   `id_orden` int(11) NOT NULL,
   `abreviatura_examen` varchar(6) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `detalle_orden` (
 -- Estructura de tabla para la tabla `empleados`
 --
 
-CREATE TABLE `empleados` (
+CREATE TABLE IF NOT EXISTS `empleados` (
   `id_empleado` char(36) NOT NULL,
   `cedula_empleado` varchar(15) NOT NULL,
   `nombre_empleado` varchar(100) NOT NULL,
@@ -60,14 +60,13 @@ CREATE TABLE `empleados` (
 -- Estructura de tabla para la tabla `examenes`
 --
 
-CREATE TABLE `examenes` (
+CREATE TABLE IF NOT EXISTS `examenes` (
   `id_examen` varchar(6) NOT NULL,
   `nombre_examen` varchar(100) NOT NULL,
   `abreviatura_examen` char(4) NOT NULL,
   `area_examen` varchar(100) NOT NULL,
   `precio_examen` decimal(10,2) NOT NULL,
-  `tipo_muestra` varchar(100) NOT NULL,
-  `parametros` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`parametros`))
+  `tipo_muestra` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -76,7 +75,7 @@ CREATE TABLE `examenes` (
 -- Estructura de tabla para la tabla `ordenes_servicio`
 --
 
-CREATE TABLE `ordenes_servicio` (
+CREATE TABLE IF NOT EXISTS `ordenes_servicio` (
   `id_orden` int(11) NOT NULL,
   `cedula_paciente` char(36) NOT NULL,
   `cedula_empleado` char(36) NOT NULL,
@@ -91,7 +90,7 @@ CREATE TABLE `ordenes_servicio` (
 -- Estructura de tabla para la tabla `pacientes`
 --
 
-CREATE TABLE `pacientes` (
+CREATE TABLE IF NOT EXISTS `pacientes` (
   `id_paciente` char(36) NOT NULL,
   `cedula_paciente` varchar(15) NOT NULL,
   `nombre_paciente` varchar(100) NOT NULL,
@@ -107,10 +106,25 @@ CREATE TABLE `pacientes` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `parametros_examen`
+--
+
+CREATE TABLE IF NOT EXISTS `parametros_examen` (
+  `id_parametro` int(11) NOT NULL,
+  `abreviatura_examen` char(4) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `nombre_parametro` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `unidad_parametro` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `referencia_parametro` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `sexo` enum('M','F','ambos') DEFAULT 'ambos'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `resultado_examenes`
 --
 
-CREATE TABLE `resultado_examenes` (
+CREATE TABLE IF NOT EXISTS `resultado_examenes` (
   `id_resultado` int(11) NOT NULL,
   `id_detalle` int(11) NOT NULL,
   `cedula_empleado` char(36) NOT NULL,
@@ -125,7 +139,7 @@ CREATE TABLE `resultado_examenes` (
 -- Estructura de tabla para la tabla `usuarios`
 --
 
-CREATE TABLE `usuarios` (
+CREATE TABLE IF NOT EXISTS `usuarios` (
   `id_usuario` char(36) NOT NULL,
   `cedula` varchar(15) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -178,6 +192,13 @@ ALTER TABLE `pacientes`
   ADD UNIQUE KEY `uq_email_paciente` (`email_paciente`);
 
 --
+-- Indices de la tabla `parametros_examen`
+--
+ALTER TABLE `parametros_examen`
+  ADD PRIMARY KEY (`id_parametro`),
+  ADD KEY `fk_parametro_examen` (`abreviatura_examen`);
+
+--
 -- Indices de la tabla `resultado_examenes`
 --
 ALTER TABLE `resultado_examenes`
@@ -210,6 +231,12 @@ ALTER TABLE `ordenes_servicio`
   MODIFY `id_orden` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `parametros_examen`
+--
+ALTER TABLE `parametros_examen`
+  MODIFY `id_parametro` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `resultado_examenes`
 --
 ALTER TABLE `resultado_examenes`
@@ -234,6 +261,12 @@ ALTER TABLE `ordenes_servicio`
   ADD CONSTRAINT `ordenes_servicio_ibfk_2` FOREIGN KEY (`cedula_empleado`) REFERENCES `empleados` (`cedula_empleado`) ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `parametros_examen`
+--
+ALTER TABLE `parametros_examen`
+  ADD CONSTRAINT `fk_parametro_examen` FOREIGN KEY (`abreviatura_examen`) REFERENCES `examenes` (`abreviatura_examen`) ON DELETE CASCADE;
+
+--
 -- Filtros para la tabla `resultado_examenes`
 --
 ALTER TABLE `resultado_examenes`
@@ -251,12 +284,12 @@ ALTER TABLE `usuarios`
 --
 -- Datos de prueba: Empleado y Usuario Admin
 --
-
-INSERT INTO `empleados` (`id_empleado`, `cedula_empleado`, `nombre_empleado`, `apellido_empleado`, `cargo_empleado`, `telefono_empleado`, `email_empleado`, `actividad_empleado`, `datos_profesionales`) VALUES
+INSERT IGNORE INTO `empleados` (`id_empleado`, `cedula_empleado`, `nombre_empleado`, `apellido_empleado`, `cargo_empleado`, `telefono_empleado`, `email_empleado`, `actividad_empleado`, `datos_profesionales`) VALUES
 ('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-12345678', 'Admin', 'Principal', 'Administrador', '0412-1234567', 'admin@lab.com', 1, '{"cargo":"admin","departamento":"Sistemas"}');
 
-INSERT INTO `usuarios` (`id_usuario`, `cedula`, `password`, `nivel_cuenta`, `id_empleado`, `fecha_registro`) VALUES
+INSERT IGNORE INTO `usuarios` (`id_usuario`, `cedula`, `password`, `nivel_cuenta`, `id_empleado`, `fecha_registro`) VALUES
 ('f47ac10b-58cc-4372-a567-0e02b2c3d479', 'V-12345678', '$2b$10$0tSgXBbdHGBJEAR6MC4pT.sZKPoEuu9N4s17FR9pCSKL4rmslysty', 'admin', 'd2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', '2026-03-23 12:00:00');
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
