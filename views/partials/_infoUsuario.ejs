@@ -1,0 +1,29 @@
+<div id="info-user-modal-fondo">
+  <div class="info-user-modal">
+    <div class="top-info-usuario">
+      <h3>Info del usuario <span class="id-usuario"><%= userID %></span></h3>
+      <button id="cerrar-info-btn" onclick="cerrarInfo()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="cerrar-info-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="mid-info-usuario">
+        <div class="identificacion-div">
+            <p class="id-texto">Nombre: <span class="info-user-ind"><%= nombreEmpleado %></span></p>
+            <p class="id-texto">Apellido: <span class="info-user-ind"><%= apellidoEmpleado %></span></p>
+            <p class="id-texto">Cédula de Identidad: <span class="info-user-ind"><%= cedula %></span></p>
+            <p class="id-texto">Cargo: <span class="info-user-ind"><%= cargoUsuario %></span></p>
+            <div class="contacto-user-div">
+                <h3>Información de contacto</h3>
+                <p class="id-texto">Teléfono: <span class="info-user-ind"><%= telefonoUsuario %></span></p>
+                <p class="id-texto">Correo Electrónico: <span class="info-user-ind"><%= emailUsuario %></span></p>
+            </div>
+        </div>
+        <div class="imagen-div">
+            <img src="/img/profile-photo-placeholder.png" alt="Foto de perfil del usuario" class="user-pfp">
+        </div>
+    </div>
+  </div>
+</div>
