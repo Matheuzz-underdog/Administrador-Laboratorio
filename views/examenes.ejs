@@ -37,9 +37,7 @@
       <tbody>
         <% for (var i = 0; i < examenes.length; i++) { %>
           <% var e = examenes[i]; %>
-          <% var params = []; %>
-          <% try { params = JSON.parse(e.parametros); } catch(ex) { params = []; } %>
-          <% if (!Array.isArray(params)) { params = []; } %>
+          <% var params = Array.isArray(e.parametros) ? e.parametros : []; %>
           <tr>
             <td><%= e.id_examen %></td>
             <td><%= e.nombre_examen %></td>

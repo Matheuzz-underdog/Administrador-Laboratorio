@@ -285,10 +285,10 @@ ALTER TABLE `usuarios`
 -- Datos de prueba: Empleado y Usuario Admin
 --
 INSERT IGNORE INTO `empleados` (`id_empleado`, `cedula_empleado`, `nombre_empleado`, `apellido_empleado`, `cargo_empleado`, `telefono_empleado`, `email_empleado`, `actividad_empleado`, `datos_profesionales`) VALUES
-('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-12345678', 'Admin', 'Principal', 'Administrador', '0412-1234567', 'admin@lab.com', 1, '{"cargo":"admin","departamento":"Sistemas"}');
+('d2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', 'V-12345678', 'Admin', 'Nistra', 'lo ve todo', '0424-7778899', 'm.lopez@lab.com', 1, '{"especialidad":"nada","colegiado":"SB-1102"}');
 
 INSERT IGNORE INTO `usuarios` (`id_usuario`, `cedula`, `password`, `nivel_cuenta`, `id_empleado`, `fecha_registro`) VALUES
-('f47ac10b-58cc-4372-a567-0e02b2c3d479', 'V-12345678', '$2b$10$0tSgXBbdHGBJEAR6MC4pT.sZKPoEuu9N4s17FR9pCSKL4rmslysty', 'admin', 'd2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', '2026-03-23 12:00:00');
+('f47ac10b-58cc-4372-a567-0e02b2c3d479', 'V-12345678', '$2b$10$0tSgXBbdHGBJEAR6MC4pT.sZKPoEuu9N4s17FR9pCSKL4rmslysty', 'admin', 'd2fdf9bb-13f2-4e52-9ca3-e0d472ebe5f6', '2026-03-07 17:20:52');
 
 COMMIT;
 
