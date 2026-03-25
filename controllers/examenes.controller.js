@@ -7,6 +7,11 @@ class Controller {
     return listaExamenes.reverse();
   }
 
+  static async contarExamenes() {
+    const cuenta = await examenes.contar();
+    return cuenta[0];
+  }
+
   // busca examen por abrev
   static async buscarExamenDeseado(abbrevEnv) {
     if (!abbrevEnv || !valid.longitud(abbrevEnv.trim())) {

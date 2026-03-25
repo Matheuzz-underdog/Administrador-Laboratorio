@@ -4,13 +4,14 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const rateLimit = require("express-rate-limit");
+const { usuarioInfo } = require('./middlewares/userData');
 
 var indexRouter = require("./routes/index.routes");
 var pacientesRouter = require("./routes/pacientes.routes");
 var empleadosRouter = require("./routes/empleados.routes");
 var examenesRouter = require("./routes/examenes.routes");
 var ordenesRouter = require("./routes/ordenes.routes");
-var resultadoExamenes = require("./routes/resultados.routes")
+var resultadoExamenes = require("./routes/resultados.routes");
 var usuariosRouter = require("./routes/usuarios.routes");
 var loginRouter = require("./routes/login.routes");
 
@@ -23,12 +24,12 @@ const pjson = require("./package.json");
 
 //limite de llamadas
 const limiter = rateLimit({
-    windowMs: 60 * 1000,   
-    max: 100,               
-    message: {
-        error: "Demasiadas peticiones",
-        detalle: "Ha excedido el límite de peticiones, intente en un momento"
-    }
+  windowMs: 60 * 1000,
+  max: 100,
+  message: {
+    error: "Demasiadas peticiones",
+    detalle: "Ha excedido el límite de peticiones, intente en un momento",
+  },
 });
 
 process.argv[2] = "dev";
@@ -51,11 +52,12 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(limiter)
+app.use(limiter);
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/login", loginRouter);
+app.use(usuarioInfo)
 
+app.use("/login", loginRouter);
 app.use("/", indexRouter);
 app.use("/pacientes", pacientesRouter);
 app.use("/empleados", empleadosRouter);
@@ -77,7 +79,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.render("error", { page: "" });
 });
 
 module.exports = app;

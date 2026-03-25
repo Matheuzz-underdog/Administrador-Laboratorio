@@ -77,7 +77,8 @@ class Usuarios {
                             {
                                 id: results[0].id_usuario,
                                 nivel: results[0].nivel_cuenta,
-                                id_empleado: results[0].id_empleado
+                                id_empleado: results[0].id_empleado,
+                                cedula: results[0].cedula,
                             },
                             process.env.JWT_SECRET,
                             { expiresIn: '8h' }

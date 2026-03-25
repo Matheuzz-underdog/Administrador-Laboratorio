@@ -1,24 +1,25 @@
-// recargarAlCerrar indica si al cerrar el modal se debe recargar la pagina
-let recargarAlCerrar = false;
+// // recargarAlCerrar indica si al cerrar el modal se debe recargar la pagina
+// let recargarAlCerrar = false;
 
-// Abre el modal con el mensaje. Si recargar=true, al cerrarlo se recarga la pagina.
-function mostrarMensaje(texto, exito, recargar) {
-  recargarAlCerrar = recargar || false;
-  const parrafo = document.getElementById("texto-modal");
-  parrafo.textContent = texto;
-  parrafo.style.color = exito ? "green" : "red";
-  document.getElementById("modal-fondo").style.display = "block";
-}
+// // Abre el modal con el mensaje. Si recargar=true, al cerrarlo se recarga la pagina.
+// function mostrarMensaje(texto, exito, recargar) {
+//   recargarAlCerrar = recargar || false;
+//   const parrafo = document.getElementById("texto-modal");
+//   parrafo.textContent = texto;
+//   parrafo.style.color = exito ? "green" : "red";
+//   document.getElementById("modal-fondo").style.display = "block";
+// }
 
-// recarga si corresponde
-function cerrarModal() {
-  document.getElementById("modal-fondo").style.display = "none";
-  if (recargarAlCerrar) {
-    location.reload();
-  }
-}
+// // recarga si corresponde
+// function cerrarModal() {
+//   document.getElementById("modal-fondo").style.display = "none";
+//   if (recargarAlCerrar) {
+//     location.reload();
+//   }
+// }
 
 //CREAR
+
 async function crearPaciente() {
   const datos = {
     cedula: document.getElementById("c-cedula").value.trim(),
@@ -42,21 +43,15 @@ async function crearPaciente() {
 
     if (respuesta.ok) {
       // exito=true, recargar=true -> al cerrar el modal se actualiza la tabla
-      mostrarMensaje("Paciente registrado correctamente.", true, true);
+      // mostrarMensaje("Paciente registrado correctamente.", true, true);
       document.getElementById("form-crear").reset();
-    } else {
-      mostrarMensaje(
-        "Error al registrar: " + (json.detalle || json.error),
-        false,
-        false,
-      );
     }
   } catch (error) {
-    mostrarMensaje(
-      "Error de conexion al intentar registrar el paciente.",
-      false,
-      false,
-    );
+    // mostrarMensaje(
+    //   "Error de conexion al intentar registrar el paciente.",
+    //   false,
+    //   false,
+    // );
   }
 }
 
@@ -124,6 +119,7 @@ async function buscarPaciente() {
   }
 }
 
+/*
 //BUSCAR POR ID
 async function buscarPorId() {
   const id = document.getElementById("bid-id").value.trim();
@@ -192,17 +188,18 @@ async function buscarPorId() {
       '<p style="color:red;">Error de conexion al buscar el paciente.</p>';
   }
 }
+*/
 
 //ACTUALIZAR
 async function actualizarPaciente() {
   const cedulaActual = document.getElementById("a-cedula-actual").value.trim();
 
   if (!cedulaActual) {
-    mostrarMensaje(
-      "Debe indicar la cedula actual del paciente para actualizar.",
-      false,
-      false,
-    );
+    // mostrarMensaje(
+    //   "Debe indicar la cedula actual del paciente para actualizar.",
+    //   false,
+    //   false,
+    // );
     return;
   }
 
@@ -226,7 +223,7 @@ async function actualizarPaciente() {
   if (direccion) datos.direccion = direccion;
 
   if (Object.keys(datos).length === 0) {
-    mostrarMensaje("Complete al menos un campo para actualizar.", false, false);
+    // mostrarMensaje("Complete al menos un campo para actualizar.", false, false);
     return;
   }
 
@@ -244,20 +241,20 @@ async function actualizarPaciente() {
     const json = await respuesta.json();
 
     if (respuesta.ok) {
-      mostrarMensaje("Paciente actualizado correctamente.", true, true);
+      // mostrarMensaje("Paciente actualizado correctamente.", true, true);
     } else {
-      mostrarMensaje(
-        "Error al actualizar: " + (json.detalle || json.error),
-        false,
-        false,
-      );
+      // mostrarMensaje(
+      //   "Error al actualizar: " + (json.detalle || json.error),
+      //   false,
+      //   false,
+      // );
     }
   } catch (error) {
-    mostrarMensaje(
-      "Error de conexion al intentar actualizar el paciente.",
-      false,
-      false,
-    );
+    // mostrarMensaje(
+    //   "Error de conexion al intentar actualizar el paciente.",
+    //   false,
+    //   false,
+    // );
   }
 }
 
@@ -266,11 +263,11 @@ async function eliminarPaciente() {
   const cedula = document.getElementById("e-cedula").value.trim();
 
   if (!cedula) {
-    mostrarMensaje(
-      "Ingrese la cedula del paciente que desea eliminar.",
-      false,
-      false,
-    );
+    // mostrarMensaje(
+    //   "Ingrese la cedula del paciente que desea eliminar.",
+    //   false,
+    //   false,
+    // );
     return;
   }
 
@@ -287,19 +284,19 @@ async function eliminarPaciente() {
     const json = await respuesta.json();
 
     if (respuesta.ok) {
-      mostrarMensaje("Paciente eliminado correctamente.", true, true);
+      // mostrarMensaje("Paciente eliminado correctamente.", true, true);
     } else {
-      mostrarMensaje(
-        "Error al eliminar: " + (json.detalle || json.error),
-        false,
-        false,
-      );
+      // mostrarMensaje(
+      //   "Error al eliminar: " + (json.detalle || json.error),
+      //   false,
+      //   false,
+      // );
     }
   } catch (error) {
-    mostrarMensaje(
-      "Error de conexion al intentar eliminar el paciente.",
-      false,
-      false,
-    );
+    // mostrarMensaje(
+    //   "Error de conexion al intentar eliminar el paciente.",
+    //   false,
+    //   false,
+    // );
   }
 }

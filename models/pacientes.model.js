@@ -17,6 +17,26 @@ class Pacientes {
     }
   }
 
+  static async contar() {
+    return new Promise((resolve, reject) => {
+      db.query("SELECT COUNT(*) FROM pacientes", (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    });
+  }
+  static async hoy() {
+    return new Promise((resolve, reject) => {
+      db.query(
+        "SELECT COUNT(*) as total FROM pacientes WHERE DATE(fecha_registro) = CURDATE()",
+        (err, result) => {
+          if (err) reject(err);
+          resolve(result);
+        },
+      );
+    });
+  }
+
   static async buscarCedula(cedulaValor) {
     try {
       const sql = "SELECT * FROM pacientes WHERE cedula_paciente = ?";
@@ -89,10 +109,10 @@ class Pacientes {
 
   static async delete(cedula) {
     try {
-      const paciente = await this.buscarCedula(cedula)
+      const paciente = await this.buscarCedula(cedula);
       const sql = "DELETE FROM pacientes WHERE cedula_paciente = ?";
       await query(sql, [cedula]);
-      return paciente
+      return paciente;
     } catch (error) {
       throw new Error(`Error al eliminar paciente: ${error.message}`);
     }
@@ -107,8 +127,7 @@ class Pacientes {
     } catch (error) {
       throw new Error(`Error al buscar paciente por ID: ${error.message}`);
     }
-  } 
+  }
 }
-
 
 module.exports = Pacientes;

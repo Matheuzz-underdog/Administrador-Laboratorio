@@ -10,6 +10,11 @@ class Controller {
     return todos;
   }
 
+  static async contarEmpleados() {
+    const cuenta = await Empleados.contar();
+    return cuenta[0];
+  }
+
   static async buscarPorCedula(id) {
     // cedula
     if (!id) {

@@ -10,6 +10,22 @@ class Ordenes {
       });
     });
   }
+  static async contar() {
+    return new Promise((resolve, reject) => {
+      db.query("SELECT COUNT(*) FROM ordenes_servicio", (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    });
+  }
+  static async hoy() {
+    return new Promise((resolve, reject) => {
+      db.query('SELECT COUNT(*) as total FROM ordenes_servicio WHERE DATE(fecha_orden) = CURDATE()', (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    });
+  }
 
   static async buscar(cedula) {
     return new Promise((resolve, reject) => {
@@ -185,7 +201,7 @@ class Ordenes {
         if (err) throw err;
       },
     );
-    return `Se cambió el estado de la orden con el ID #${id} a ${cambiar}`
+    return `Se cambió el estado de la orden con el ID #${id} a ${cambiar}`;
   }
 
   // idk

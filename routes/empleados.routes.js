@@ -33,7 +33,11 @@ router.get(
           total: 0,
         });
       }
-      res.render("empleados", { empleados: datos.reverse(), form: "get-form" });
+      res.render("empleados", {
+        empleados: datos,
+        form: "get-form",
+        pagina: "empleados",
+      });
     } catch (err) {
       if (err.status) {
         return res.status(err.status).json({

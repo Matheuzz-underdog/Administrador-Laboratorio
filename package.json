@@ -18,6 +18,7 @@
     "express-rate-limit": "^8.3.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.3",
+    "lucide": "^0.577.0",
     "morgan": "~1.9.1",
     "mysql": "^2.18.1",
     "uuid": "^13.0.0"

@@ -12,6 +12,14 @@ class Controller {
     const ordenes = await ordenesModel.todos();
     return ordenes;
   }
+  static async contarOrdenes() {
+    const cuenta = await ordenesModel.contar();
+    return cuenta[0];
+  }
+  static async cuantasHoy() {
+    const hoy = await ordenesModel.hoy();
+    return hoy[0];
+  }
 
   // AAAAAAAAAAAAAAAAAAAAAAAAAAa
   static async buscarOrden(cedula) {

@@ -11,6 +11,15 @@ class Empleados {
     });
   }
 
+  static async contar() {
+    return new Promise((resolve, reject) => {
+      db.query("SELECT COUNT(*) FROM empleados", (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    })
+  }
+
   static async buscarCedula(cedula) {
     return new Promise((resolve, reject) => {
       db.query(

@@ -1,43 +1,92 @@
 * {
-  margin: 0;
   box-sizing: border-box;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS";
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.todo-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 280px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-direction: column;
-    border: 1px solid #000;
-    border-radius: 10px;
-    padding: 10px;
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100dvw;
+  height: 100dvh;
+  background: #11111d;
 }
 
-.titulo-login {
-    font-size: 0.95rem;
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 300px;
+  height: 350px;
+  background: #fff;
+  border-radius: 20px;
 }
 
-.iniciar-sesion-texto {
-    font-size: 0.9rem;
-    color: rgb(39, 39, 39);
+.user-svg {
+  width: 60px;
+  height: 50px;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+.login-text-div {
+  text-align: center;
+}
+.login-text-div h1 {
+  font-size: 1rem;
+}
+.login-text-div p {
+  font-size: 0.6rem;
 }
 
-.idk {
-    margin-left: auto;
+.login-formulario form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
-.idk button {
-    padding: 0px 20px 0px 20px;
+
+input {
+  width: 100%;
+  padding: 0 10px 0 10px;
+  height: 30px;
+  border: none;
+  border-bottom: 2px solid #11111d;
+  border-radius: 2px 2px 0 0;
+  outline: none;
+  margin-bottom: 10px;
+  font-size: 0.7rem;
+}
+input[type="text"]:focus,
+input[type="password"]:focus {
+  background: #eee;
+}
+
+.entrar-btn {
+  width: 100%;
+  text-align: right;
+}
+
+button {
+  font-weight: 400;
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  border: none;
+  background: #ddd;
+}
+button:hover {
+  animation: 0.5s ease forwards entrar-anim;
+}
+
+@keyframes entrar-anim {
+  0% {
+    cursor: pointer;
+  }
+  100% {
+    cursor: pointer;
+    background: #11111d;
+    color: #fff;
+  }
 }

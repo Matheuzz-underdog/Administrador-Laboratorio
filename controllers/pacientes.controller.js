@@ -9,6 +9,15 @@ class Controller {
     return datos;
   }
 
+  static async contarPacientes() {
+    const cuenta = await pacientes.contar();
+    return cuenta[0];
+  }
+  static async cuantosHoy() {
+    const hoy = await pacientes.hoy();
+    return hoy[0];
+  }
+
   static async buscarPorCedula(cedula) {
     if (!cedula) {
       throw {

@@ -4,29 +4,40 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/css/login.css" />
-  <title>Login — Sistema de Laboratorio</title>
+  <title>Login</title>
 </head>
 
 <body>
-  <div class="todo-container">
-    <h2 class="titulo-login">Sistema de Gestión de Laboratorio</h2>
+  <section class="login-container">
 
-    <h3 class="iniciar-sesion-texto">Iniciar Sesión</h3>
+    <div class="login-text-div">
+      <svg xmlns="http://www.w3.org/2000/svg" class="user-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+      <h1 class="login-title">INICIAR SESION</h1>
+      <p>ingrese sus datos</p>
+    </div>
 
     <% if (typeof error !== 'undefined') { %>
     <p><strong>Error:</strong> <%= error %></p>
     <% } %>
 
-    <form method="POST" action="/login">
-      <label for="cedula">
-        <input type="text" id="cedula" name="cedula" placeholder="cedula" required></label>
+    <div class="login-formulario">
+      <form method="POST" action="/login">
 
-      <label for="password">
-        <input type="password" id="password" placeholder="contraseña" name="password" required></label>
+        <label for="cedula">
+          <input type="text" id="cedula" name="cedula" placeholder="cedula" pattern="^[VE]-[0-8]+$" required>
+        </label>
+        <label for="password">
+          <input type="password" id="password" placeholder="contraseña" name="password" required>
+        </label>
 
-      <span class="idk"><button type="submit">Entrar</button></span>
-    </form>
-  </div>
+        <span class="entrar-btn"><button type="submit">Entrar</button></span>
+      </form>
+
+    </div>
+  </section>
 </body>
 
 </html>

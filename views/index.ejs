@@ -1,19 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/style.css" />
-    <title><%= title %></title>
-  </head>
-  <body>
-    <%- include('partials/_header') %>
-    <div class="index-text">
-      <h1 id="initial-msg">Bienvenido a <%= title %>!</h1>
-      <p>
-        [Este es un placeholder de lo que va a ser el dashboard del sistema]
-      </p>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Inicio</title>
+</head>
+
+<body>
+  <%- include('partials/_navbar') %>
+  <%- include('partials/_infoUsuario') %>
+  <section class="todo-container">
+    <div class="info-index-container">
+      <div class="pacientes-info">
+        <h3 class="info-title">Pacientes</h3>
+        <p class="contador-info"><%= total.pacientes["COUNT(*)"] %></p>
+        <p class="registradoshoy-text"><%= cuantos.cuantosPacientes.total %> paciente(s) registrados hoy</p>
+      </div>
+      <div class="ordenes-info">
+        <h3 class="info-title">Ordenes</h3>
+        <p class="contador-info"><%= total.ordenes["COUNT(*)"] %></p>
+        <p class="registradoshoy-text"><%= cuantos.cuantasOrdenes.total %> orden(es) registradas hoy</p>
+      </div>
+      <div class="examenes-info">
+        <h3 class="info-title">Examenes</h3>
+        <p class="contador-info"><%= total.examenes["COUNT(*)"] %></p>
+      </div>
+      <div class="empleados-info">
+        <h3 class="info-title">Empleados</h3>
+        <p class="contador-info"><%= total.empleados["COUNT(*)"] %></p>
+      </div>
     </div>
-    <%- include('partials/_footer') %>
-  </body>
+  </section>
+</body>
+
+<script src="/js/navbar.js"></script>
+
 </html>

@@ -49,6 +49,15 @@ class Examenes {
       });
     });
   }
+  
+  static async contar() {
+    return new Promise((resolve, reject) => {
+      db.query("SELECT COUNT(*) FROM examenes", (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    })
+  }
 
   static async listaAbreviaturas() {
     const todosExamenes = await this.listaTotal();

@@ -5,207 +5,205 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css" />
-  <title>Gestion de Pacientes</title>
+  <title>Pacientes</title>
 </head>
 
 <body>
-  <%- include('partials/_header') %>
+  <%- include('partials/_navbar') %>
+  <%- include('partials/_infoUsuario') %>
+  <%- include('partials/_creacion') %>
+  <section class="todo-container">
 
-  <h1>Gestion de Pacientes</h1>
-  <hr>
-
-  <div id="modal-fondo" onclick="cerrarModal()" style="display:none;
-            position:fixed;
-            top:0; left:0;
-            width:100%; height:100%;
-            background-color:rgba(0,0,0,0.45);">
-
-    <div onclick="event.stopPropagation()" style="position:absolute;
-            top:50%; left:50%;
-            transform:translate(-50%, -50%);
-            background:white;
-            border:2px solid black;
-            padding:30px 40px;
-            min-width:280px;
-            max-width:420px;
-            text-align:center;">
-
-      <p id="texto-modal" style="font-size:1.1em; margin:0 0 18px 0;"></p>
-      <small>click para cerrar</small>
-
+    <% if (datos && datos.length > 0) { %>
+    <div class="todo-principal-pacientes">
+      <div class="top-pacientes">
+        <h3 class="title-section">Pacientes</h3>
+        <label for="busqueda">
+          <input type="text" id="b-cedula" class='buscador-paciente' placeholder="V-12345678">
+          <button type="button" class="buscar-boton paciente" onclick="buscarPaciente()">Buscar</button>
+        </label>
+      </div>
+      <div class="block-top"></div>
+      <table class="table-general table-pacientes">
+        <thead>
+          <tr>
+            <th>Cedula</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Sexo</th>
+            <th>Fecha Nacimiento</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            <th>Direccion</th>
+            <th>Fecha Registro</th>
+            <% if (nivel === "admin" && "editor") { %>
+            <th></th>
+            <% } %>
+          </tr>
+        </thead>
+        <tbody>
+          <% datos.forEach(function(p) { %>
+          <tr>
+            <td><%= p.cedula_paciente %></td>
+            <td><%= p.nombre_paciente %></td>
+            <td><%= p.apellido_paciente %></td>
+            <td><%= p.sexo_paciente %></td>
+            <td><%= p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-VE') : '-' %></td>
+            <td><%= p.telefono_paciente || '-' %></td>
+            <td><%= p.email_paciente || '-' %></td>
+            <td><%= p.direccion_paciente || '-' %></td>
+            <td><%= p.fecha_registro ? new Date(p.fecha_registro).toLocaleString('es-VE') : '-' %></td>
+            <% if (nivel === "editor" || nivel === "admin") { %>
+            <td class="acciones-td">
+              <button class="boton-accion-tabla editar" onclick="editarPacienteAbrir('editar', '<%= p.cedula_paciente%>')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen">
+                  <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                </svg>
+              </button>
+              <% } if (nivel === "admin") { %>
+              <button class="boton-accion-tabla editar" onclick="editarPacienteAbrir('editar', '<%= p.cedula_paciente%>')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </td>
+            <% } else if (nivel === "editor") { %>
+            </td>
+            <% } %>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p>No hay datos registrados.</p>
+      <% } %>
     </div>
-  </div>
+    <div class="area-admin-editor">
+      <button class="area-admin-editor-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
+          <path d="M5 12h14" />
+          <path d="M12 5v14" />
+        </svg>
+      </button>
+    </div>
 
-  <h2>Lista de Pacientes</h2>
+    <div class="window-crear-paciente" id="window-crear-paciente">
 
-  <% if (pacientes && pacientes.length > 0) { %>
-  <table border="1" cellpadding="6" cellspacing="0">
-    <thead>
-      <tr>
-        <th>Cedula</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Sexo</th>
-        <th>Fecha Nacimiento</th>
-        <th>Telefono</th>
-        <th>Email</th>
-        <th>Direccion</th>
-        <th>Fecha Registro</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% pacientes.forEach(function(p) { %>
-      <tr>
-        <td><%= p.cedula_paciente %></td>
-        <td><%= p.nombre_paciente %></td>
-        <td><%= p.apellido_paciente %></td>
-        <td><%= p.sexo_paciente %></td>
-        <td><%= p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-VE') : '-' %></td>
-        <td><%= p.telefono_paciente || '-' %></td>
-        <td><%= p.email_paciente || '-' %></td>
-        <td><%= p.direccion_paciente || '-' %></td>
-        <td><%= p.fecha_registro ? new Date(p.fecha_registro).toLocaleString('es-VE') : '-' %></td>
-      </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <% } else { %>
-  <p>No hay pacientes registrados.</p>
-  <% } %>
+      <form id="form-crear" class="form-crear-paciente">
+        <div class="top-info-usuario">
+          <h3>Ingrese la información requerida</h3>
+          <button id="cerrar-info-btn" onclick="cerrarCrearPaciente()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="cerrar-info-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
 
-  <hr>
+        <div class="field">
+          <label for="c-cedula">Cédula</label>
+          <input type="text" id="c-cedula" placeholder="V-12345678">
+        </div>
 
-  <h2>Registrar Paciente</h2>
+        <div class="field">
+          <label for="c-nombre">Nombre</label>
+          <input type="text" id="c-nombre">
+        </div>
 
-  <form id="form-crear">
-    <table>
-      <tr>
-        <td><label for="c-cedula">Cedula:</label></td>
-        <td><input type="text" id="c-cedula" placeholder="V-12345678"></td>
-      </tr>
-      <tr>
-        <td><label for="c-nombre">Nombre:</label></td>
-        <td><input type="text" id="c-nombre"></td>
-      </tr>
-      <tr>
-        <td><label for="c-apellido">Apellido:</label></td>
-        <td><input type="text" id="c-apellido"></td>
-      </tr>
-      <tr>
-        <td><label for="c-sexo">Sexo:</label></td>
-        <td>
+        <div class="field">
+          <label for="c-apellido">Apellido</label>
+          <input type="text" id="c-apellido">
+        </div>
+
+        <div class="field">
+          <label for="c-sexo">Sexo</label>
           <select id="c-sexo">
             <option value="">-- Seleccione --</option>
             <option value="M">Masculino</option>
             <option value="F">Femenino</option>
           </select>
-        </td>
-      </tr>
-      <tr>
-        <td><label for="c-fecha">Fecha Nacimiento:</label></td>
-        <td><input type="date" id="c-fecha"></td>
-      </tr>
-      <tr>
-        <td><label for="c-telefono">Telefono:</label></td>
-        <td><input type="text" id="c-telefono" placeholder="0412-1234567"></td>
-      </tr>
-      <tr>
-        <td><label for="c-email">Email (opcional):</label></td>
-        <td><input type="email" id="c-email"></td>
-      </tr>
-      <tr>
-        <td><label for="c-direccion">Direccion:</label></td>
-        <td><input type="text" id="c-direccion"></td>
-      </tr>
-    </table>
-    <br>
-    <button type="button" onclick="crearPaciente()">Registrar</button>
-  </form>
+        </div>
 
-  <hr>
+        <div class="field">
+          <label for="c-fecha">Fecha de nacimiento</label>
+          <input type="date" id="c-fecha">
+        </div>
 
-  <h2>Buscar Paciente por Cedula</h2>
+        <div class="field">
+          <label for="c-telefono">Teléfono</label>
+          <input type="text" id="c-telefono" placeholder="0412-1234567">
+        </div>
 
-  <label for="b-cedula">Cedula:</label>
-  <input type="text" id="b-cedula" placeholder="V-12345678">
-  <button type="button" onclick="buscarPaciente()">Buscar</button>
+        <div class="field">
+          <label for="c-email">Email <span class="opcional">(opcional)</span></label>
+          <input type="email" id="c-email">
+        </div>
 
-  <div id="resultado-busqueda"></div>
+        <div class="field">
+          <label for="c-direccion">Dirección</label>
+          <input type="text" id="c-direccion">
+        </div>
 
-  <hr>
+        <button type="button" onclick="crearPaciente()">Registrar paciente</button>
 
-  <h2>Buscar Paciente por ID</h2>
-  <p>Ingrese los primeros 5 caracteres del ID del paciente.</p>
+      </form>
+    </div>
 
-  <label for="bid-id">ID:</label>
-  <input type="text" id="bid-id" placeholder="a1b2c" maxlength="5">
-  <button type="button" onclick="buscarPorId()">Buscar</button>
+    <!-- <table>
+        <tr>
+          <td><label for="a-cedula-actual">Cedula actual:</label></td>
+          <td><input type="text" id="a-cedula-actual" placeholder="V-12345678"></td>
+        </tr>
+        <tr>
+          <td><label for="a-cedula-nueva">Nueva cedula (opcional):</label></td>
+          <td><input type="text" id="a-cedula-nueva" placeholder="V-12345678"></td>
+        </tr>
+        <tr>
+          <td><label for="a-nombre">Nombre:</label></td>
+          <td><input type="text" id="a-nombre"></td>
+        </tr>
+        <tr>
+          <td><label for="a-apellido">Apellido:</label></td>
+          <td><input type="text" id="a-apellido"></td>
+        </tr>
+        <tr>
+          <td><label for="a-sexo">Sexo:</label></td>
+          <td>
+            <select id="a-sexo">
+              <option value="">-- Sin cambio --</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="a-fecha">Fecha Nacimiento:</label></td>
+          <td><input type="date" id="a-fecha"></td>
+        </tr>
+        <tr>
+          <td><label for="a-telefono">Telefono:</label></td>
+          <td><input type="text" id="a-telefono"></td>
+        </tr>
+        <tr>
+          <td><label for="a-email">Email:</label></td>
+          <td><input type="email" id="a-email"></td>
+        </tr>
+        <tr>
+          <td><label for="a-direccion">Direccion:</label></td>
+          <td><input type="text" id="a-direccion"></td>
+        </tr>
+      </table>
+      <br>
+      <button type="button" onclick="actualizarPaciente()">Actualizar</button> -->
 
-  <div id="resultado-busqueda-id"></div>
-
-  <hr>
-
-  <h2>Actualizar Paciente</h2>
-  <p>Solo complete los campos que desea cambiar. La cedula actual es obligatoria.</p>
-
-  <table>
-    <tr>
-      <td><label for="a-cedula-actual">Cedula actual:</label></td>
-      <td><input type="text" id="a-cedula-actual" placeholder="V-12345678"></td>
-    </tr>
-    <tr>
-      <td><label for="a-cedula-nueva">Nueva cedula (opcional):</label></td>
-      <td><input type="text" id="a-cedula-nueva" placeholder="V-12345678"></td>
-    </tr>
-    <tr>
-      <td><label for="a-nombre">Nombre:</label></td>
-      <td><input type="text" id="a-nombre"></td>
-    </tr>
-    <tr>
-      <td><label for="a-apellido">Apellido:</label></td>
-      <td><input type="text" id="a-apellido"></td>
-    </tr>
-    <tr>
-      <td><label for="a-sexo">Sexo:</label></td>
-      <td>
-        <select id="a-sexo">
-          <option value="">-- Sin cambio --</option>
-          <option value="M">Masculino</option>
-          <option value="F">Femenino</option>
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td><label for="a-fecha">Fecha Nacimiento:</label></td>
-      <td><input type="date" id="a-fecha"></td>
-    </tr>
-    <tr>
-      <td><label for="a-telefono">Telefono:</label></td>
-      <td><input type="text" id="a-telefono"></td>
-    </tr>
-    <tr>
-      <td><label for="a-email">Email:</label></td>
-      <td><input type="email" id="a-email"></td>
-    </tr>
-    <tr>
-      <td><label for="a-direccion">Direccion:</label></td>
-      <td><input type="text" id="a-direccion"></td>
-    </tr>
-  </table>
-  <br>
-  <button type="button" onclick="actualizarPaciente()">Actualizar</button>
-
-  <hr>
-
-  <h2>Eliminar Paciente</h2>
-
-  <label for="e-cedula">Cedula:</label>
-  <input type="text" id="e-cedula" placeholder="V-12345678">
-  <button type="button" onclick="eliminarPaciente()">Eliminar</button>
-
-  <hr>
+  </section>
 
   <script src="/js/pacientes.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/creacion.js"></script>
 
 </body>
 
