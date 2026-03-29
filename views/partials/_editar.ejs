@@ -1,0 +1,73 @@
+<% const paginaActual = typeof pagina !== 'undefined' ? pagina : ''; %>
+<div class="ventana-fondo-editar" id="ventana-editar">
+  <div class="datos-editar-div">
+    <% if (paginaActual === 'pacientes') { %>
+    <form id="form-editar" class="form-editar-dentro">
+      <div class="top-info-usuario">
+        <h3>Ingrese la información que desea cambiar</h3>
+        <button id="cerrar-info-btn" onclick="cerrarEditar()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="cerrar-info-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="cedula-enviar-actual" class="field">
+        <label for="a-cedula-actual">Cedula actual:</label>
+        <input type="text" id="a-cedula-actual" disabled>
+      </div>
+
+      <div class="field">
+        <label for="a-cedula-nueva">Nueva cedula:</label>
+        <input type="text" id="a-cedula-nueva" placeholder="V-12345678">
+      </div>
+
+      <div class="field">
+        <label for="a-nombre">Nombre:</label>
+        <input type="text" id="a-nombre" placeholder="">
+      </div>
+
+      <div class="field">
+        <label for="a-apellido">Apellido:</label>
+        <input type="text" id="a-apellido">
+      </div>
+
+      <div class="field">
+        <label for="a-sexo">Sexo:</label>
+        <select id="a-sexo">
+          <option value="">-- --</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="a-fecha">Fecha Nacimiento:</label>
+        <input type="date" id="a-fecha">
+      </div>
+
+      <div class="field">
+        <label for="a-telefono">Telefono:</label>
+        <input type="text" id="a-telefono">
+      </div>
+
+      <div class="field">
+        <label for="a-email">Email:</label>
+        <input type="email" id="a-email">
+      </div>
+
+      <div class="field">
+        <label for="a-direccion">Direccion:</label>
+        <input type="text" id="a-direccion">
+      </div>
+
+      <div class="btn-class">
+        <button type="button" class="btn-crear" onclick="actualizarPaciente()">Actualizar</button>
+      </div>
+    </form>
+    <% } %>
+  </div>
+</div>
+
+<script src="/js/edit.js"></script>

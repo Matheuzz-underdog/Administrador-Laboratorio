@@ -1,0 +1,67 @@
+<% const paginaActual = typeof pagina !== 'undefined' ? pagina : ''; %>
+<div class="ventana-fondo-creacion" id="ventana-creacion">
+  <div class="datos-creacion-div">
+    <% if (paginaActual === 'pacientes') { %>
+    <form id="form-crear" class="form-crear-dentro">
+      <div class="top-info-usuario">
+        <h3>Ingrese la información requerida</h3>
+        <button id="cerrar-info-btn" onclick="cerrarCrear()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="cerrar-info-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="field">
+        <label for="c-cedula">Cédula</label>
+        <input type="text" id="c-cedula" placeholder="V-12345678">
+      </div>
+
+      <div class="field">
+        <label for="c-nombre">Nombre</label>
+        <input type="text" id="c-nombre" placeholder="John">
+      </div>
+
+      <div class="field">
+        <label for="c-apellido">Apellido</label>
+        <input type="text" id="c-apellido" placeholder="Doe">
+      </div>
+
+      <div class="field">
+        <label for="c-sexo">Sexo</label>
+        <select id="c-sexo" class="select-crear">
+          <option value="">-- Seleccione --</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="c-fecha">Fecha de nacimiento</label>
+        <input type="date" id="c-fecha">
+      </div>
+
+      <div class="field">
+        <label for="c-telefono">Teléfono</label>
+        <input type="text" id="c-telefono" placeholder="0412-1234567">
+      </div>
+
+      <div class="field">
+        <label for="c-email">Email</label>
+        <input type="email" id="c-email" placeholder="ejemplo@email.com">
+      </div>
+
+      <div class="field">
+        <label for="c-direccion">Dirección</label>
+        <input type="text" id="c-direccion" placeholder="Calle 1, Edificio 2">
+      </div>
+
+      <div class="btn-class">
+        <button type="button" class='btn-crear' onclick="crearPaciente()">Registrar</button>
+      </div>
+    </form>
+    <% } %>
+  </div>
+</div>
+<script src="/js/creacion.js"></script>

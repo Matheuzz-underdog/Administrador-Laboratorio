@@ -19,6 +19,21 @@
 // }
 
 //CREAR
+const borrarPaciente = async (dato) => {
+  const confirmar = await confirmarVentanaAbrir("borrar", "paciente");
+
+  if (confirmar) {
+    const datafetched = await fetch("/pacientes/" + encodeURIComponent(dato), {
+      method: "DELETE",
+    });
+    const json = await datafetched.json();
+    if (datafetched.ok) {
+      window.location.reload();
+    } else {
+      console.error("Uhhh algo salio mal");
+    }
+  }
+};
 
 async function crearPaciente() {
   const datos = {
@@ -55,8 +70,81 @@ async function crearPaciente() {
   }
 }
 
+const buscarPaciente = async (nivel) => {
+  const cedulaInputBuscar = document.getElementById("b-cedula");
+  const cedula = cedulaInputBuscar.value.trim();
+
+  const tbody = document.getElementById("tbody-table");
+  if (!cedula) {
+    return;
+  }
+  try {
+    const respuesta = await fetch("/pacientes/buscar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cedula }),
+    });
+    const json = await respuesta.json();
+    console.log(nivel);
+
+    if (respuesta.ok) {
+      const datos = json.data;
+      let dataOrdenada = `
+      <tr>
+        <td>${datos.cedula_paciente || "-"}</td>
+        <td>${datos.nombre_paciente || "-"}</td>
+        <td>${datos.apellido_paciente || "-"}</td>
+        <td>${datos.sexo_paciente || "-"}</td>
+        <td>${
+          datos.fecha_nacimiento
+            ? new Date(datos.fecha_nacimiento).toLocaleDateString("es-VE")
+            : "-"
+        }</td>
+        <td>${datos.telefono_paciente || "-"}</td>
+        <td>${datos.email_paciente || "-"}</td>
+        <td>${datos.direccion_paciente || "-"}</td>
+        <td>${datos.fecha_registro ? new Date(datos.fecha_registro).toLocaleString("es-VE") : "-"}</td>
+      `;
+      if (nivel === "editor" || nivel === "admin") {
+        dataOrdenada += `
+          <td class="acciones-td">
+              <button class="boton-accion-tabla editar" onclick="editarPaciente('${datos.cedula_paciente}')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen">
+                  <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                </svg>
+              </button>
+        `;
+      }
+      if (nivel === "admin") {
+        dataOrdenada += `
+          <button class="boton-accion-tabla borrar" onclick="borrarPaciente('${datos.cedula_paciente}')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      } else if (nivel === "editor") {
+        dataOrdenada += "</td></tr>";
+      } else {
+        dataOrdenada += "</tr>";
+      }
+      tbody.innerHTML = dataOrdenada;
+    } else {
+      tbody.innerHTML =
+        "<p>No hay ningun paciente registrado con esa cedula</p>";
+    }
+  } catch (err) {
+    tbody.innerHTML = "<p>Ha ocurrido un error por parte del servidor</p>";
+  }
+};
+
 //BUSCAR
-async function buscarPaciente() {
+async function buscarPaciene() {
   const cedula = document.getElementById("b-cedula").value.trim();
   const contenedor = document.getElementById("resultado-busqueda");
 
@@ -191,6 +279,14 @@ async function buscarPorId() {
 */
 
 //ACTUALIZAR
+const cedulaInputEditar = document.getElementById("a-cedula-actual");
+const formulario = document.getElementById("form-editar");
+
+const editarPaciente = async (cedula) => {
+  abrirEditar();
+  cedulaInputEditar.value = cedula;
+};
+
 async function actualizarPaciente() {
   const cedulaActual = document.getElementById("a-cedula-actual").value.trim();
 
@@ -241,6 +337,8 @@ async function actualizarPaciente() {
     const json = await respuesta.json();
 
     if (respuesta.ok) {
+      formulario.reset();
+      window.location.reload();
       // mostrarMensaje("Paciente actualizado correctamente.", true, true);
     } else {
       // mostrarMensaje(
@@ -259,44 +357,44 @@ async function actualizarPaciente() {
 }
 
 //ELIMINAR
-async function eliminarPaciente() {
-  const cedula = document.getElementById("e-cedula").value.trim();
+// async function eliminarPaciente() {
+//   const cedula = document.getElementById("e-cedula").value.trim();
 
-  if (!cedula) {
-    // mostrarMensaje(
-    //   "Ingrese la cedula del paciente que desea eliminar.",
-    //   false,
-    //   false,
-    // );
-    return;
-  }
+//   if (!cedula) {
+//     // mostrarMensaje(
+//     //   "Ingrese la cedula del paciente que desea eliminar.",
+//     //   false,
+//     //   false,
+//     // );
+//     return;
+//   }
 
-  const confirmar = confirm(
-    "Esta seguro de que desea eliminar al paciente con cedula: " + cedula + "?",
-  );
-  if (!confirmar) return;
+//   const confirmar = confirm(
+//     "Esta seguro de que desea eliminar al paciente con cedula: " + cedula + "?",
+//   );
+//   if (!confirmar) return;
 
-  try {
-    const respuesta = await fetch("/pacientes/" + encodeURIComponent(cedula), {
-      method: "DELETE",
-    });
+//   try {
+//     const respuesta = await fetch("/pacientes/" + encodeURIComponent(cedula), {
+//       method: "DELETE",
+//     });
 
-    const json = await respuesta.json();
+//     const json = await respuesta.json();
 
-    if (respuesta.ok) {
-      // mostrarMensaje("Paciente eliminado correctamente.", true, true);
-    } else {
-      // mostrarMensaje(
-      //   "Error al eliminar: " + (json.detalle || json.error),
-      //   false,
-      //   false,
-      // );
-    }
-  } catch (error) {
-    // mostrarMensaje(
-    //   "Error de conexion al intentar eliminar el paciente.",
-    //   false,
-    //   false,
-    // );
-  }
-}
+//     if (respuesta.ok) {
+//       // mostrarMensaje("Paciente eliminado correctamente.", true, true);
+//     } else {
+//       // mostrarMensaje(
+//       //   "Error al eliminar: " + (json.detalle || json.error),
+//       //   false,
+//       //   false,
+//       // );
+//     }
+//   } catch (error) {
+//     // mostrarMensaje(
+//     //   "Error de conexion al intentar eliminar el paciente.",
+//     //   false,
+//     //   false,
+//     // );
+//   }
+// }

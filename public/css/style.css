@@ -131,6 +131,12 @@ body {
   border-bottom: 1px solid #3f3d58;
   z-index: 105;
 }
+.top-pacientes span {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+}
 .block-top {
   width: 100%;
   height: 40px;
@@ -153,22 +159,14 @@ body {
   height: 100dvh;
   width: 100%;
 }
-.area-admin-editor {
-  padding: 15px;
-  position: fixed;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  bottom: 0;
-  right: 0;
-}
 .area-admin-editor-btn {
+  font-size: 0.6rem;
   padding: 10px;
-  border-radius: 50px;
+  border-radius: 10px;
   border: none;
   background: #3f3d58;
   color: #ffffff;
-  box-shadow: 0 0px 5px #000;
+  font-weight: 600;
 }
 .area-admin-editor-btn:hover {
   cursor: pointer;
@@ -181,34 +179,177 @@ body {
   }
 }
 
-.window-crear-paciente {
-  position: fixed;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 105;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-}
-.form-crear-paciente {
-  background: #11111d;
-  padding: 20px;
-  border-radius: 20px;
-  width: 500px;
-  height: 400px;
-  display: flex;
-  flex-direction: column;
-}
-
 /* Partials */
 /* P-general */
 .navbar-block {
   width: 210px;
   height: 100%;
 }
+/* Creacion */
+.ventana-fondo-creacion {
+  display: none;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+}
+.datos-creacion-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  background: #11111d;
+  border-radius: 25px;
+  border: 1px solid #3f3d58;
+}
+.form-crear-dentro {
+  background: #262442;
+  padding: 20px;
+  border-radius: 20px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #3f3d58;
+}
+.btn-crear {
+  width: 200px;
+  padding: 5px;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  background: #fff;
+  color: #11111d;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+.btn-crear:hover {
+  cursor: pointer;
+  animation: 0.2s ease forwards boton-normal;
+}
+.btn-class {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+.form-crear-dentro .field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.field select {
+  padding: 5px 20px 5px 5px;
+  width: 250px;
+}
+.field input {
+  width: 250px;
+  padding: 5px 20px 5px 5px;
+}
+
+/* Confirmar */
+#confirmacion-todo-ventana {
+  display: none;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+}
+.cerrar-btn button {
+  background: none;
+  color: #ffffff;
+  border: none;
+}
+.cerrar-btn button:hover {
+  cursor: pointer;
+}
+#confirmacion-mensaje {
+  width: 400px;
+  height: 200px;
+  background: #11111d;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #3f3d58;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+#valor-texto-confirmar {
+  width: 100%;
+  text-align: center;
+}
+.confirmacion-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.btn-confirmar {
+  padding: 10px 30px 10px 30px;
+  border-radius: 10px;
+  background: #fff;
+  color: #09090f;
+  border: 1px solid #fff;
+  font-weight: 800;
+}
+.btn-confirmar:hover {
+  cursor: pointer;
+  animation: 0.2s ease forwards boton-normal;
+}
+
+@keyframes boton-normal {
+  100% {
+    background: #3f3d58;
+    color: #fff;
+    border: 1px solid #b1b0c2;
+  }
+}
+
+/* editar */
+
+.ventana-fondo-editar {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 150;
+}
+.datos-editar-div {
+  background: #11111d;
+  padding: 10px;
+  border-radius: 25px;
+  border: 1px solid #3f3d58;
+}
+.form-editar-dentro {
+  background: #262442;
+  padding: 20px;
+  border-radius: 20px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #3f3d58;
+}
+.form-editar-dentro .field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 
 /* InfoUsuario */
 
@@ -220,7 +361,7 @@ body {
   width: 100dvw;
   height: 100dvh;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 101;
+  z-index: 161;
 }
 .info-user-modal {
   background: #11111d;
