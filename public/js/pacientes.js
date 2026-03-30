@@ -60,6 +60,7 @@ async function crearPaciente() {
       // exito=true, recargar=true -> al cerrar el modal se actualiza la tabla
       // mostrarMensaje("Paciente registrado correctamente.", true, true);
       document.getElementById("form-crear").reset();
+      window.location.reload();
     }
   } catch (error) {
     // mostrarMensaje(
