@@ -28,14 +28,14 @@
           </button>
           <% } %>
         </span>
-        <label for="busqueda">
-          <button id="btn-reset-buscar" class="btn-reseteo">
-            <svg xmlns="http://www.w3.org/2000/svg" class="btn-reseteo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw">
+        <label for="busqueda" class="busqueda-label">
+          <button id="btn-reset-buscar" class="btn-reseteo" onclick="window.location.reload()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="btn-reseteo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw">
               <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
               <path d="M3 3v5h5" />
             </svg>
           </button>
-          <input type="text" id="b-cedula" class='buscador-paciente' placeholder="V-12345678">
+          <input type="text" id="b-cedula" class='buscador-paciente' pattern="^[VE]-[0-8]+$" placeholder="V-12345678">
           <button type="button" class="buscar-boton paciente" onclick="buscarPaciente('<%= nivel %>')">Buscar</button>
         </label>
       </div>

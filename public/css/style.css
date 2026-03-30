@@ -153,6 +153,31 @@ body {
   border: none;
   border-radius: 5px;
 }
+.busqueda-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+.btn-reseteo {
+  padding: 5px;
+  background: #3f3d58;
+  border: 1px solid #b1b0c2;
+  border-radius: 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.btn-reseteo:hover {
+  cursor: pointer;
+  animation: 0.2s ease forwards button-plus;
+}
+.btn-reseteo-svg {
+  color: #fff;
+  width: 15px;
+  height: 15px;
+}
 
 .todo-principal-pacientes {
   padding: 10px;
@@ -349,7 +374,6 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-
 
 /* InfoUsuario */
 

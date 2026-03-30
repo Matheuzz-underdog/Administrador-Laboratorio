@@ -73,19 +73,19 @@ async function crearPaciente() {
 const buscarPaciente = async (nivel) => {
   const cedulaInputBuscar = document.getElementById("b-cedula");
   const cedula = cedulaInputBuscar.value.trim();
+  const botonReseteo = document.getElementById('btn-reset-buscar');
 
   const tbody = document.getElementById("tbody-table");
-  if (!cedula) {
-    return;
-  }
+  if (!cedula) return window.location.reload();
+  if (cedula.length < 8 || cedula.length > 10) return;
   try {
+    botonReseteo.style.display = "flex";
     const respuesta = await fetch("/pacientes/buscar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cedula }),
     });
     const json = await respuesta.json();
-    console.log(nivel);
 
     if (respuesta.ok) {
       const datos = json.data;
