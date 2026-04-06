@@ -1,235 +1,286 @@
-
 let recargarAlCerrar = false;
 
-function mostrarMensaje(texto, exito, recargar) {
-    recargarAlCerrar = recargar || false;
-    const p = document.getElementById("texto-modal");
-    p.textContent = texto;
-    p.style.color = exito ? "green" : "red";
-    document.getElementById("modal-fondo").style.display = "block";
-}
+const editarEmpleado = async (cedula) => {
+  abrirEditar();
+  cedulaInputEditar.value = cedula;
+};
 
-function cerrarModal() {
-    document.getElementById("modal-fondo").style.display = "none";
-    if (recargarAlCerrar) location.reload();
-}
+const cedulaInputEditar = document.getElementById("cedula-put");
+const formulario = document.getElementById("form-editar");
+
+const editarPaciente = async (cedula) => {
+  abrirEditar();
+  cedulaInputEditar.value = cedula;
+};
+
+const cambiarEstado = async (cedula, actividad) => {
+  try {
+    const cambiarEstado = {};
+    if (actividad == 1) {
+      cambiarEstado.actividad = 0;
+    } else {
+      cambiarEstado.actividad = 1;
+    }
+    const respuesta = await fetch(
+      "/empleados/actividad/" + encodeURIComponent(cedula),
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cambiarEstado),
+      },
+    );
+    if (respuesta.ok) {
+      window.location.reload();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 // BUSCAR AL EMPLEADO DE LOS COJONES
-async function buscarEmpleado() {
-    const resultado = document.getElementById("resultado-get");
-    const cedula = document.getElementById("cedula-get").value;
-    
-    if (!cedula) {
-        resultado.innerHTML =
-            '<p style="color:#f00;">Ingrese una cedula para buscar.</p>';
-    return;
-    }
+async function buscarEmpleado(nivel) {
+  const cedula = document.getElementById("cedula-get").value;
+  const botonReseteo = document.getElementById("btn-reset-buscar");
 
-    try {
-        const busqueda = await fetch(`/empleados/?cedula=${cedula}`)
-        const datos = await busqueda.json()
+  const tbody = document.getElementById("tbody-table");
+  if (!cedula) return;
+  if (cedula.length < 8 || cedula.length > 10) return;
+  try {
+    botonReseteo.style.display = "flex";
+    const respuesta = await fetch(
+      "/empleados/?cedula=" + encodeURIComponent(cedula),
+      {
+        method: "GET",
+      },
+    );
+    const json = await respuesta.json();
+    const datos = json.data[0];
 
-        if (busqueda.ok) {
-            const e = datos.data[0]
-            resultado.innerHTML =
-                '<table border="1" cellpadding="6" cellspacing="0">' +
-                "<tr><th>Cedula</th><th>Nombre</th><th>Apellido</th><th>Cargo</th><th>Telefono</th><th>Email</th><th>Actividad</th><th>Datos Profesionales</th></tr>" +
-                "<tr>" +
-                "<td>" +
-                (e.cedula_empleado || "-") +
-                "</td>" +
-                "<td>" +
-                (e.nombre_empleado || "-") +
-                "</td>" +
-                "<td>" +
-                (e.apellido_empleado || "-") +
-                "</td>" +
-                "<td>" +
-                (e.cargo_empleado || "-") +
-                "</td>" +
-                "<td>" +
-                (e.telefono_empleado || "-") +
-                "</td>" +
-                "<td>" +
-                (e.email_empleado || "-") +
-                "</td>" +
-                "<td>" +
-                (e.actividada_empleado || "-") +
-                "</td>" +
-                "<td>" +
-                (e.datos_profesionales || "-") +
-                "</td>" +
-                "</tr>" +
-                "</table>";
-        } else {
-            resultado.innerHTML =
-                '<p style="color:red;">' + (datos.detalle || datos.error) + "</p>";
-        }
-    } catch(err) {
-        console.log(`ERROR: ` + err)
+    if (respuesta.ok) {
+      let dataOrdenada = `
+      <tr>
+        <td>${datos.cedula_empleado || "-"}</td>
+        <td>${datos.nombre_empleado || "-"}</td>
+        <td>${datos.apellido_empleado || "-"}</td>
+        <td>${datos.cargo_empleado || "-"}</td>
+        <td>${datos.telefono_empleado || "-"}</td>
+        <td>${datos.email_empleado || "-"}</td>
+        <td>${datos.actividad_empleado || "-"}</td>
+        <td>${datos.datos_profesionales || "-"}</td>
+      `;
+      if (nivel === "editor" || nivel === "admin") {
+        dataOrdenada += `
+          <td class="acciones-td">
+              <button class="boton-accion-tabla editar" onclick="editarEmpleado('${datos.cedula_empleado}')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen">
+                  <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                </svg>
+              </button>
+        `;
+      }
+      if (nivel === "admin") {
+        dataOrdenada += `
+          <button class="boton-accion-tabla borrar" onclick="borrarEmpleado('${datos.cedula_empleado}')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      } else if (nivel === "editor") {
+        dataOrdenada += "</td></tr>";
+      } else {
+        dataOrdenada += "</tr>";
+      }
+      tbody.innerHTML = dataOrdenada;
+    } else {
+      tbody.innerHTML =
+        "<p>No hay ningun empleado registrado con esa cedula</p>";
     }
+  } catch (err) {
+    tbody.innerHTML = "<p>Ha ocurrido un error por parte del servidor</p>";
+  }
 }
 
 let contador = 0;
 
-function borrarCampo(id,num) {
-    const campo = document.getElementById(`campo-${id},${num}`)
-    if (campo) {
-        campo.remove()
-    }
+function borrarCampo(num) {
+  const campo = document.getElementById(`parametro-${num}`);
+  if (campo) {
+    campo.remove();
+  }
 }
 
 function crearCampoDato(num) {
-    contador++;
+  contador++;
 
-    const div = document.createElement("div");
-    let n = contador
-    div.id = "parametro-" + n;
-    div.style.marginBottom = "4px";
-    div.innerHTML = `<div id="campo-${n},${num}">` +
+  const div = document.createElement("div");
+  let n = contador;
+  div.id = "parametro-" + n;
+  div.className = "parametro-class";
+
+  div.innerHTML =
+    `<div id="campo-${n},${num}" class='info-profesional-todo'>` +
+    "<div class='dato-individual'>" +
     `<div>` +
-    `<label for="dat-tit-post${n},${num}">Tipo de Información</label>` +
-    `<input type="text" placeholder="(Especialidad, Certificacion, Titulo)" id="dat-tit-post${n},${num}">` +
+    `<label for="dat-tit-post${n},${num}" class="label-info">tipo de dato</label>` +
+    `<input type="text" placeholder="(Especialidad, Certificacion, Titulo)" class="input-param" id="dat-tit-post${n},${num}">` +
     `</div>` +
     `<div>` +
-    `<label for="dat-prof-post${n},${num}">Información</label>` +
-    `<input type="text" placeholder="(Bionalista, Hematología, Bacteriologia)" id="dat-prof-post${n},${num}">` +
+    `<label for="dat-prof-post${n},${num}" class="label-info">contenido</label>` +
+    `<input type="text" placeholder="(Bionalista, Hematología, Bacteriologia)" class="input-param" id="dat-prof-post${n},${num}">` +
     `</div>` +
-    `<button type="button" onclick="borrarCampo(${n},${num})"> x </button>` +
-    `</div>` 
-    
-    if (num === 0) {
-        document.getElementById("contenedor-datos-post").appendChild(div);
-    } else {
-        document.getElementById("contenedor-datos-put").appendChild(div);
-    }
-    
+    "</div>" +
+    `<button type="button" class="class-btn-param" onclick="borrarCampo(${n})"> x </button>` +
+    `</div>`;
+
+  if (num === 0) {
+    document.getElementById("contenedor-datos-post").appendChild(div);
+  } else {
+    document.getElementById("contenedor-datos-put").appendChild(div);
+  }
 }
 
 function tomarDatos(num) {
-    let datosProfesionales = {};
-    for (let i = 1; i <= contador; i++) {
-        let tituloRaw 
-        let datoRaw
+  let datosProfesionales = {};
+  for (let i = 1; i <= contador; i++) {
+    let tituloRaw;
+    let datoRaw;
 
-        if (num === 0) {
-            tituloRaw = document.getElementById(`dat-tit-post${i},0`);
-            datoRaw = document.getElementById(`dat-prof-post${i},0`);
-        } else {
-            tituloRaw = document.getElementById(`dat-tit-post${i},1`);
-            datoRaw = document.getElementById(`dat-prof-post${i},1`);
-        }
-
-        if (!datoRaw || !tituloRaw) continue;
-        let titulo = tituloRaw.value.trim();
-        let dato = datoRaw.value.trim();
-        if (titulo && dato) {
-            datosProfesionales[titulo] = dato;
-        }
+    if (num === 0) {
+      tituloRaw = document.getElementById(`dat-tit-post${i},0`);
+      datoRaw = document.getElementById(`dat-prof-post${i},0`);
+    } else {
+      tituloRaw = document.getElementById(`dat-tit-post${i},1`);
+      datoRaw = document.getElementById(`dat-prof-post${i},1`);
     }
-    return datosProfesionales
+
+    if (!datoRaw || !tituloRaw) return undefined;
+    let titulo = tituloRaw.value.trim();
+    let dato = datoRaw.value.trim();
+    if (titulo && dato) {
+      datosProfesionales[titulo] = dato;
+    }
+  }
+  return datosProfesionales;
 }
 
 // REGISTRAR [a un elemento valioso para el laboratorio]
 async function registrarEmpleado() {
-    
-    try {
-        contador > 0 ? datosProfesionales = tomarDatos(0) : datosProfesionales = null
+  try {
+    contador > 0
+      ? (datosProfesionales = tomarDatos(0))
+      : (datosProfesionales = null);
 
-        const datos = {
-            cedula : document.getElementById("cedula-post").value.trim(),
-            nombre : document.getElementById("nombre-post").value.trim(),
-            apellido : document.getElementById("apellido-post").value.trim(),
-            cargo : document.getElementById("cargo-post").value.trim(),
-            telefono : document.getElementById("telefono-post").value.trim(),
-            email : document.getElementById("correo-post").value.trim(),
-            actividad : document.getElementById("actividad-post").value.trim(),
-            datos_profesionales : datosProfesionales
-        }
-        const respuesta = await fetch ("/empleados", {
-            method : "POST",
-            headers : { "Content-Type": "application/json" },
-            body : JSON.stringify(datos)
-        })
-        const json = await respuesta.json()
-        if (respuesta.ok) {
-            mostrarMensaje("Empleado registrado correctamente.", true, true);
-            document.getElementById("post-formulario").reset();
-            document.getElementById("contenedor-datos-post").innerHTML = "";
-            contador = 0;
-        } else {
-            mostrarMensaje(json.detalle || json.error, false, false);
-        }
-    } catch (err) {
-        mostrarMensaje("Error de conexion al registrar. " + err, false, false);
+    const datos = {
+      cedula: document.getElementById("cedula-post").value.trim(),
+      nombre: document.getElementById("nombre-post").value.trim(),
+      apellido: document.getElementById("apellido-post").value.trim(),
+      cargo: document.getElementById("cargo-post").value.trim(),
+      telefono: document.getElementById("telefono-post").value.trim(),
+      email: document.getElementById("correo-post").value.trim(),
+      actividad: document.getElementById("actividad-post").value.trim(),
+    };
+    if (datosProfesionales !== undefined) {
+      datos.datos_profesionales = datosProfesionales;
     }
-    
+    const respuesta = await fetch("/empleados", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+    const json = await respuesta.json();
+    if (respuesta.ok) {
+      document.getElementById("post-formulario").reset();
+      document.getElementById("contenedor-datos-post").innerHTML = "";
+      contador = 0;
+      window.location.reload();
+    }
+  } catch (err) {
+    console.error("Oh no");
+  }
 }
 
 /* mostrarMensaje("ostras como estamos w", true, false); */
 
 // actualizar lets go w
 async function actualizarEmpleado() {
-    try {
-        contador > 0 ? datosProfesionales = tomarDatos(1) : datosProfesionales = null;
-        
-        let cedulaAntiguaRaw  = document.getElementById("cedula-put");
-        let cedulaNuevaRaw = document.getElementById("cedula-op-put");
-        let cedulaDef = "no hay na"
-
-        if (!cedulaAntiguaRaw) {
-            mostrarMensaje("Error, debe incluir una cedula para actualizar a un empleado. " + err, false, false);
-            return
-        } else if (cedulaNuevaRaw.value.trim() === "") {
-            cedulaDef = cedulaAntiguaRaw.value.trim();
-        } else if (cedulaNuevaRaw.value.trim() !== "") {
-            cedulaDef = cedulaNuevaRaw.value.trim();
-        }
-
-        const datos = {
-            cedula : cedulaDef,
-            nombre : document.getElementById("nombre-put").value.trim(),
-            apellido : document.getElementById("apellido-put").value.trim(),
-            cargo : document.getElementById("cargo-put").value.trim(),
-            telefono : document.getElementById("telefono-put").value.trim(),
-            email : document.getElementById("correo-put").value.trim(),
-            actividad : document.getElementById("actividad-put").value.trim(),
-            datos_profesionales : datosProfesionales
-        }
-        const respuesta = await fetch (`/empleados/?cedula=${cedulaAntiguaRaw.value.trim()}`, {
-            method : "PUT",
-            headers : { "Content-Type": "application/json" },
-            body : JSON.stringify(datos)
-        })
-        const json = await respuesta.json();
-        if (respuesta.ok) {
-            mostrarMensaje("Empleado actualizado correctamente. ", true, true);
-            document.getElementById("put-formulario").reset();
-            document.getElementById("contenedor-datos-put").innerHTML = "";
-            contador = 0;
-        } else {
-            mostrarMensaje(json.detalle || json.error, false, false);
-        }
-    } catch(err) {
-        mostrarMensaje("Error de conexion al registrar. " + err, false, false);
+  try {
+    const cedulaActual = document.getElementById("cedula-put").value.trim();
+    if (!cedulaActual) {
+      // mostrarMensaje(
+      //   "Debe indicar la cedula actual del paciente para actualizar.",
+      //   false,
+      //   false,
+      // );
+      return;
     }
+    contador > 0
+      ? (datosProfesionales = tomarDatos(1))
+      : (datosProfesionales = null);
+
+    const datos = {};
+    const cedNueva = document.getElementById("cedula-op-put").value.trim();
+    const nombre = document.getElementById("nombre-put").value.trim();
+    const apellido = document.getElementById("apellido-put").value.trim();
+    const cargo = document.getElementById("cargo-put").value.trim();
+    const telefono = document.getElementById("telefono-put").value.trim();
+    const email = document.getElementById("correo-put").value.trim();
+    const actividad = document.getElementById("actividad-put").value.trim();
+    const datosProf = datosProfesionales;
+
+    if (cedNueva) datos.cedula = cedNueva;
+    if (nombre) datos.nombre = nombre;
+    if (apellido) datos.apellido = apellido;
+    if (cargo) datos.cargo = cargo;
+    if (telefono) datos.telefono = telefono;
+    if (email) datos.email = email;
+    if (actividad) datos.actividad = actividad;
+    if (datosProf !== undefined) datos.datos_profesionales = datosProfesionales;
+
+    if (Object.keys(datos).length === 0) {
+      // mostrarMensaje("Complete al menos un campo para actualizar.", false, false);
+      return;
+    }
+    const respuesta = await fetch(
+      `/empleados/?cedula=` + encodeURIComponent(cedulaActual),
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos),
+      },
+    );
+    const json = await respuesta.json();
+    if (respuesta.ok) {
+      window.location.reload();
+      contador = 0;
+    }
+  } catch (err) {
+    console.error("Oh no");
+  }
 }
 
 // la funcion mas sencilla
-async function eliminarEmpleado() {
-    try {
-        const cedula = document.getElementById("cedula-delete").value.trim();
-        const resultado = await fetch(`/empleados/?cedula=${cedula}`, {
-            method : "DELETE",
-        })
-        const json = await resultado.json();
-        if (resultado.ok) {
-            mostrarMensaje("Empleado eliminado correctamente. ", true, true);
-            document.getElementById("delete-formulario").reset();
-        } else {
-            mostrarMensaje(json.detalle || json.error, false, false);
-        }
-    }catch(err){
-        mostrarMensaje("Error de conexion al registrar. " + err, false, false);
+const eliminarEmpleado = async (dato) => {
+  const confirmar = await confirmarVentanaAbrir("borrar", "empleado");
+  console.log(dato);
+
+  if (confirmar) {
+    const datafetched = await fetch(
+      "/empleados/" + encodeURIComponent(dato).trim(),
+      {
+        method: "DELETE",
+      },
+    );
+    const json = await datafetched.json();
+    if (datafetched.ok) {
+      window.location.reload();
+    } else {
+      console.error("Uhhh algo salio mal");
     }
-}
+  }
+};

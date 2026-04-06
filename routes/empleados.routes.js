@@ -87,12 +87,12 @@ router.post(
 // Actualizar informacion de empleado (esclavo)
 
 router.put(
-  "/:cedula",
+  "/",
   checkVista,
   checkNivel("editor", "admin"),
   async (req, res) => {
     try {
-      const cedulaAntigua = req.params.cedula;
+      const cedulaAntigua = req.query.cedula;
       console.log(cedulaAntigua);
       const datosNuevos = req.body;
 
@@ -125,7 +125,7 @@ router.put(
 
 router.delete("/:cedula", checkVista, checkNivel("admin"), async (req, res) => {
   try {
-    const eliminarData = req.query.cedula;
+    const eliminarData = req.params.cedula;
     const empleadoEliminado =
       await control.fulminarEmpleadoDeLaExistencia(eliminarData);
 

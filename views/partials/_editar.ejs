@@ -67,6 +67,58 @@
       </div>
     </form>
     <% } %>
+    <% if (paginaActual === 'empleados') { %>
+    <div id="put-form" class="div-form">
+      <form id="form'editar" class="form-editar-dentro">
+        <div class="top-info-usuario">
+          <h3>Ingrese la información que desea cambiar</h3>
+          <button id="cerrar-info-btn" onclick="cerrarEditar()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="cerrar-info-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+        <div id="cedula-enviar-actual" class="field">
+          <label for="">Cedula Actual</label>
+          <input type="text" placeholder="V-1234567" id="cedula-put" disabled>
+        </div>
+        <div class="field">
+          <label for="">Cedula Nueva (opcional)</label>
+          <input type="text" placeholder="V-1234567" id="cedula-op-put">
+        </div>
+        <div class="field">
+          <label for="">Nombre</label>
+          <input type="text" placeholder="Jhon" id="nombre-put">
+        </div>
+        <div class="field">
+          <label for="">Apellido</label>
+          <input type="text" placeholder="Briceño" id="apellido-put">
+        </div>
+        <div class="field">
+          <label for="">Cargo</label>
+          <input type="text" placeholder="Bionalista" id="cargo-put">
+        </div>
+        <div class="field">
+          <label for="">Telefono</label>
+          <input type="text" placeholder="0412-1234567" id="telefono-put">
+        </div>
+        <div class="field">
+          <label for="">Correo</label>
+          <input type="text" placeholder="ejemplo@gmail.com" id="correo-put">
+        </div>
+        <div class="field">
+          <label for="">Actividad</label>
+          <input type="number" placeholder="1" min="0" max="1" id="actividad-put">
+        </div>
+        <label for="">Datos Profesionales </label><button type="button" onclick="crearCampoDato(1)">+</button>
+        <div id="contenedor-datos-put">
+
+        </div>
+        <button type="button" onclick="actualizarEmpleado()">Actualizar</button>
+      </form>
+    </div>
+    <% } %>
   </div>
 </div>
 

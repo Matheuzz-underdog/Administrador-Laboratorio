@@ -62,6 +62,59 @@
       </div>
     </form>
     <% } %>
+    <% if (paginaActual === 'empleados') { %>
+
+    <form id="post-formulario" class="form-crear-dentro">
+      <div class="top-info-usuario">
+        <h3>Ingrese la información requerida</h3>
+        <button id="cerrar-info-btn" onclick="cerrarCrear()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="cerrar-info-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="field">
+        <label for="cedula-post">Cédula</label>
+        <input type="text" id="cedula-post" placeholder="V-1234567">
+      </div>
+      <div class="field">
+        <label for="nombre-post">Nombre</label>
+        <input type="text" id="nombre-post" placeholder="Jhon">
+      </div>
+      <div class="field">
+        <label for="apellido-post">Apellido</label>
+        <input type="text" id="apellido-post" placeholder="Briceño">
+      </div>
+      <div class="field">
+        <label for="cargo-post">Cargo</label>
+        <input type="text" id="cargo-post" placeholder="Bionalista">
+      </div>
+      <div class="field">
+        <label for="telefono-post">Teléfono</label>
+        <input type="text" id="telefono-post" placeholder="0412-1234567">
+      </div>
+      <div class="field">
+        <label for="correo-post">Correo</label>
+        <input type="email" id="correo-post" placeholder="ejemplo@gmail.com">
+      </div>
+      <div class="field">
+        <label for="actividad-post">Actividad</label>
+        <input type="number" id="actividad-post" value="1" disabled>
+      </div>
+      <div class="field empleados-datos">
+        <div class="container-boton-texto">
+          <label>Datos Profesionales</label>
+          <button type="button" class="boton-campo-profesion" onclick="crearCampoDato(0)">+</button>
+        </div>
+        <div id="contenedor-datos-post" class="contenedor-datos-empleados"></div>
+      </div>
+      <div class="btn-class">
+        <button type="button" class="btn-crear" onclick="registrarEmpleado()">Registrar</button>
+      </div>
+    </form>
+
+    <% } %>
   </div>
 </div>
 <script src="/js/creacion.js"></script>
