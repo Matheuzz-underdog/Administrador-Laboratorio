@@ -123,7 +123,6 @@ body {
 .class-btn-param {
   width: 20px;
   height: 20px;
-
 }
 .input-param {
   width: 200px;
@@ -303,6 +302,25 @@ body {
   overflow-y: scroll;
   max-height: 100%;
 }
+.todo-resultado-div {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 400;
+}
+#resultado-window {
+  padding: 10px;
+  border: 1px solid #3f3d58;
+  background: #11111d;
+  border-radius: 10px;
+  max-height: 90dvh;
+  overflow-y: scroll;
+  width: 400px;
+}
 .form-crear-dentro {
   background: #262442;
   padding: 20px;
@@ -348,6 +366,40 @@ body {
   width: 250px;
   padding: 5px 20px 5px 5px;
 }
+
+.todo-detalle-div {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+}
+.top-detalles {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+}
+.sin-resultado {
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.6;
+}
+.sin-resultado:hover {
+  opacity: 1;
+}
+#detalle-window {
+  padding: 10px;
+  border: 1px solid #3f3d58;
+  background: #11111d;
+  border-radius: 10px;
+}
+
 
 /* Confirmar */
 #confirmacion-todo-ventana {

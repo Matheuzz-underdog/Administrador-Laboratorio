@@ -5,41 +5,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css" />
-  <title>Gestion de Examenes</title>
+  <title>Examenes</title>
 </head>
 
 <body>
   <%- include('partials/_navbar') %>
   <%- include('partials/_infoUsuario') %>
+  <%- include('partials/_confirmacion') %>
+  <%- include('partials/_creacion') %>
 
   <section class="todo-container">
-    <h1>Gestion de Examenes</h1>
-    <hr>
-
-    <div id="modal-fondo" onclick="cerrarModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.45);">
-      <div onclick="event.stopPropagation()" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border:2px solid black; padding:30px 40px; min-width:280px; max-width:420px; text-align:center;">
-        <p id="texto-modal" style="font-size:1.1em; margin:0 0 18px 0;"></p>
-        <small>click para cerrar</small>
-      </div>
-    </div>
-
-    <h2>Lista de Examenes</h2>
 
     <% if (examenes && examenes.length > 0) { %>
-    <table border="1" cellpadding="6" cellspacing="0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Abreviatura</th>
-          <th>Area</th>
-          <th>Precio</th>
-          <th>Tipo de Muestra</th>
-          <th>Parametros</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (var i = 0; i < examenes.length; i++) { %>
+    <div class="todo-principal-pacientes">
+      <div class="top-pacientes">
+        <span>
+          <h3 class="title-section">Examenes</h3>
+          <% if (nivel === "admin" && "editor") { %>
+          <button class="area-admin-editor-btn" onclick="abrirCrear()">
+            Registrar nuevo examen
+          </button>
+          <% } %>
+        </span>
+        <label for="busqueda" class="busqueda-label">
+          <button id="btn-reset-buscar" class="btn-reseteo" onclick="window.location.reload()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="btn-reseteo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </button>
+          <input type="text" id="b-abreviatura" class="buscador-paciente" placeholder="HEM, GLU, etc." maxlength="4">
+          <button type="button" class="buscar-boton paciente" onclick="buscarExamen()">Buscar</button>
+        </label>
+      </div>
+      <div class="block-top"></div>
+      <table class="table-general table-pacientes">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Abreviatura</th>
+            <th>Area</th>
+            <th>Precio</th>
+            <th>Tipo de Muestra</th>
+            <th>Parametros</th>
+            <% if (nivel === "admin" && "editor") { %>
+            <th></th>
+            <% } %>
+          </tr>
+        </thead>
+        <tbody id="tbody-table">
+          <% for (var i = 0; i < examenes.length; i++) { %>
           <% var e = examenes[i]; %>
           <% var params = Array.isArray(e.parametros) ? e.parametros : []; %>
           <tr>
@@ -51,87 +67,45 @@
             <td><%= e.tipo_muestra %></td>
             <td>
               <% if (params.length > 0) { %>
-                <ul style="margin:0; padding-left:18px;">
-                  <% for (var j = 0; j < params.length; j++) { %>
-                    <li>
-                      <strong><%= params[j].nombre %></strong>
-                      <% if (params[j].unidad) { %> (<%= params[j].unidad %>)<% } %>
-                      <% if (params[j].referencia) { %> &mdash; Ref: <%= params[j].referencia %><% } %>
-                    </li>
-                  <% } %>
-                </ul>
+              <ul class="lista-parametros">
+                <% for (var j = 0; j < params.length; j++) { %>
+                <li>
+                  <strong><%= params[j].nombre %></strong>
+                  <% if (params[j].unidad) { %>(<%= params[j].unidad %>)<% } %>
+                  <% if (params[j].referencia) { %>&mdash; Ref: <%= params[j].referencia %><% } %>
+                </li>
+                <% } %>
+              </ul>
               <% } else { %>
-                <em>Sin parametros</em>
+              <em>Sin parametros</em>
               <% } %>
             </td>
+            <% if (nivel === "admin") { %>
+            <td>
+              <button class="boton-accion-tabla borrar" onclick="eliminarExamen('<%= e.abreviatura_examen %>')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </td>
+            <% } else if (nivel === "editor") { %>
+            </td>
+            <% } %>
           </tr>
-        <% } %>
-      </tbody>
-    </table>
-    <% } else { %>
-    <p>No hay examenes registrados.</p>
-    <% } %>
-
-    <hr>
-
-    <h2>Registrar Examen</h2>
-
-    <form id="form-crear">
-      <table>
-        <tr>
-          <td><label for="c-nombre">Nombre:</label></td>
-          <td><input type="text" id="c-nombre" placeholder="Hemograma completo"></td>
-        </tr>
-        <tr>
-          <td><label for="c-abreviatura">Abreviatura:</label></td>
-          <td><input type="text" id="c-abreviatura" placeholder="HEM" maxlength="3"></td>
-        </tr>
-        <tr>
-          <td><label for="c-area">Area:</label></td>
-          <td><input type="text" id="c-area" placeholder="Hematologia, Quimica, etc."></td>
-        </tr>
-        <tr>
-          <td><label for="c-precio">Precio (Bs):</label></td>
-          <td><input type="number" id="c-precio" placeholder="0.00" step="0.01" min="0"></td>
-        </tr>
-        <tr>
-          <td><label for="c-muestra">Tipo de Muestra:</label></td>
-          <td><input type="text" id="c-muestra" placeholder="Sangre, Orina, etc."></td>
-        </tr>
+          <% } %>
+        </tbody>
       </table>
-
-      <br>
-
-      <fieldset>
-        <legend>Parametros &nbsp;<button type="button" id="btn-agregar-param" title="Agregar parametro (Tecla: +)">+</button></legend>
-        <div id="contenedor-parametros"></div>
-        <small>Nombre es obligatorio. Unidad y Referencia son opcionales.</small>
-      </fieldset>
-
-      <br>
-      <button type="button" onclick="crearExamen()">Registrar</button>
-    </form>
-
-    <hr>
-
-    <h2>Buscar Examen</h2>
-
-    <label for="b-abreviatura">Abreviatura:</label>
-    <input type="text" id="b-abreviatura" placeholder="HEM, GLU, etc.">
-    <button type="button" onclick="buscarExamen()">Buscar</button>
-
-    <div id="resultado-busqueda"></div>
-
-    <hr>
-
-    <h2>Eliminar Examen</h2>
-
-    <label for="e-abreviatura">Abreviatura:</label>
-    <input type="text" id="e-abreviatura" placeholder="HEM, GLU, etc.">
-    <button type="button" onclick="eliminarExamen()">Eliminar</button>
+      <% } else { %>
+      <p>No hay datos registrados.</p>
+      <% } %>
+    </div>
 
   </section>
+
   <script src="/js/examenes.js"></script>
+  <script src="/js/navbar.js"></script>
 
 </body>
 

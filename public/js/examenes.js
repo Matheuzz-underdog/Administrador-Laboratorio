@@ -1,19 +1,6 @@
-//  >:3 Utilidades generales
-
 let recargarAlCerrar = false;
 
-function mostrarMensaje(texto, exito, recargar) {
-  recargarAlCerrar = recargar || false;
-  const p = document.getElementById("texto-modal");
-  p.textContent = texto;
-  p.style.color = exito ? "green" : "red";
-  document.getElementById("modal-fondo").style.display = "block";
-}
-
-function cerrarModal() {
-  document.getElementById("modal-fondo").style.display = "none";
-  if (recargarAlCerrar) location.reload();
-}
+// Utilidades de parametros
 
 function parsearParametros(raw) {
   if (!raw) return [];
@@ -32,7 +19,7 @@ function parsearParametros(raw) {
 function renderizarParametros(raw) {
   const params = parsearParametros(raw);
   if (!params.length) return "<em>Sin parametros</em>";
-  let html = '<ul style="margin:0; padding-left:18px;">';
+  let html = '<ul class="lista-parametros">';
   for (let i = 0; i < params.length; i++) {
     const p = params[i];
     html += "<li><strong>" + p.nombre + "</strong>";
@@ -43,7 +30,7 @@ function renderizarParametros(raw) {
   return html + "</ul>";
 }
 
-//  Parametros dinamicos en el formulario
+// Parametros dinamicos en el formulario
 
 let contadorParam = 0;
 
@@ -52,23 +39,25 @@ function agregarParametro() {
   const n = contadorParam;
   const div = document.createElement("div");
   div.id = "param-" + n;
-  div.style.marginBottom = "4px";
+  div.className = "parametro-class";
   div.innerHTML =
-    "<strong>#" +
-    n +
-    "</strong> " +
-    '<input type="text" id="p-nombre-' +
-    n +
-    '" placeholder="Nombre *" style="width:140px;"> ' +
-    '<input type="text" id="p-unidad-' +
-    n +
-    '" placeholder="Unidad (ej: mg/dL)" style="width:130px;"> ' +
-    '<input type="text" id="p-ref-' +
-    n +
-    '" placeholder="Referencia (ej: 70-110)" style="width:130px;"> ' +
-    '<button type="button" onclick="quitarParametro(' +
-    n +
-    ')">X</button>';
+    `<div id="campo-${n}" class="info-profesional-todo">` +
+    "<div class='dato-individual'>" +
+    "<div>" +
+    `<label for="p-nombre-${n}" class="label-info">Nombre</label>` +
+    `<input type="text" id="p-nombre-${n}" placeholder="Nombre *" class="input-param">` +
+    "</div>" +
+    "<div>" +
+    `<label for="p-unidad-${n}" class="label-info">Unidad</label>` +
+    `<input type="text" id="p-unidad-${n}" placeholder="ej: mg/dL" class="input-param">` +
+    "</div>" +
+    "<div>" +
+    `<label for="p-ref-${n}" class="label-info">Referencia</label>` +
+    `<input type="text" id="p-ref-${n}" placeholder="ej: 70-110" class="input-param">` +
+    "</div>" +
+    "</div>" +
+    `<button type="button" class="class-btn-param" onclick="quitarParametro(${n})"> x </button>` +
+    "</div>";
   document.getElementById("contenedor-parametros").appendChild(div);
   document.getElementById("p-nombre-" + n).focus();
 }
@@ -87,7 +76,7 @@ function obtenerParametros() {
     const n = filas[i].id.replace("param-", "");
     const nombre = document.getElementById("p-nombre-" + n).value.trim();
     if (!nombre) continue;
-    const param = { nombre: nombre };
+    const param = { nombre };
     const unidad = document.getElementById("p-unidad-" + n).value.trim();
     const ref = document.getElementById("p-ref-" + n).value.trim();
     if (unidad) param.unidad = unidad;
@@ -113,135 +102,108 @@ document.addEventListener("keydown", (ev) => {
   }
 });
 
-// ° CRUD
-
-async function crearExamen() {
-  const datos = {
-    nombre: document.getElementById("c-nombre").value.trim(),
-    abreviatura: document
-      .getElementById("c-abreviatura")
-      .value.trim()
-      .toUpperCase(),
-    area: document.getElementById("c-area").value.trim(),
-    precio: parseFloat(document.getElementById("c-precio").value),
-    tipoMuestra: document.getElementById("c-muestra").value.trim(),
-    parametros: obtenerParametros(),
-  };
-
-  try {
-    const res = await fetch("/exam", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos),
-    });
-    const json = await res.json();
-    if (res.ok) {
-      mostrarMensaje("Examen registrado correctamente.", true, true);
-      document.getElementById("form-crear").reset();
-      document.getElementById("contenedor-parametros").innerHTML = "";
-      contadorParam = 0;
-    } else {
-      mostrarMensaje(json.detalle || json.error, false, false);
-    }
-  } catch (err) {
-    mostrarMensaje("Error de conexion al registrar.", false, false);
-  }
-}
-
+// BUSCAR EXAMEN
 async function buscarExamen() {
   const abreviatura = document
     .getElementById("b-abreviatura")
     .value.trim()
     .toUpperCase();
-  const contenedor = document.getElementById("resultado-busqueda");
+  const botonReseteo = document.getElementById("btn-reset-buscar");
+  const tbody = document.getElementById("tbody-table");
 
-  if (!abreviatura) {
-    contenedor.innerHTML = '<p style="color:red;">Ingrese una abreviatura.</p>';
-    return;
-  }
+  if (!abreviatura) return;
 
   try {
-    const res = await fetch(
+    botonReseteo.style.display = "flex";
+    const respuesta = await fetch(
       "/exam?abreviatura=" + encodeURIComponent(abreviatura),
     );
-    const json = await res.json();
+    const json = await respuesta.json();
 
-    if (res.ok && json.data) {
+    if (respuesta.ok && json.data) {
       const lista = Array.isArray(json.data) ? json.data : [json.data];
-      let filas = "";
+      let dataOrdenada = "";
       for (let i = 0; i < lista.length; i++) {
         const e = lista[i];
-        filas +=
-          "<tr>" +
-          "<td>" +
-          e.id_examen +
-          "</td>" +
-          "<td>" +
-          e.nombre_examen +
-          "</td>" +
-          "<td>" +
-          e.abreviatura_examen +
-          "</td>" +
-          "<td>" +
-          e.area_examen +
-          "</td>" +
-          "<td>" +
-          e.precio_examen +
-          "</td>" +
-          "<td>" +
-          e.tipo_muestra +
-          "</td>" +
-          "<td>" +
-          renderizarParametros(e.parametros) +
-          "</td>" +
-          "</tr>";
+        dataOrdenada += `
+          <tr>
+            <td>${e.id_examen || "-"}</td>
+            <td>${e.nombre_examen || "-"}</td>
+            <td>${e.abreviatura_examen || "-"}</td>
+            <td>${e.area_examen || "-"}</td>
+            <td>${e.precio_examen || "-"}</td>
+            <td>${e.tipo_muestra || "-"}</td>
+            <td>${renderizarParametros(e.parametros)}</td>
+            <td>
+              <button class="boton-accion-tabla borrar" onclick="eliminarExamen('${e.abreviatura_examen}')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+            </td>
+          </tr>
+        `;
       }
-      contenedor.innerHTML =
-        '<table border="1" cellpadding="6" cellspacing="0">' +
-        "<tr><th>ID</th><th>Nombre</th><th>Abreviatura</th><th>Area</th><th>Precio</th><th>Tipo Muestra</th><th>Parametros</th></tr>" +
-        filas +
-        "</table>";
+      tbody.innerHTML = dataOrdenada;
     } else {
-      contenedor.innerHTML =
-        '<p style="color:red;">' +
-        (json.detalle || json.error || "No encontrado.") +
-        "</p>";
+      tbody.innerHTML =
+        "<tr><td colspan='7'>No hay ningun examen registrado con esa abreviatura</td></tr>";
     }
   } catch (err) {
-    contenedor.innerHTML =
-      '<p style="color:red;">Error de conexion al buscar.</p>';
+    tbody.innerHTML =
+      "<tr><td colspan='7'>Ha ocurrido un error por parte del servidor</td></tr>";
   }
 }
 
-async function eliminarExamen() {
-  const abreviatura = document
-    .getElementById("e-abreviatura")
-    .value.trim()
-    .toUpperCase();
-
-  if (!abreviatura) {
-    mostrarMensaje(
-      "Ingrese la abreviatura del examen a eliminar.",
-      false,
-      false,
-    );
-    return;
-  }
-
-  if (!confirm('Seguro que desea eliminar el examen "' + abreviatura + '"?'))
-    return;
-
+// REGISTRAR EXAMEN
+async function crearExamen() {
   try {
-    const res = await fetch("/exam/" + encodeURIComponent(abreviatura), {
-      method: "DELETE",
+    const datos = {
+      nombre: document.getElementById("c-nombre").value.trim(),
+      abreviatura: document
+        .getElementById("c-abreviatura")
+        .value.trim()
+        .toUpperCase(),
+      area: document.getElementById("c-area").value.trim(),
+      precio: parseFloat(document.getElementById("c-precio").value),
+      tipoMuestra: document.getElementById("c-muestra").value.trim(),
+      parametros: obtenerParametros(),
+    };
+
+    const respuesta = await fetch("/exam", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
     });
-    const json = await res.json();
-    if (res.ok) {
-      mostrarMensaje("Examen eliminado correctamente.", true, true);
-    } else {
-      mostrarMensaje(json.detalle || json.error, false, false);
+    const json = await respuesta.json();
+    if (respuesta.ok) {
+      document.getElementById("form-crear").reset();
+      document.getElementById("contenedor-parametros").innerHTML = "";
+      contadorParam = 0;
+      window.location.reload();
     }
   } catch (err) {
-    mostrarMensaje("Error de conexion al eliminar.", false, false);
+    console.error("Oh no");
   }
 }
+
+// ELIMINAR EXAMEN
+const eliminarExamen = async (dato) => {
+  const confirmar = await confirmarVentanaAbrir("borrar", "examen");
+
+  if (confirmar) {
+    const datafetched = await fetch(
+      "/exam/" + encodeURIComponent(dato).trim(),
+      {
+        method: "DELETE",
+      },
+    );
+    const json = await datafetched.json();
+    if (datafetched.ok) {
+      window.location.reload();
+    } else {
+      console.error("Uhhh algo salio mal");
+    }
+  }
+};

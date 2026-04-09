@@ -5,67 +5,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css" />
-  <title>Gestión de Órdenes</title>
+  <title>Ordenes</title>
 </head>
 
 <body>
   <%- include('partials/_navbar') %>
   <%- include('partials/_infoUsuario') %>
-  <section class="todo-container">
-  <div class="titulo-general">
-    <h2>Ordenes Registradas</h2>
-    <button onclick="window.location.reload()">Refrescar</button>
-  </div>
-
-  <table id="table-ordenes">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Cédula (paciente)</th>
-        <th>Cédula (empleado)</th>
-        <th>Monto Total</th>
-        <th>Estado Pago</th>
-        <th>Fecha de Orden</th>
-        <th>Detalles</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (locals.datos && datos.length > 0) { %>
-      <% for (let i = 0; i < datos.length; i++) { %>
-      <% let orden = datos[i]; %>
-      <tr>
-        <td><%= orden.id_orden %></td>
-        <td><%= orden.cedula_paciente %></td>
-        <td><%= orden.cedula_empleado %></td>
-        <td><%= orden.monto_total %></td>
-        <td><%= orden.estado_pago %> <button type="button" onclick="cambiarEstado('<%= orden.id_orden %>','<%= orden.estado_pago %>', 'cambiar')">Cambiar</button></td>
-        <td><%= orden.fecha_orden %></td>
-        <td><button onclick="mostrarDetalle('<%= orden.id_orden %>')">VER</button></td>
-        <td><button onclick="eliminarOrden('<%= orden.id_orden %>', 'eliminar')">BORRAR</button></td>
-      </tr>
-      <% } %>
-      <% } else { %>
-      <tr>
-        <td colspan="7" style="text-align: center;">¡¡¡NO HAY ÓRDENES REGISTRADAS!!!</td>
-      </tr>
-      <% } %>
-    </tbody>
-  </table>
-
+  <%- include('partials/_confirmacion') %>
+  <%- include('partials/_creacion') %>
   <%- include('partials/_detalles') %>
-
   <%- include('partials/_resultados') %>
 
-  <div class="div-todo-resultados">
-    <label for="valor-busqueda" class="label-busqueda">
-      Buscar por Cedula:
-      <input type="text" id="valor-busqueda" pattern="^[VE]-[0-8]+$" placeholder="P.E: V-12345678">
-      <button type="button" onclick="buscarOrden()">Buscar</button>
-    </label>
+  <section class="todo-container">
 
-    <div id="div-resultados-busqueda">
-      <table id="table-ordenes">
+    <% if (locals.datos && datos.length > 0) { %>
+    <div class="todo-principal-pacientes">
+      <div class="top-pacientes">
+        <span>
+          <h3 class="title-section">Ordenes</h3>
+          <% if (nivel === "admin" || nivel === "editor") { %>
+          <button class="area-admin-editor-btn" onclick="abrirCrear()">
+            Registrar nueva orden
+          </button>
+          <% } %>
+        </span>
+        <label for="busqueda" class="busqueda-label">
+          <button id="btn-reset-buscar" class="btn-reseteo" onclick="window.location.reload()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="btn-reseteo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </button>
+          <input type="text" id="valor-busqueda" class="buscador-paciente" pattern="^[VE]-[0-8]+$" placeholder="V-12345678">
+          <button type="button" class="buscar-boton paciente" onclick="buscarOrden()">Buscar</button>
+        </label>
+      </div>
+      <div class="block-top"></div>
+      <table class="table-general table-pacientes">
         <thead>
           <tr>
             <th>ID</th>
@@ -78,36 +54,60 @@
             <th></th>
           </tr>
         </thead>
-        <tbody id="tbody-busqueda-orden">
+        <tbody id="table-ordenes">
+          <% for (let i = 0; i < datos.length; i++) { %>
+          <% let orden = datos[i]; %>
+          <tr>
+            <td><%= orden.id_orden %></td>
+            <td><%= orden.cedula_paciente %></td>
+            <td><%= orden.cedula_empleado %></td>
+            <td><%= orden.monto_total %></td>
+            <td class="actividad-empleado-td">
+              <%= orden.estado_pago %>
+              <% if (nivel === "editor" || nivel === "admin") { %>
+              <button onclick="cambiarEstado('<%= orden.id_orden %>','<%= orden.estado_pago %>')" class="boton-cambiar">
+                <svg xmlns="http://www.w3.org/2000/svg" class="boton-cambiar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                  <path d="M16 16h5v5" />
+                </svg>
+              </button>
+              <% } %>
+            </td>
+            <td><%= new Date(orden.fecha_orden).toLocaleString('es-VE') %></td>
+            <td>
+              <button class="boton-accion-tabla editar" onclick="mostrarDetalle('<%= orden.id_orden %>')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </td>
+            <% if (nivel === "admin") { %>
+            <td class="acciones-td">
+              <button class="boton-accion-tabla borrar" onclick="eliminarOrden('<%= orden.id_orden %>', 'eliminar')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="acciones-btn-svg editar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </td>
+            <% } %>
+          </tr>
+          <% } %>
         </tbody>
       </table>
+      <% } else { %>
+      <p>No hay datos registrados.</p>
+      <% } %>
     </div>
-  </div>
+  </section>
 
-  <!-- AAAAAA -->
-  <section id="div-crear-orden">
-    <h3>Ingresar una nueva orden</h3>
-    <form id="formulario-crear-orden">
-      <label for="cedula-paciente" class='label-cedula-detalle'>
-        Cedula del paciente:
-        <input type="text" id="cedula-paciente" pattern="^[VE]-[0-8]+$" placeholder="P.E: V-12345678">
-      </label>
-      <label for="cedula-empleado" class='label-cedula-detalle'>
-        Cedula del empleado:
-        <input type="text" id="cedula-empleado" pattern="^[VE]-[0-8]+$" placeholder="P.E: V-12345678">
-      </label>
-      <label for="datos-detalle" class='label-valores-detalle'>
-        <fieldset>
-          <legend>Detalles de la Orden <button type="button" id="btn-nuevo-detalle">+</button></legend>
-          <div id="detalle-container"></div>
-        </fieldset>
-      </label>
-      <button type="button" id='btn-crear-orden' onclick="crearOrden()">Registrar</button>
-    </form>
-  </section>
-  </section>
-  
   <script src="/js/ordenes.js"></script>
+  <script src="/js/navbar.js"></script>
+
 </body>
 
 </html>

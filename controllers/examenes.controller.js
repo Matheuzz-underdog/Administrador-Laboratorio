@@ -127,7 +127,7 @@ class Controller {
 
   // Eliminar el examen que quiera
   static async eliminarExamen(abbrevEnv) {
-    if (!abbrevEnv || abbrevEnv.length !== 3) {
+    if (!abbrevEnv || abbrevEnv.length > 4 || abbrevEnv.length < 2) {
       throw {
         status: 400,
         error: "Abreviatura requerida",

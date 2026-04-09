@@ -52,7 +52,6 @@ class Controller {
       "cedula_empleado",
       "valores_resultados",
       "observaciones",
-      "fecha_finalizacion",
     ];
     const faltantes = obligatorios.filter((campo) => !datos[campo]);
     if (faltantes.length > 0) {

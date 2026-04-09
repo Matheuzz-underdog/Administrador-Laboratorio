@@ -66,7 +66,7 @@ async function buscarEmpleado(nivel) {
         <td>${datos.telefono_empleado || "-"}</td>
         <td>${datos.email_empleado || "-"}</td>
         <td>${datos.actividad_empleado || "-"}</td>
-        <td>${datos.datos_profesionales || "-"}</td>
+        <td>${renderizarDatosProfesionales(datos.datos_profesionales)}</td>
       `;
       if (nivel === "editor" || nivel === "admin") {
         dataOrdenada += `
@@ -264,10 +264,29 @@ async function actualizarEmpleado() {
   }
 }
 
+function renderizarDatosProfesionales(raw) {
+  if (!raw) return "<em>Sin datos profesionales</em>";
+  let dp = raw;
+  if (typeof dp === "string") {
+    try {
+      dp = JSON.parse(dp);
+    } catch (e) {
+      return "<em>Sin datos profesionales</em>";
+    }
+  }
+  if (typeof dp !== "object" || Array.isArray(dp) || !Object.keys(dp).length)
+    return "<em>Sin datos profesionales</em>";
+
+  let html = '<ul class="lista-parametros">';
+  for (const [clave, valor] of Object.entries(dp)) {
+    html += `<li><strong>${clave}</strong> &mdash; ${valor}</li>`;
+  }
+  return html + "</ul>";
+}
+
 // la funcion mas sencilla
 const eliminarEmpleado = async (dato) => {
   const confirmar = await confirmarVentanaAbrir("borrar", "empleado");
-  console.log(dato);
 
   if (confirmar) {
     const datafetched = await fetch(
